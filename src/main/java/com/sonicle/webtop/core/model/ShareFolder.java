@@ -30,51 +30,34 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2014 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.bol.model;
+package com.sonicle.webtop.core.model;
 
 /**
  *
  * @author malbinola
  */
-public class ServiceSharePermission extends ServicePermission {
-	public static final String TARGET_ROOT = "ROOT";
-	public static final String TARGET_FOLDER = "FOLDER";
-	public static final String TARGET_ELEMENTS= "ELEMENTS";
+public class ShareFolder {
+	protected final String shareId;
+	protected final SharePermsFolder perms;
+	protected final SharePermsElements eperms;
+	protected final Object object;
 	
-	public ServiceSharePermission(String groupName) {
-		super(groupName);
+	public ShareFolder(String shareId, SharePermsFolder perms, SharePermsElements eperms, Object object) {
+		this.shareId = shareId;
+		this.perms = perms;
+		this.eperms = eperms;
+		this.object = object;
+	}
+
+	public String getShareId() {
+		return shareId;
 	}
 	
-	public static String buildPermissionKey(String target, String groupName) {
-		if(target.equals(TARGET_ROOT)) {
-			return buildRootPermissionKey(groupName);
-		} else if(target.equals(TARGET_FOLDER)) {
-			return buildFolderPermissionKey(groupName);
-		} else if(target.equals(TARGET_ELEMENTS)) {
-			return buildElementsPermissionKey(groupName);
-		} else {
-			return null;
-		}
+	public SharePermsFolder getPerms() {
+		return perms;
 	}
 	
-	public static String buildRootPermissionKey(String groupName) {
-		return groupName + "@SHARE_" + TARGET_ROOT;
+	public SharePermsElements getElementsPerms() {
+		return eperms;
 	}
-	
-	public static String buildFolderPermissionKey(String groupName) {
-		return groupName + "@SHARE_" + TARGET_FOLDER;
-	}
-	
-	public static String buildElementsPermissionKey(String groupName) {
-		return groupName + "@SHARE_" + TARGET_ELEMENTS;
-	}
-	
-	/*
-	public static boolean checkName(String groupName) {
-		if(StringUtils.endsWith(groupName, "@SHARE_" + TARGET_ROOT)) return true;
-		if(StringUtils.endsWith(groupName, "@SHARE_" + TARGET_FOLDER)) return true;
-		if(StringUtils.endsWith(groupName, "@SHARE_" + TARGET_ELEMENTS)) return true;
-		return false;
-	}
-	*/
 }

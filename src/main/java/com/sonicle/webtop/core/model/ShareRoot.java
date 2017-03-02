@@ -30,7 +30,7 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2014 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.bol.model;
+package com.sonicle.webtop.core.model;
 
 import com.sonicle.webtop.core.sdk.UserProfileId;
 
@@ -38,25 +38,35 @@ import com.sonicle.webtop.core.sdk.UserProfileId;
  *
  * @author malbinola
  */
-public class IncomingShareRoot {
-	private final String shareId;
-	private final UserProfileId originPid;
-	private final String description;
+public class ShareRoot {
+	protected final String shareId;
+	protected final SharePermsRoot perms;
+	protected final UserProfileId ownerProfileId;
+	protected final String description;
 	
-	public IncomingShareRoot(String shareId, UserProfileId originPid, String description) {
+	public ShareRoot(String shareId, SharePermsRoot perms, UserProfileId ownerProfileId, String description) {
 		this.shareId = shareId;
-		this.originPid = originPid;
+		this.perms = perms;
+		this.ownerProfileId = ownerProfileId;
 		this.description = description;
 	}
-
+	
+	public ShareRoot(IncomingShareRoot share, SharePermsRoot perms) {
+		this(share.getShareId(), perms, share.getOriginPid(), share.getDescription());
+	}
+	
 	public String getShareId() {
 		return shareId;
 	}
-
-	public UserProfileId getOriginPid() {
-		return originPid;
+	
+	public SharePermsRoot getPerms() {
+		return perms;
 	}
-
+	
+	public UserProfileId getOwnerProfileId() {
+		return ownerProfileId;
+	}
+	
 	public String getDescription() {
 		return description;
 	}

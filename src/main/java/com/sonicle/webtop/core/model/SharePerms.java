@@ -30,44 +30,53 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2014 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.bol.model;
-
-import com.sonicle.webtop.core.sdk.UserProfileId;
+package com.sonicle.webtop.core.model;
 
 /**
  *
  * @author malbinola
  */
-public class ShareRoot {
-	protected final String shareId;
-	protected final SharePermsRoot perms;
-	protected final UserProfileId ownerProfileId;
-	protected final String description;
+public abstract class SharePerms {
+	public static final int CREATE = 1;
+	public static final int READ = 2;
+	public static final int UPDATE = 4;
+	public static final int DELETE = 8;
+	public static final int MANAGE = 16;
+	protected int mask;
 	
-	public ShareRoot(String shareId, SharePermsRoot perms, UserProfileId ownerProfileId, String description) {
-		this.shareId = shareId;
-		this.perms = perms;
-		this.ownerProfileId = ownerProfileId;
-		this.description = description;
+	public SharePerms(String... actions) {
+		parse(actions);
 	}
 	
-	public ShareRoot(IncomingShareRoot share, SharePermsRoot perms) {
-		this(share.getShareId(), perms, share.getOriginPid(), share.getDescription());
+	public SharePerms(String[] actions, boolean[] bools) {
+		parse(actions, bools);
 	}
 	
-	public String getShareId() {
-		return shareId;
+	abstract protected void parse(String... actions);
+	abstract protected void parse(String[] actions, boolean[] bools);
+	
+	public void add(int action) {
+		mask |= action;
 	}
 	
-	public SharePermsRoot getPerms() {
-		return perms;
+	public void merge(SharePerms permission) {
+		mask |= permission.mask;
 	}
 	
-	public UserProfileId getOwnerProfileId() {
-		return ownerProfileId;
+	public boolean implies(SharePerms permission) {
+		if ((mask & permission.mask) != permission.mask)
+			return false;
+		return true;
 	}
 	
-	public String getDescription() {
-		return description;
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		if((mask & CREATE) == CREATE) sb.append("c");
+		if((mask & READ) == READ) sb.append("r");
+		if((mask & UPDATE) == UPDATE) sb.append("u");
+		if((mask & DELETE) == DELETE) sb.append("d");
+		if((mask & MANAGE) == MANAGE) sb.append("m");
+		return sb.toString();
 	}
 }

@@ -30,53 +30,60 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2014 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.bol.model;
+package com.sonicle.webtop.core.model;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
  * @author malbinola
  */
-public abstract class SharePerms {
-	public static final int CREATE = 1;
-	public static final int READ = 2;
-	public static final int UPDATE = 4;
-	public static final int DELETE = 8;
-	public static final int MANAGE = 16;
-	protected int mask;
+public class SharePermsElements extends SharePerms {
+	public static final String[] ACTIONS = new String[]{
+		ServicePermission.ACTION_CREATE,
+		ServicePermission.ACTION_UPDATE,
+		ServicePermission.ACTION_DELETE
+	};
 	
-	public SharePerms(String... actions) {
-		parse(actions);
+	public SharePermsElements(String... actions) {
+		super(actions);
 	}
 	
-	public SharePerms(String[] actions, boolean[] bools) {
-		parse(actions, bools);
-	}
-	
-	abstract protected void parse(String... actions);
-	abstract protected void parse(String[] actions, boolean[] bools);
-	
-	public void add(int action) {
-		mask |= action;
-	}
-	
-	public void merge(SharePerms permission) {
-		mask |= permission.mask;
-	}
-	
-	public boolean implies(SharePerms permission) {
-		if ((mask & permission.mask) != permission.mask)
-			return false;
-		return true;
+	public SharePermsElements(String[] actions, boolean[] bools) {
+		super(actions, bools);
 	}
 	
 	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		if((mask & CREATE) == CREATE) sb.append("c");
-		if((mask & READ) == READ) sb.append("r");
-		if((mask & UPDATE) == UPDATE) sb.append("u");
-		if((mask & DELETE) == DELETE) sb.append("d");
-		if((mask & MANAGE) == MANAGE) sb.append("m");
-		return sb.toString();
+	public void parse(String[] actions, boolean[] bools) {
+		if(actions.length != bools.length) throw new IllegalArgumentException("Passed arrays must have same lenght");
+		for(int i=0; i<actions.length; i++) {
+			if(bools[i]) parse(actions[i]);
+		}
+	}
+	
+	@Override
+	public void parse(String... actions) {
+		for(String action : actions) {
+			if(StringUtils.equalsIgnoreCase(action, "CREATE"))
+				mask |= CREATE;
+			else if(StringUtils.equalsIgnoreCase(action, "UPDATE"))
+				mask |= UPDATE;
+			else if(StringUtils.equalsIgnoreCase(action, "DELETE"))
+				mask |= DELETE;
+			else if(action.equals("*")) {
+				mask |= CREATE;
+				mask |= UPDATE;
+				mask |= DELETE;
+			}
+			else throw new IllegalArgumentException("Invalid action " + action);
+		}
+	}
+	
+	public boolean implies(String... actions) {
+		return implies(new SharePermsElements(actions));
+	}
+	
+	public static SharePermsElements full() {
+		return new SharePermsElements("CREATE", "UPDATE", "DELETE");
 	}
 }

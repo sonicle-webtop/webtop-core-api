@@ -30,60 +30,51 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2014 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.bol.model;
-
-import org.apache.commons.lang3.StringUtils;
+package com.sonicle.webtop.core.model;
 
 /**
  *
  * @author malbinola
  */
-public class SharePermsElements extends SharePerms {
-	public static final String[] ACTIONS = new String[]{
-		ServicePermission.ACTION_CREATE,
-		ServicePermission.ACTION_UPDATE,
-		ServicePermission.ACTION_DELETE
-	};
+public class ServiceSharePermission extends ServicePermission {
+	public static final String TARGET_ROOT = "ROOT";
+	public static final String TARGET_FOLDER = "FOLDER";
+	public static final String TARGET_ELEMENTS= "ELEMENTS";
 	
-	public SharePermsElements(String... actions) {
-		super(actions);
+	public ServiceSharePermission(String groupName) {
+		super(groupName);
 	}
 	
-	public SharePermsElements(String[] actions, boolean[] bools) {
-		super(actions, bools);
-	}
-	
-	@Override
-	public void parse(String[] actions, boolean[] bools) {
-		if(actions.length != bools.length) throw new IllegalArgumentException("Passed arrays must have same lenght");
-		for(int i=0; i<actions.length; i++) {
-			if(bools[i]) parse(actions[i]);
+	public static String buildPermissionKey(String target, String groupName) {
+		if(target.equals(TARGET_ROOT)) {
+			return buildRootPermissionKey(groupName);
+		} else if(target.equals(TARGET_FOLDER)) {
+			return buildFolderPermissionKey(groupName);
+		} else if(target.equals(TARGET_ELEMENTS)) {
+			return buildElementsPermissionKey(groupName);
+		} else {
+			return null;
 		}
 	}
 	
-	@Override
-	public void parse(String... actions) {
-		for(String action : actions) {
-			if(StringUtils.equalsIgnoreCase(action, "CREATE"))
-				mask |= CREATE;
-			else if(StringUtils.equalsIgnoreCase(action, "UPDATE"))
-				mask |= UPDATE;
-			else if(StringUtils.equalsIgnoreCase(action, "DELETE"))
-				mask |= DELETE;
-			else if(action.equals("*")) {
-				mask |= CREATE;
-				mask |= UPDATE;
-				mask |= DELETE;
-			}
-			else throw new IllegalArgumentException("Invalid action " + action);
-		}
+	public static String buildRootPermissionKey(String groupName) {
+		return groupName + "@SHARE_" + TARGET_ROOT;
 	}
 	
-	public boolean implies(String... actions) {
-		return implies(new SharePermsElements(actions));
+	public static String buildFolderPermissionKey(String groupName) {
+		return groupName + "@SHARE_" + TARGET_FOLDER;
 	}
 	
-	public static SharePermsElements full() {
-		return new SharePermsElements("CREATE", "UPDATE", "DELETE");
+	public static String buildElementsPermissionKey(String groupName) {
+		return groupName + "@SHARE_" + TARGET_ELEMENTS;
 	}
+	
+	/*
+	public static boolean checkName(String groupName) {
+		if(StringUtils.endsWith(groupName, "@SHARE_" + TARGET_ROOT)) return true;
+		if(StringUtils.endsWith(groupName, "@SHARE_" + TARGET_FOLDER)) return true;
+		if(StringUtils.endsWith(groupName, "@SHARE_" + TARGET_ELEMENTS)) return true;
+		return false;
+	}
+	*/
 }

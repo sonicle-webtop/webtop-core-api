@@ -30,70 +30,52 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2014 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.bol.model;
+package com.sonicle.webtop.core.model;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.LinkedHashSet;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
  * @author malbinola
  */
-public class SharePermsFolder extends SharePerms {
-	public static final String[] ACTIONS = new String[]{
-		ServicePermission.ACTION_READ,
-		ServicePermission.ACTION_UPDATE,
-		ServicePermission.ACTION_DELETE
-	};
+public class ServicePermission {
+	public static final String ACTION_ACCESS = "ACCESS";
+	public static final String ACTION_MANAGE = "MANAGE";
+	public static final String ACTION_CREATE = "CREATE";
+	public static final String ACTION_READ = "READ";
+	public static final String ACTION_UPDATE = "UPDATE";
+	public static final String ACTION_DELETE = "DELETE";
 	
-	public SharePermsFolder(String... actions) {
-		super(actions);
+	private final String groupName;
+	private final LinkedHashSet<String> actions = new LinkedHashSet<>();
+	
+	public ServicePermission(String groupName) {
+		this.groupName = groupName.toUpperCase();
 	}
 	
-	public SharePermsFolder(String[] actions, boolean[] bools) {
-		super(actions, bools);
-	}
-	
-	@Override
-	public void parse(String[] actions, boolean[] bools) {
-		if(actions.length != bools.length) throw new IllegalArgumentException("Passed arrays must have same lenght");
-		for(int i=0; i<actions.length; i++) {
-			if(bools[i]) parse(actions[i]);
-		}
-	}
-	
-	@Override
-	public void parse(String... actions) {
+	public ServicePermission(String groupName, String[] actions) {
+		this(groupName);
 		for(String action : actions) {
-			if(StringUtils.equalsIgnoreCase(action, "READ"))
-				mask |= READ;
-			else if(StringUtils.equalsIgnoreCase(action, "UPDATE"))
-				mask |= UPDATE;
-			else if(StringUtils.equalsIgnoreCase(action, "DELETE"))
-				mask |= DELETE;
-			else if(action.equals("*")) {
-				mask |= READ;
-				mask |= UPDATE;
-				mask |= DELETE;
+			if(!StringUtils.isEmpty(action)) {
+				this.actions.add(action.trim());
 			}
-				
-			else throw new IllegalArgumentException("Invalid action " + action);
 		}
 	}
-	
-	public boolean implies(String... actions) {
-		return implies(new SharePermsFolder(actions));
+
+	public String getGroupName() {
+		return groupName;
 	}
 	
-	public static SharePermsFolder full() {
-		return new SharePermsFolder("READ", "UPDATE", "DELETE");
+	public String[] getActions() {
+		return actions.toArray(new String[actions.size()]);
 	}
 	
-	/*
-	public void merge(SharePermission permission) {
-		if (!(permission instanceof FolderPermission)) throw new IllegalArgumentException("");
-		FolderPermission p = (FolderPermission)permission;
-		
-		 
+	public static String namespacedName(String serviceId, String groupName) {
+		return serviceId + "." + groupName;
 	}
-	*/
+	
+	public static String permissionString(String groupName, String action, String instance) {
+		return groupName + ":" + StringUtils.defaultString(action, "*") + ":" + StringUtils.defaultString(instance, "*");
+	}
 }
