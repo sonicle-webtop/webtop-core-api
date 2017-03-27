@@ -28,3 +28,37 @@ version 3, these Appropriate Legal Notices must retain the display of the
 Sonicle logo and Sonicle copyright notice. If the display of the logo is not
 reasonably feasible for technical reasons, the Appropriate Legal Notices must
 display the words "Copyright (C) 2014 Sonicle S.r.l.".
+
+
+Third Party Content
+-------------------------------------------------------------------------------
+The following third party software is distributed with this software and is 
+provided under other licenses and/or has source available from other locations.
+
+Name: Plupload
+License: AGPLv3
+Location: http://www.plupload.com/
+
+Name: TinyMCE Community
+License: GPLv2
+Location: https://www.tinymce.com/
+
+Name: html2canvas
+License: Copyright notice
+Location: https://html2canvas.hertzen.com/
+
+Name: jQuery
+License: MIT
+Location: http://jquery.com/
+
+Name: Respond
+License: MIT
+Location: https://github.com/scottjehl/Respond
+
+Name: jstz
+License: MIT
+Location: https://github.com/iansinnott/jstz
+
+Name: Pure Flat 2013 Stock Icons
+License: Lifetime Commercial (http://www.axialis.com/stock-icons/license.html)
+Location: http://www.axialis.com/stock-icons/pure-flat-2013-toolbar.html
