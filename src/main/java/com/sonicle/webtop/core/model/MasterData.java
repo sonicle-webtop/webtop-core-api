@@ -232,7 +232,6 @@ public class MasterData {
 	}
 	
 	public static enum LoskStatus {
-		@SerializedName("N") NONE,
 		@SerializedName("L") LOCKED,
 		@SerializedName("A") ALERT,
 		@SerializedName("W") WARNING;
