@@ -40,7 +40,7 @@ import org.joda.time.LocalDate;
  *
  * @author malbinola
  */
-public class IMHistoryMessage {
+public class IMMessage {
 	private Integer id;
 	private String domainId;
 	private String userId;
@@ -54,7 +54,7 @@ public class IMHistoryMessage {
 	private String messageUid;
 	private String stanzaId;
 	
-	public IMHistoryMessage() {}
+	public IMMessage() {}
 
 	public Integer getId() {
 		return id;

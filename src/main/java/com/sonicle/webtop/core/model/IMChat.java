@@ -32,21 +32,27 @@
  */
 package com.sonicle.webtop.core.model;
 
+import com.google.gson.annotations.SerializedName;
+import org.joda.time.DateTime;
+
 /**
  *
  * @author malbinola
  */
-public class IMHistoryChat {
+public class IMChat {
 	private Integer id;
 	private String domainId;
 	private String userId;
+	private RevisionStatus revisionStatus;
+	private DateTime revisionTimestamp;
 	private String chatJid;
 	private String ownerJid;
 	private String name;
 	private Boolean isGroupChat;
+	private DateTime lastSeenActivity;
 	private String withJid; // Only for direct chats
 	
-	public IMHistoryChat() {}
+	public IMChat() {}
 
 	public Integer getId() {
 		return id;
@@ -70,6 +76,22 @@ public class IMHistoryChat {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	
+	public RevisionStatus getRevisionStatus() {
+		return revisionStatus;
+	}
+
+	public void setRevisionStatus(RevisionStatus revisionStatus) {
+		this.revisionStatus = revisionStatus;
+	}
+	
+	public DateTime getRevisionTimestamp() {
+		return revisionTimestamp;
+	}
+
+	public void setRevisionTimestamp(DateTime revisionTimestamp) {
+		this.revisionTimestamp = revisionTimestamp;
 	}
 
 	public String getChatJid() {
@@ -104,11 +126,24 @@ public class IMHistoryChat {
 		this.isGroupChat = isGroupChat;
 	}
 	
+	public DateTime getLastSeenActivity() {
+		return lastSeenActivity;
+	}
+
+	public void setLastSeenActivity(DateTime lastSeenActivity) {
+		this.lastSeenActivity = lastSeenActivity;
+	}
+	
 	public String getWithJid() {
 		return withJid;
 	}
 
 	public void setWithJid(String withJid) {
 		this.withJid = withJid;
+	}
+	
+	public static enum RevisionStatus {
+		@SerializedName("M") MODIFIED,
+		@SerializedName("D") DELETED;
 	}
 }
