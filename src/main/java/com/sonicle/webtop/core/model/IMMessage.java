@@ -154,6 +154,8 @@ public class IMMessage {
 	
 	public static enum Action {
 		@SerializedName("none") NONE,
+		@SerializedName("warn") WARN,
+		@SerializedName("close") CHAT_CLOSE,
 		@SerializedName("join") USER_JOIN,
 		@SerializedName("leave") USER_LEAVE,
 		@SerializedName("kick") USER_KICK,

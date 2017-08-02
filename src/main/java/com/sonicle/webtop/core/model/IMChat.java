@@ -142,8 +142,13 @@ public class IMChat {
 		this.withJid = withJid;
 	}
 	
+	public boolean isUnavailable() {
+		return revisionStatus.equals(IMChat.RevisionStatus.UNAVAILABLE);
+	}
+	
 	public static enum RevisionStatus {
 		@SerializedName("M") MODIFIED,
+		@SerializedName("U") UNAVAILABLE,
 		@SerializedName("D") DELETED;
 	}
 }
