@@ -51,6 +51,7 @@ public class IMMessage {
 	private DateTime timestamp;
 	private Action action;
 	private String text;
+	private String data;
 	private String messageUid;
 	private String stanzaId;
 	
@@ -135,6 +136,14 @@ public class IMMessage {
 	public void setText(String text) {
 		this.text = text;
 	}
+	
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
 
 	public String getMessageUid() {
 		return messageUid;
@@ -154,6 +163,7 @@ public class IMMessage {
 	
 	public static enum Action {
 		@SerializedName("none") NONE,
+		@SerializedName("file") FILE,
 		@SerializedName("warn") WARN,
 		@SerializedName("close") CHAT_CLOSE,
 		@SerializedName("join") USER_JOIN,
