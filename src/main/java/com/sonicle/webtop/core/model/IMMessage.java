@@ -34,6 +34,7 @@ package com.sonicle.webtop.core.model;
 
 import com.google.gson.annotations.SerializedName;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 /**
@@ -47,8 +48,8 @@ public class IMMessage {
 	private String chatJid;
 	private String senderJid;
 	private String senderResource;
-	private LocalDate date;
 	private DateTime timestamp;
+	private DateTime deliveryTimestamp;
 	private Action action;
 	private String text;
 	private String data;
@@ -104,14 +105,6 @@ public class IMMessage {
 	public void setSenderResource(String senderResource) {
 		this.senderResource = senderResource;
 	}
-	
-	public LocalDate getDate() {
-		return date;
-	}
-
-	public void setDate(LocalDate date) {
-		this.date = date;
-	}
 
 	public DateTime getTimestamp() {
 		return timestamp;
@@ -119,6 +112,14 @@ public class IMMessage {
 
 	public void setTimestamp(DateTime timestamp) {
 		this.timestamp = timestamp;
+	}
+	
+	public DateTime getDeliveryTimestamp() {
+		return deliveryTimestamp;
+	}
+
+	public void setDeliveryTimestamp(DateTime deliveryTimestamp) {
+		this.deliveryTimestamp = deliveryTimestamp;
 	}
 
 	public Action getAction() {
@@ -159,6 +160,18 @@ public class IMMessage {
 
 	public void setStanzaId(String stanzaId) {
 		this.stanzaId = stanzaId;
+	}
+	
+	public LocalDate getTimestampDate(DateTimeZone timezone) {
+		return timestamp.withZone(timezone).toLocalDate();
+	}
+	
+	public LocalDate getDeliveryTimestampDate(DateTimeZone timezone) {
+		if (deliveryTimestamp != null) {
+			return deliveryTimestamp.withZone(timezone).toLocalDate();
+		} else {
+			return getTimestampDate(timezone);
+		}
 	}
 	
 	public static enum Action {
