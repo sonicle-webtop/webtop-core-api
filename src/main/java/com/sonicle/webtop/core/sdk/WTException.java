@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.core.sdk;
 
+import com.sonicle.commons.LangUtils;
 import java.text.MessageFormat;
 
 /**
@@ -49,10 +50,10 @@ public class WTException extends Exception {
 	}
 	
 	public WTException(String message, Object... arguments) {
-		super(MessageFormat.format(message, arguments));
+		super(LangUtils.escapeSingleQuote(MessageFormat.format(LangUtils.escapeMessageFormat(message), arguments)));
 	}
 	
 	public WTException(Throwable cause, String message, Object... arguments) {
-		super(MessageFormat.format(message, arguments), cause);
+		super(LangUtils.escapeSingleQuote(MessageFormat.format(LangUtils.escapeMessageFormat(message), arguments)), cause);
 	}
 }
