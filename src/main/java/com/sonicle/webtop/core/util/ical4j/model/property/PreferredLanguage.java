@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -30,60 +30,65 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2014 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.model;
+package com.sonicle.webtop.core.util.ical4j.model.property;
 
-import org.apache.commons.lang3.StringUtils;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.ParameterList;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyFactory;
+import net.fortuna.ical4j.model.PropertyFactoryImpl;
 
 /**
  *
  * @author malbinola
  */
-public class SharePermsElements extends SharePerms {
-	public static final String[] ACTIONS = new String[]{
-		ServicePermission.ACTION_CREATE,
-		ServicePermission.ACTION_UPDATE,
-		ServicePermission.ACTION_DELETE
-	};
+public class PreferredLanguage extends Property {
+	public static final String PROPERTY_NAME = "PREFERRED_LANGUAGE";
+	public static final PropertyFactory FACTORY = new Factory();
+	private String value;
 	
-	public SharePermsElements(String... actions) {
-		super(actions);
+	public PreferredLanguage() {
+		super(PROPERTY_NAME, new ParameterList(), PropertyFactoryImpl.getInstance());
 	}
 	
-	public SharePermsElements(String[] actions, boolean[] bools) {
-		super(actions, bools);
+	public PreferredLanguage(final String aValue) {
+		super(PROPERTY_NAME, new ParameterList(), PropertyFactoryImpl.getInstance());
+		setValue(aValue);
 	}
 	
-	@Override
-	public void parse(String[] actions, boolean[] bools) {
-		if (actions.length != bools.length) throw new IllegalArgumentException("Passed arrays must have same lenght");
-		for(int i=0; i<actions.length; i++) {
-			if (bools[i]) parse(actions[i]);
-		}
+	public PreferredLanguage(final ParameterList aList, final String aValue) {
+		super(PROPERTY_NAME, aList, PropertyFactoryImpl.getInstance());
+		setValue(aValue);
 	}
 	
 	@Override
-	public void parse(String... actions) {
-		for(String action : actions) {
-			if (StringUtils.equalsIgnoreCase(action, "CREATE"))
-				mask |= CREATE;
-			else if (StringUtils.equalsIgnoreCase(action, "UPDATE"))
-				mask |= UPDATE;
-			else if (StringUtils.equalsIgnoreCase(action, "DELETE"))
-				mask |= DELETE;
-			else if (action.equals("*")) {
-				mask |= CREATE;
-				mask |= UPDATE;
-				mask |= DELETE;
-			}
-			else throw new IllegalArgumentException("Invalid action " + action);
+	public final String getValue() {
+		return value;
+	}
+
+	@Override
+	public final void setValue(String aValue) {
+		this.value = aValue;
+	}
+	
+	public static class Factory extends Content.Factory implements PropertyFactory<Property> {
+		
+		public Factory() {
+			super(PROPERTY_NAME);
 		}
-	}
-	
-	public boolean implies(String... actions) {
-		return implies(new SharePermsElements(actions));
-	}
-	
-	public static SharePermsElements full() {
-		return new SharePermsElements("CREATE", "UPDATE", "DELETE");
+
+		@Override
+		public Property createProperty() {
+			return new PreferredLanguage();
+		}
+
+		@Override
+		public Property createProperty(ParameterList parameters, String value) {
+			return new PreferredLanguage(parameters, value);
+		}
+		
 	}
 }

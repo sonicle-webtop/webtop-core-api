@@ -1,4 +1,5 @@
-/* 
+/*
+ * WebTop Services is a Web Application framework developed by Sonicle S.r.l.
  * Copyright (C) 2014 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -10,7 +11,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  *
  * You should have received a copy of the GNU Affero General Public License
@@ -18,7 +19,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301 USA.
  *
- * You can contact Sonicle S.r.l. at email address sonicle[at]sonicle[dot]com
+ * You can contact Sonicle S.r.l. at email address sonicle@sonicle.com
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -30,60 +31,29 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2014 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.model;
+package com.sonicle.webtop.core.sdk;
 
-import org.apache.commons.lang3.StringUtils;
+import java.text.MessageFormat;
 
 /**
  *
  * @author malbinola
  */
-public class SharePermsElements extends SharePerms {
-	public static final String[] ACTIONS = new String[]{
-		ServicePermission.ACTION_CREATE,
-		ServicePermission.ACTION_UPDATE,
-		ServicePermission.ACTION_DELETE
-	};
+public class WTRuntimeException extends RuntimeException {
 	
-	public SharePermsElements(String... actions) {
-		super(actions);
+	public WTRuntimeException() {
+		super();
 	}
 	
-	public SharePermsElements(String[] actions, boolean[] bools) {
-		super(actions, bools);
+	public WTRuntimeException(String message) {
+		super(message);
 	}
 	
-	@Override
-	public void parse(String[] actions, boolean[] bools) {
-		if (actions.length != bools.length) throw new IllegalArgumentException("Passed arrays must have same lenght");
-		for(int i=0; i<actions.length; i++) {
-			if (bools[i]) parse(actions[i]);
-		}
+	public WTRuntimeException(String message, Object... arguments) {
+		super(MessageFormat.format(message, arguments));
 	}
 	
-	@Override
-	public void parse(String... actions) {
-		for(String action : actions) {
-			if (StringUtils.equalsIgnoreCase(action, "CREATE"))
-				mask |= CREATE;
-			else if (StringUtils.equalsIgnoreCase(action, "UPDATE"))
-				mask |= UPDATE;
-			else if (StringUtils.equalsIgnoreCase(action, "DELETE"))
-				mask |= DELETE;
-			else if (action.equals("*")) {
-				mask |= CREATE;
-				mask |= UPDATE;
-				mask |= DELETE;
-			}
-			else throw new IllegalArgumentException("Invalid action " + action);
-		}
-	}
-	
-	public boolean implies(String... actions) {
-		return implies(new SharePermsElements(actions));
-	}
-	
-	public static SharePermsElements full() {
-		return new SharePermsElements("CREATE", "UPDATE", "DELETE");
+	public WTRuntimeException(Throwable cause, String message, Object... arguments) {
+		super(MessageFormat.format(message, arguments), cause);
 	}
 }
