@@ -106,6 +106,15 @@ public class ICalendarUtils {
 		return parse(is);
 	}
 	
+	public static Calendar parseAllRelaxed(InputStream is) throws ParserException, IOException {
+		setUnfoldingRelaxed(true);
+		setParsingRelaxed(true);
+		setValidationRelaxed(true);
+		setCompatibilityOutlook(true);
+		setCompatibilityNotes(true);
+		return parse(is);
+	}
+	
 	public static Calendar parse(InputStream is) throws ParserException, IOException {
 		CalendarParser parser = CalendarParserFactory.getInstance().createParser();
 		PropertyFactoryRegistry propertyRegistry = new PropertyFactoryRegistry();
