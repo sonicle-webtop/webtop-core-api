@@ -32,10 +32,18 @@
  */
 package com.sonicle.webtop.core.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  *
  * @author malbinola
  */
 public enum RecipientFieldType {
-	TELEPHONE, TELEPHONE_2, FAX, MOBILE, PAGER, EMAIL, IM
+	@SerializedName("telephone") TELEPHONE,
+	@SerializedName("telephone2") TELEPHONE_2,
+	@SerializedName("fax") FAX,
+	@SerializedName("mobile") MOBILE,
+	@SerializedName("pager") PAGER,
+	@SerializedName("email") EMAIL,
+	@SerializedName("im") IM;
 }

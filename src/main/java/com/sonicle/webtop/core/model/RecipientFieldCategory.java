@@ -32,10 +32,14 @@
  */
 package com.sonicle.webtop.core.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  *
  * @author malbinola
  */
 public enum RecipientFieldCategory {
-	WORK, HOME, OTHER;
+	@SerializedName("work") WORK,
+	@SerializedName("home") HOME,
+	@SerializedName("other") OTHER;
 }
