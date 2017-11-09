@@ -1,4 +1,5 @@
 /*
+ * WebTop Services is a Web Application framework developed by Sonicle S.r.l.
  * Copyright (C) 2014 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -10,7 +11,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  *
  * You should have received a copy of the GNU Affero General Public License
@@ -18,7 +19,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301 USA.
  *
- * You can contact Sonicle S.r.l. at email address sonicle[at]sonicle[dot]com
+ * You can contact Sonicle S.r.l. at email address sonicle@sonicle.com
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -30,62 +31,73 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2014 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.util.ical4j.model.property;
+package com.sonicle.webtop.core.io;
 
-import net.fortuna.ical4j.model.Content;
-import net.fortuna.ical4j.model.ParameterList;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyFactory;
-import net.fortuna.ical4j.model.PropertyFactoryImpl;
+import com.sonicle.webtop.core.util.LogEntries;
 
 /**
  *
  * @author malbinola
+ * @param <T> Bean type.
  */
-public class PreferredLanguage extends Property {
-	public static final String PROPERTY_NAME = "PREFERRED_LANGUAGE";
-	public static final PropertyFactory FACTORY = new Factory();
-	private String value;
+public abstract class BatchBeanHandler<T> implements BeanHandler<T> {
+	protected LogEntries log;
+	protected Throwable lastException;
+	protected int batchSize;
+	public int handledCount;
 	
-	public PreferredLanguage() {
-		super(PROPERTY_NAME, new ParameterList(), PropertyFactoryImpl.getInstance());
+	public BatchBeanHandler(LogEntries log) {
+		this.log = log;
+		this.batchSize = 100;
+		this.handledCount = 0;
 	}
 	
-	public PreferredLanguage(final String aValue) {
-		super(PROPERTY_NAME, new ParameterList(), PropertyFactoryImpl.getInstance());
-		setValue(aValue);
+	protected abstract int getCurrentBeanBufferSize();
+	protected abstract void clearBeanBuffer();
+	protected abstract void addBeanToBuffer(T bean);
+	public abstract boolean handleBufferedBeans();
+	
+	public LogEntries getLog() {
+		return log;
 	}
 	
-	public PreferredLanguage(final ParameterList aList, final String aValue) {
-		super(PROPERTY_NAME, aList, PropertyFactoryImpl.getInstance());
-		setValue(aValue);
+	public Throwable getLastException() {
+		return lastException;
+	}
+	
+	public int getBatchSize() {
+		return batchSize;
+	}
+	
+	public void setBatchSize(int batchSize) {
+		this.batchSize = batchSize;
+	}
+	
+	public boolean flush() {
+		if (getCurrentBeanBufferSize() > 0) {
+			try {
+				return handleBufferedBeans();
+			} finally {
+				clearBeanBuffer();
+			}
+		} else {
+			return true;
+		}
 	}
 	
 	@Override
-	public final String getValue() {
-		return value;
-	}
-
-	@Override
-	public final void setValue(String aValue) {
-		this.value = aValue;
-	}
-	
-	public static class Factory extends Content.Factory implements PropertyFactory<Property> {
-		
-		public Factory() {
-			super(PROPERTY_NAME);
+	public boolean handle(T bean, LogEntries log) {
+		handledCount++;
+		addBeanToBuffer(bean);
+		log.addAll(log);
+		if (getCurrentBeanBufferSize() == batchSize) {
+			try {
+				return handleBufferedBeans();
+			} finally {
+				clearBeanBuffer();
+			}
+		} else {
+			return true;
 		}
-
-		@Override
-		public Property createProperty() {
-			return new PreferredLanguage();
-		}
-
-		@Override
-		public Property createProperty(ParameterList parameters, String value) {
-			return new PreferredLanguage(parameters, value);
-		}
-		
 	}
 }
