@@ -47,6 +47,7 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.DtStamp;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.util.UidGenerator;
+import org.joda.time.DateTimeZone;
 
 /**
  *
@@ -116,12 +117,55 @@ public class ICal4jUtils {
 		return new Period(toICal4jDateTime(start, tz), toICal4jDateTime(end, tz));
 	}
 	
+	/**
+	 * @deprecated use toIC4jDateTimeUTC() or toIC4jDateTimeLocal() instead
+	 */
 	public static DateTime toICal4jDateTime(org.joda.time.DateTime dateTime, org.joda.time.DateTimeZone timezone) {
 		DateTime dt = new DateTime(dateTime.toDate());
 		if (timezone != null) {
 			dt.setTimeZone(tzRegistry.getTimeZone(timezone.getID()));
 		}
 		return dt;
+	}
+	
+	/**
+	 * Creates an iCal4j DateTime with UTC time.
+	 * The date with UTC time, or absolute time, is identified by a LATIN
+	 * CAPITAL LETTER Z suffix character, the UTC designator, appended to
+	 * the time value.  For example, the following represents January 19,
+	 * 1998, at 0700 UTC:
+	 * 19980119T070000Z
+	 * @param dateTime
+	 * @return 
+	 */
+	public static DateTime toIC4jDateTimeUTC(org.joda.time.DateTime dateTime) {
+		final DateTime dt = new DateTime(true);
+		dt.setTime(dateTime.withZone(DateTimeZone.UTC).toDate().getTime());
+		return dt;
+	}
+	
+	/**
+	 * Creates an iCal4j DateTime with local time and optionally adds the 
+	 * timezone reference.
+	 * The date and local time with reference to time zone information is
+	 * identified by the use the "TZID" property parameter to reference
+	 * the appropriate time zone definition.  "TZID" is discussed in
+	 * detail in Section 3.2.19.  For example, the following represents
+	 * 2:00 A.M. in New York on January 19, 1998:
+	 * TZID=America/New_York:19980119T020000
+	 * @param dateTime
+	 * @param withZone
+	 * @param addZoneReference
+	 * @return 
+	 */
+	public static DateTime toIC4jDateTimeLocal(org.joda.time.DateTime dateTime, org.joda.time.DateTimeZone withZone, boolean addZoneReference) {
+		if (withZone != null) {
+			final DateTime dt = new DateTime(dateTime.withZone(withZone).toDate().getTime());
+			if (addZoneReference) dt.setTimeZone(tzRegistry.getTimeZone(withZone.getID()));
+			return dt;
+		} else {
+			return new DateTime(dateTime.toDate().getTime());
+		}
 	}
 	
 	public static org.joda.time.DateTime ifiniteDate() {
