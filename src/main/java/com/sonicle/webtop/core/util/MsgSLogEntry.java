@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.core.util;
 
+import com.sonicle.commons.LangUtils;
 import java.text.MessageFormat;
 
 /**
@@ -43,7 +44,7 @@ public class MsgSLogEntry extends SLogEntry {
 	
 	public MsgSLogEntry(int depth, Level level, String message, Object... arguments) {
 		super(depth, level);
-		this.message = MessageFormat.format(message, arguments);
+		this.message = LangUtils.escapeSingleQuote(MessageFormat.format(LangUtils.escapeMessageFormat(message), arguments));
 	}
 	
 	@Override

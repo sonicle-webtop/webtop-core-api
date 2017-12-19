@@ -33,6 +33,7 @@
  */
 package com.sonicle.webtop.core.util;
 
+import com.sonicle.commons.LangUtils;
 import java.text.MessageFormat;
 
 /**
@@ -44,7 +45,7 @@ public class MessageLogEntry extends LogEntry {
 	
 	public MessageLogEntry(Level level, String message, Object... arguments) {
 		super(level);
-		this.message = MessageFormat.format(message, arguments);
+		this.message = LangUtils.escapeSingleQuote(MessageFormat.format(LangUtils.escapeMessageFormat(message), arguments));
 	}
 	
 	public String getMessage() {

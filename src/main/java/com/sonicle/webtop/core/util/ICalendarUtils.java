@@ -69,6 +69,7 @@ import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Transp;
+import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -149,7 +150,7 @@ public class ICalendarUtils {
 	 */
 	public static String getVEventUid(Calendar ical) {
 		VEvent ve = getVEvent(ical);
-		return (ve == null) ? null : ve.getUid().getValue();
+		return (ve == null) ? null : getUidValue(ve);
 	}
 	
 	/**
@@ -163,6 +164,16 @@ public class ICalendarUtils {
 			return (Attendee) attIt.next();
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns the Uid value of a VEvent component, if provided, or null otherwise.
+	 * @param ve The VEvent
+	 * @return Uid value
+	 */
+	public static String getUidValue(VEvent ve) {
+		Uid uid = ve.getUid();
+		return (uid != null) ? uid.getValue() : null;
 	}
 	
 	public static boolean isBusy(Transp transparency) {
