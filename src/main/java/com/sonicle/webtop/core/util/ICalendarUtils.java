@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Iterator;
 import javax.mail.MessagingException;
@@ -216,7 +217,7 @@ public class ICalendarUtils {
 	
 	public static MimeBodyPart createInvitationAttachmentPart(String icalText, String filename) throws MessagingException {
 		MimeBodyPart part = new MimeBodyPart();
-		part.setText(icalText, "UTF-8");
+		part.setText(icalText, StandardCharsets.UTF_8.name());
 		part.setHeader("Content-type", "application/ics");
 		part.setFileName(filename);
 		return part;
@@ -225,7 +226,7 @@ public class ICalendarUtils {
 	public static MimeBodyPart createInvitationCalendarPart(boolean cancel, String icalText) throws MessagingException {
 		String method = cancel ? "CANCEL" : "REQUEST";
 		MimeBodyPart part = new MimeBodyPart();
-		part.setText(icalText, "UTF-8");
+		part.setText(icalText, StandardCharsets.UTF_8.name());
 		part.setHeader("Content-type", "text/calendar; charset=UTF-8; method=" + method);
 		return part;
 	}
