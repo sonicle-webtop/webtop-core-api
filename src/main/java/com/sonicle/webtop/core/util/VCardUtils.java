@@ -32,6 +32,11 @@
  */
 package com.sonicle.webtop.core.util;
 
+import ezvcard.VCard;
+import ezvcard.property.FormattedName;
+import ezvcard.property.Uid;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /**
  *
  * @author malbinola
@@ -48,5 +53,20 @@ public class VCardUtils {
 	
 	public static String buildProdId(String company, String product) {
 		return "-//" + company + "//" + product + "//EN";
+	}
+	
+	/**
+	 * Prints some reference data of the passed VCard component.
+	 * @param vc The component.
+	 * @return The string dump
+	 */
+	public static String print(VCard vc) {
+		if (vc == null) return null;
+		ToStringBuilder builder = new ToStringBuilder(vc);
+		Uid uid = vc.getUid();
+		builder.append("uid", (uid == null) ? null : uid.getValue());
+		FormattedName fn = vc.getFormattedName();
+		builder.append("fn", (fn == null) ? null : fn.getValue());
+		return builder.toString();
 	}
 }

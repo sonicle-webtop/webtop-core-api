@@ -68,11 +68,13 @@ import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.joda.time.DateTimeZone;
 
 /**
@@ -174,6 +176,21 @@ public class ICalendarUtils {
 	public static String getUidValue(VEvent ve) {
 		Uid uid = ve.getUid();
 		return (uid != null) ? uid.getValue() : null;
+	}
+	
+	/**
+	 * Prints some reference data of the passed VEvent component.
+	 * @param ve The component.
+	 * @return The string dump
+	 */
+	public static String print(VEvent ve) {
+		if (ve == null) return null;
+		ToStringBuilder builder = new ToStringBuilder(ve);
+		Uid uid = ve.getUid();
+		builder.append("uid", (uid == null) ? null : uid.getValue());
+		Summary sum = ve.getSummary();
+		builder.append("summary", (sum == null) ? null : sum.getValue());
+		return builder.toString();
 	}
 	
 	public static boolean isBusy(Transp transparency) {
