@@ -33,6 +33,7 @@
  */
 package com.sonicle.webtop.core.util;
 
+import com.sonicle.commons.MailUtils;
 import com.sonicle.commons.time.DateTimeUtils;
 import com.sonicle.webtop.core.util.ical4j.model.property.PreferredLanguage;
 import java.io.ByteArrayOutputStream;
@@ -245,8 +246,7 @@ public class ICalendarUtils {
 	
 	public static MimeBodyPart createInvitationAttachmentPart(String icalText, String filename) throws MessagingException {
 		MimeBodyPart part = new MimeBodyPart();
-		part.setText(icalText, StandardCharsets.UTF_8.name());
-		part.setHeader("Content-type", "application/ics");
+		part.setContent(icalText, MailUtils.buildPartContentType("application/ics", "UTF-8"));
 		part.setFileName(filename);
 		return part;
 	}
@@ -254,8 +254,7 @@ public class ICalendarUtils {
 	public static MimeBodyPart createInvitationCalendarPart(boolean cancel, String icalText) throws MessagingException {
 		String method = cancel ? "CANCEL" : "REQUEST";
 		MimeBodyPart part = new MimeBodyPart();
-		part.setText(icalText, StandardCharsets.UTF_8.name());
-		part.setHeader("Content-type", "text/calendar; charset=UTF-8; method=" + method);
+		part.setContent(icalText, MailUtils.buildPartContentType("text/calendar", "UTF-8", method));
 		return part;
 	}
 	
