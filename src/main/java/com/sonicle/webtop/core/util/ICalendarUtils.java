@@ -62,6 +62,7 @@ import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
+import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.property.Attendee;
@@ -267,7 +268,8 @@ public class ICalendarUtils {
 		plist.add(new ProdId(prodId));
 		
 		VEvent ve = getVEvent(nical);
-		PropertyList props=ve.getProperties();
+		ve.getAlarms().clear(); // Clear any defined alarms
+		PropertyList props = ve.getProperties();
 		
 		props.remove(props.getProperty(Property.DESCRIPTION));
 		props.remove(props.getProperty(Property.LAST_MODIFIED));
