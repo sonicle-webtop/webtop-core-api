@@ -41,12 +41,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Iterator;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMultipart;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.data.CalendarParser;
@@ -62,7 +62,6 @@ import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
-import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.property.Attendee;
@@ -245,6 +244,20 @@ public class ICalendarUtils {
 		return ical;
 	}
 	
+	public static MimeMultipart createInvitationPart(String htmlText, MimeBodyPart calendarPart, MimeBodyPart attachmentPart) throws MessagingException {
+		MimeMultipart altPart = new MimeMultipart("alternative");
+		if (!StringUtils.isBlank(htmlText)) MailUtils.addHtmlBodyPart(altPart, htmlText, true);
+		altPart.addBodyPart(calendarPart);
+		MimeBodyPart altwPart = new MimeBodyPart();
+		altwPart.setContent(altPart);
+
+		MimeMultipart mixPart = new MimeMultipart("mixed");
+		mixPart.addBodyPart(altwPart);
+		mixPart.addBodyPart(attachmentPart);
+		
+		return mixPart;
+	}
+	
 	public static MimeBodyPart createInvitationAttachmentPart(String icalText, String filename) throws MessagingException {
 		MimeBodyPart part = new MimeBodyPart();
 		part.setContent(icalText, MailUtils.buildPartContentType("application/ics", "UTF-8"));
@@ -252,11 +265,25 @@ public class ICalendarUtils {
 		return part;
 	}
 	
-	public static MimeBodyPart createInvitationCalendarPart(boolean cancel, String icalText) throws MessagingException {
-		String method = cancel ? "CANCEL" : "REQUEST";
+	public static MimeBodyPart createInvitationCalendarPart(Method icalMethod, String icalText) throws MessagingException {
+		String method = toMimePartMethod(icalMethod);
 		MimeBodyPart part = new MimeBodyPart();
 		part.setContent(icalText, MailUtils.buildPartContentType("text/calendar", "UTF-8", method));
 		return part;
+	}
+	
+	public static String toMimePartMethod(Method icalMethod) {
+		if (Method.REPLY.equals(icalMethod)) {
+			return "REPLY";
+		} else if (Method.CANCEL.equals(icalMethod)) {
+			return "CANCEL";
+		} else {
+			return "REQUEST";
+		}
+	}
+	
+	public static String buildICalendarAttachmentFilename(String platformName) {
+		return platformName.toLowerCase() + "-invite.ics";
 	}
 	
 	public static Calendar buildInvitationReply(Calendar ical, String prodId, InternetAddress forAddress, PartStat response) throws URISyntaxException, ParseException, IOException {
