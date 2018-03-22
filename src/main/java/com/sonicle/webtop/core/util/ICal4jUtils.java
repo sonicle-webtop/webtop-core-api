@@ -33,6 +33,7 @@
 package com.sonicle.webtop.core.util;
 
 import java.net.SocketException;
+import java.text.ParseException;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
@@ -96,12 +97,16 @@ public class ICal4jUtils {
 	}
 	
 	public static org.joda.time.DateTime fromICal4jDate(Date date, TimeZone timezone) {
+		org.joda.time.DateTimeZone tz = org.joda.time.DateTimeZone.forID(timezone.getID());
+		return fromICal4jDate(date, tz);
+	}
+	
+	public static org.joda.time.DateTime fromICal4jDate(Date date, org.joda.time.DateTimeZone tz) {
 		/*
 		org.joda.time.LocalDate ld = new org.joda.time.LocalDate(date.getTime());
 		DateTimeZone tz = DateTimeZone.forID(timezone.getID());
 		return new org.joda.time.DateTime(tz).withDate(ld);
 		*/
-		org.joda.time.DateTimeZone tz = org.joda.time.DateTimeZone.forID(timezone.getID());
 		return new org.joda.time.DateTime(date.getTime(), tz);
 	}
 	
@@ -194,6 +199,7 @@ public class ICal4jUtils {
 		return toJodaDateTime(d, tz);
 	}
 	
+	@Deprecated
 	public static org.joda.time.DateTime calculateRecurrenceEnd(org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, RRule rr, org.joda.time.DateTimeZone tz) {
 		VEvent vevent = new VEvent(ICal4jUtils.toICal4jDateTime(eventStart, tz), ICal4jUtils.toICal4jDateTime(eventEnd, tz), "");
 		vevent.getProperties().add(rr);
@@ -201,6 +207,50 @@ public class ICal4jUtils {
 		if((periods == null) || periods.isEmpty()) return null;
 		Period last = (Period)periods.toArray()[periods.size()-1];
 		return toJodaDateTime(last.getEnd(), tz);
+	}
+	
+	public static org.joda.time.DateTime calculateRecurEnd(Recur recur, org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTimeZone eventTz) {
+		VEvent veDummy = new VEvent(ICal4jUtils.toICal4jDateTime(eventStart, eventTz), ICal4jUtils.toICal4jDateTime(eventEnd, eventTz), "");
+		veDummy.getProperties().add(new RRule(recur));
+		
+		PeriodList periods = veDummy.calculateRecurrenceSet(ICal4jUtils.toICal4jPeriod(eventStart, ifiniteDate(), eventTz));
+		if ((periods == null) || periods.isEmpty()) {
+			return null;
+		} else {
+			Period last = (Period)periods.toArray()[periods.size()-1];
+			return toJodaDateTime(last.getEnd(), eventTz);
+		}
+	}
+	
+	public static boolean recurHasCount(Recur recur) {
+		return recur.getCount() > 0;
+	}
+	
+	public static boolean recurHasUntilDate(Recur recur) {
+		return recur.getUntil() != null;
+	}
+	
+	public static boolean recurHasInfiniteEnd(Recur recur) {
+		if (recurHasCount(recur)) return false;
+		if (recurHasUntilDate(recur)) return false;
+		return true;
+	}
+	
+	public static void setRecurUntilDate(Recur recur, org.joda.time.DateTime untilDate) {
+		recur.setUntil(toIC4jDateTimeUTC(untilDate.withZone(org.joda.time.DateTimeZone.UTC)));
+	}
+	
+	public static Recur parseRRule(String rrule) {
+		RRule rr = newRRuleObject(rrule);
+		return (rr == null) ? null : rr.getRecur();
+	}
+	
+	public static RRule newRRuleObject(String rrule) {
+		try {
+			return new RRule(rrule);
+		} catch(ParseException ex) {
+			return null;
+		}
 	}
 	
 	public static PeriodList calculateRecurrenceSet(org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTime recStart, RRule rr, org.joda.time.DateTime from, org.joda.time.DateTime to, org.joda.time.DateTimeZone tz) {
