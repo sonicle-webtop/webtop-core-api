@@ -39,6 +39,7 @@ import com.sonicle.webtop.core.util.ical4j.model.property.PreferredLanguage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
@@ -104,29 +105,37 @@ public class ICalendarUtils {
 		System.setProperty("ical4j.compatibility.notes", String.valueOf(value));
 	}
 	
-	public static Calendar parseRelaxed(InputStream is) throws ParserException, IOException {
-		setUnfoldingRelaxed(true);
-		setParsingRelaxed(true);
-		setValidationRelaxed(true);
-		return parse(is);
+	public static void relaxParsingAndCompatibility() {
+		relaxParsing();
+		relaxCompatibility();
 	}
 	
-	public static Calendar parseAllRelaxed(InputStream is) throws ParserException, IOException {
+	public static void relaxParsing() {
 		setUnfoldingRelaxed(true);
 		setParsingRelaxed(true);
 		setValidationRelaxed(true);
+	}
+	
+	public static void relaxCompatibility() {
 		setCompatibilityOutlook(true);
 		setCompatibilityNotes(true);
-		return parse(is);
+	}
+	
+	public static Calendar parse(String s) throws IOException, ParserException {
+		return createCalendarBuilder().build(new StringReader(s));
 	}
 	
 	public static Calendar parse(InputStream is) throws ParserException, IOException {
+		return createCalendarBuilder().build(is);
+	}
+	
+	public static CalendarBuilder createCalendarBuilder() {
 		CalendarParser parser = CalendarParserFactory.getInstance().createParser();
 		PropertyFactoryRegistry propertyRegistry = new PropertyFactoryRegistry();
 		propertyRegistry.register(PreferredLanguage.PROPERTY_NAME, PreferredLanguage.FACTORY);
 		ParameterFactoryRegistry parameterRegistry = new ParameterFactoryRegistry();
 		TimeZoneRegistry tzRegistry = TimeZoneRegistryFactory.getInstance().createRegistry();
-		return new CalendarBuilder(parser, propertyRegistry, parameterRegistry, tzRegistry).build(is);
+		return new CalendarBuilder(parser, propertyRegistry, parameterRegistry, tzRegistry);
 	}
 	
 	/**

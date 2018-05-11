@@ -32,9 +32,15 @@
  */
 package com.sonicle.webtop.core.util;
 
+import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.property.FormattedName;
 import ezvcard.property.Uid;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -53,6 +59,15 @@ public class VCardUtils {
 	
 	public static String buildProdId(String company, String product) {
 		return "-//" + company + "//" + product + "//EN";
+	}
+	
+	public static List<VCard> parse(String s, boolean first) throws IOException {
+		if (first) {
+			VCard vCard = Ezvcard.parse(s).first();
+			return (vCard != null) ? Arrays.asList(vCard) : new ArrayList<VCard>(0);
+		} else {
+			return Ezvcard.parse(s).all();
+		}
 	}
 	
 	/**
