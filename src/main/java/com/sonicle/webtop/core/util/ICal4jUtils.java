@@ -241,13 +241,8 @@ public class ICal4jUtils {
 	}
 	
 	public static Recur parseRRule(String rrule) {
-		RRule rr = newRRuleObject(rrule);
-		return (rr == null) ? null : rr.getRecur();
-	}
-	
-	public static RRule newRRuleObject(String rrule) {
 		try {
-			return new RRule(rrule);
+			return new Recur(rrule);
 		} catch(ParseException ex) {
 			return null;
 		}
