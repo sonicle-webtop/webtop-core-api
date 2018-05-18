@@ -118,7 +118,7 @@ public class RRuleStringify {
 	private void stringifyDaily(StringBuilder sb, Recur recur) throws Exception {
 		WeekDayList bydayList = recur.getDayList();
 		if (bydayList.isEmpty()) {
-			if (recur.getInterval() == 1) {
+			if (recur.getInterval() <= 1) {
 				// E.g. Every day
 				sb.append(strings.onEvery);
 				sb.append(" ");
@@ -141,7 +141,7 @@ public class RRuleStringify {
 	}
 	
 	private void stringifyWeekly(StringBuilder sb, Recur recur) throws Exception {
-		if (recur.getInterval() == 1) {
+		if (recur.getInterval() <= 1) {
 			// E.g. Every week
 			sb.append(strings.onEvery);
 			sb.append(" ");
@@ -178,7 +178,7 @@ public class RRuleStringify {
 	}
 	
 	private void stringifyMonthly(StringBuilder sb, Recur recur) throws Exception {
-		if (recur.getInterval() == 1) {
+		if (recur.getInterval() <= 1) {
 			// E.g. Monthly
 			sb.append(strings.onEvery);
 			sb.append(" ");
@@ -225,7 +225,7 @@ public class RRuleStringify {
 	}
 	
 	private void stringifyYearly(StringBuilder sb, Recur recur) throws Exception {
-		if (recur.getInterval() == 1) {
+		if (recur.getInterval() <= 1) {
 			// E.g. Yearly
 			sb.append(strings.onEvery);
 			sb.append(" ");
