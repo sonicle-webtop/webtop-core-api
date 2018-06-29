@@ -42,6 +42,7 @@ import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
 import net.fortuna.ical4j.model.property.RRule;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -84,22 +85,56 @@ public class RRuleStringify {
 		this.timeFormat = timeFormat;
 	}
 	
-	public String toHumanReadableFrequency(String rr) throws Exception {
-		return toHumanReadableFrequency(new RRule(rr));
+	public String[] toHumanReadableQuietly(String recur) {
+		try {
+			return toHumanReadable(new RRule(recur).getRecur());
+		} catch(ParseException | UnsupportedOperationException ex) {
+			return null;
+		}
 	}
 	
-	public String toHumanReadableFrequency(RRule rr) throws Exception {
-		Recur recur = rr.getRecur();
+	public String[] toHumanReadable(Recur recur) throws UnsupportedOperationException {
+		return new String[]{toHumanReadableFrequency(recur), toHumanReadableText(recur)};
+	}
+	
+	public String toHumanReadableFrequencyQuietly(String recur) {
+		try {
+			return toHumanReadableFrequency(new RRule(recur).getRecur());
+		} catch(ParseException ex) {
+			return null;
+		}
+	}
+	
+	public String toHumanReadableFrequency(String recur) throws ParseException {
+		return toHumanReadableFrequency(new RRule(recur).getRecur());
+	}
+	
+	public String toHumanReadableFrequency(Recur recur) {
 		return frequencyString(recur.getFrequency());
 	}
 	
-	public String toHumanReadableText(String rr) throws Exception {
-		return toHumanReadableText(new RRule(rr));
+	public String toHumanReadableTextQuietly(String recur) {
+		try {
+			return toHumanReadableText(recur);
+		} catch(ParseException | UnsupportedOperationException ex) {
+			return StringUtils.defaultString(recur, null);
+		}
 	}
 	
-	public String toHumanReadableText(RRule rr) throws Exception {
+	public String toHumanReadableText(String recur) throws ParseException, UnsupportedOperationException {
+		return toHumanReadableText(new RRule(recur).getRecur());
+	}
+	
+	public String toHumanReadableTextQuietly(Recur recur) {
+		try {
+			return toHumanReadableText(recur);
+		} catch(UnsupportedOperationException ex) {
+			return StringUtils.defaultString(recur.toString());
+		}
+	}
+	
+	public String toHumanReadableText(Recur recur) throws UnsupportedOperationException {
 		StringBuilder sb = new StringBuilder();
-		Recur recur = rr.getRecur();
 		
 		if (Recur.DAILY.equals(recur.getFrequency())) {
 			stringifyDaily(sb, recur);
@@ -115,39 +150,36 @@ public class RRuleStringify {
 		return sb.toString();
 	}
 	
-	private void stringifyDaily(StringBuilder sb, Recur recur) throws Exception {
+	private void stringifyDaily(StringBuilder sb, Recur recur) throws UnsupportedOperationException {
 		WeekDayList bydayList = recur.getDayList();
 		if (bydayList.isEmpty()) {
-			if (recur.getInterval() <= 1) {
-				// E.g. Every day
+			if (recur.getInterval() <= 1) { // E.g. Every day
 				sb.append(strings.onEvery);
 				sb.append(" ");
 				sb.append(strings.day);
-			} else {
-				// E.g. Every 2 days
+				
+			} else { // E.g. Every 2 days
 				sb.append(strings.onEvery);
 				sb.append(" ");
 				sb.append(String.valueOf(recur.getInterval()));
 				sb.append(" ");
 				sb.append(strings.days);
 			}
-		} else {
-			// E.g. Every weekdays
-			if (!isWeekdayDayList(bydayList)) throw new Exception("Unsupported configuration [BYDAY]");
+		} else { // E.g. Every weekdays
+			if (!isWeekdayDayList(bydayList)) throw new UnsupportedOperationException("Unsupported configuration [BYDAY]");
 			sb.append(strings.onEvery);
 			sb.append(" ");
 			sb.append(strings.weekdays);
 		}	
 	}
 	
-	private void stringifyWeekly(StringBuilder sb, Recur recur) throws Exception {
-		if (recur.getInterval() <= 1) {
-			// E.g. Every week
+	private void stringifyWeekly(StringBuilder sb, Recur recur) throws UnsupportedOperationException {
+		if (recur.getInterval() <= 1) { // E.g. Every week
 			sb.append(strings.onEvery);
 			sb.append(" ");
 			sb.append(strings.week);
-		} else {
-			// E.g. Every 2 weeks
+			
+		} else { // E.g. Every 2 weeks
 			sb.append(strings.onEvery);
 			sb.append(" ");
 			sb.append(String.valueOf(recur.getInterval()));
@@ -177,14 +209,13 @@ public class RRuleStringify {
 		}	
 	}
 	
-	private void stringifyMonthly(StringBuilder sb, Recur recur) throws Exception {
-		if (recur.getInterval() <= 1) {
-			// E.g. Monthly
+	private void stringifyMonthly(StringBuilder sb, Recur recur) throws UnsupportedOperationException {
+		if (recur.getInterval() <= 1) { // monthly
 			sb.append(strings.onEvery);
 			sb.append(" ");
 			sb.append(strings.month);
-		} else {
-			// E.g. Every 2 months
+			
+		} else { // every 2 months
 			sb.append(strings.onEvery);
 			sb.append(" ");
 			sb.append(String.valueOf(recur.getInterval()));
@@ -194,44 +225,55 @@ public class RRuleStringify {
 		
 		NumberList bysetposList = recur.getSetPosList();
 		NumberList bymonthdayList = recur.getMonthDayList();
+		WeekDayList byweekdayList = recur.getDayList();
 		
-		if (!bysetposList.isEmpty()) {
-			// A numbered weekday of the month has been selected, e.g. Monthly on the first Monday
-			if (bysetposList.size() > 1) throw new Exception("Unsupported configuration [BYSETPOS]");
+		if (bysetposList.size() == 1) {
 			int nth = bysetposList.get(0);
-			if (!isNthSetpos(nth)) throw new Exception("Unsupported configuration [BYSETPOS]");
-			
-			WeekDayList bydayList = recur.getDayList();
-			if (bydayList.size() != 1) throw new Exception("Unsupported configuration [BYDAY]");
+			if (!isNthSetpos(nth)) throw new UnsupportedOperationException("Unsupported configuration [BYSETPOS]");
 			
 			sb.append(", ");
-			sb.append(strings.onthe);
-			sb.append(" ");
-			sb.append(nthString(nth));
-			sb.append(" ");
-			sb.append(weekdayNameString(bydayList.get(0).getDay(), false));
+			sb.append(onTheNthString(nth));
 			
-		} else if (!bymonthdayList.isEmpty()) {
-			// A specific month day has been selected, e.g. Monthly on day 23.
-			if (bymonthdayList.size() > 1) throw new Exception("Unsupported configuration [BYMONTHDAY]");
+			if (isLastDay(bysetposList, bymonthdayList)) { // last day
+				sb.append(" ");
+				sb.append(strings.day);
+				
+			} else if (isSecondLastDay(bysetposList, bymonthdayList)) { // last-1 day
+				sb.append(" ");
+				sb.append(strings.day);
+				
+			} else if (isWeekdayDayList(byweekdayList)) { // weekday
+				sb.append(" ");
+				sb.append(strings.weekday);
+				
+			} else if (isWeekendDayList(byweekdayList)) { // weekend
+				sb.append(" ");
+				sb.append(strings.weekend);
+				
+			} else { // dayX (monday|tuesday|wednesday|thursday|friday|saturday|sunday)
+				sb.append(" ");
+				sb.append(weekdayNameString(byweekdayList.get(0).getDay(), false));
+			}
 			
+		} else if (bymonthdayList.size() == 1) {
 			sb.append(", ");
-			sb.append(strings.on);
-			sb.append(" ");
-			sb.append(strings.day);
+			sb.append(strings.onThe);
 			sb.append(" ");
 			sb.append(String.valueOf(bymonthdayList.get(0).intValue()));
+			
+		} else {
+			if (bysetposList.size() > 1) throw new UnsupportedOperationException("Unsupported configuration [BYSETPOS]");
+			if (bymonthdayList.size() > 1) throw new UnsupportedOperationException("Unsupported configuration [BYMONTHDAY]");
 		}
 	}
 	
-	private void stringifyYearly(StringBuilder sb, Recur recur) throws Exception {
-		if (recur.getInterval() <= 1) {
-			// E.g. Yearly
+	private void stringifyYearly(StringBuilder sb, Recur recur) throws UnsupportedOperationException {
+		if (recur.getInterval() <= 1) { // yearly
 			sb.append(strings.onEvery);
 			sb.append(" ");
 			sb.append(strings.year);
-		} else {
-			// E.g. Every 2 years
+			
+		} else { // every 2 years
 			sb.append(strings.onEvery);
 			sb.append(" ");
 			sb.append(String.valueOf(recur.getInterval()));
@@ -242,51 +284,67 @@ public class RRuleStringify {
 		NumberList bysetposList = recur.getSetPosList();
 		NumberList bymonthList = recur.getMonthList();
 		NumberList bymonthdayList = recur.getMonthDayList();
+		WeekDayList byweekdayList = recur.getDayList();
 		
-		if (!bysetposList.isEmpty()) {
-			
-			if (bysetposList.size() > 1) throw new Exception("Unsupported configuration [BYSETPOS]");
+		if (bysetposList.size() == 1) {
 			int nth = bysetposList.get(0);
-			if (!isNthSetpos(nth)) throw new Exception("Unsupported configuration [BYSETPOS]");
-			
-			WeekDayList bydayList = recur.getDayList();
-			if (bydayList.size() != 1) throw new Exception("Unsupported configuration [BYDAY]");
-			
-			NumberList bymonthList2 = recur.getMonthList();
-			if (bymonthList2.size() != 1) throw new Exception("Unsupported configuration [BYMONTH]");
+			if (!isNthSetpos(nth)) throw new UnsupportedOperationException("Unsupported configuration [BYSETPOS]");
 			
 			sb.append(", ");
-			sb.append(strings.onthe);
-			sb.append(" ");
-			sb.append(nthString(nth));
-			sb.append(" ");
-			sb.append(weekdayNameString(bydayList.get(0).getDay(), false));
-			sb.append(" ");
-			sb.append(strings.of);
-			sb.append(monthNameString(bymonthList2.get(0)));
+			sb.append(onTheNthString(nth));
 			
-		} else if (!bymonthList.isEmpty() && !bymonthdayList.isEmpty()) {
-			if (bymonthList.size() > 1) throw new Exception("Unsupported configuration [BYMONTH]");
-			if (bymonthdayList.size() > 1) throw new Exception("Unsupported configuration [BYMONTHDAY]");
+			if (isLastDay(bysetposList, bymonthdayList)) { // last day
+				sb.append(" ");
+				sb.append(strings.day);
+				
+			} else if (isSecondLastDay(bysetposList, bymonthdayList)) { // last-1 day
+				sb.append(" ");
+				sb.append(strings.day);
+				
+			} else if (isWeekdayDayList(byweekdayList)) { // weekday
+				sb.append(" ");
+				sb.append(strings.weekday);
+				
+			} else if (isWeekendDayList(byweekdayList)) { // weekend
+				sb.append(" ");
+				sb.append(strings.weekend);
+				
+			} else { // dayX (monday|tuesday|wednesday|thursday|friday|saturday|sunday)
+				sb.append(" ");
+				sb.append(weekdayNameString(byweekdayList.get(0).getDay(), false));
+			}
 			
+		} else if (bymonthdayList.size() == 1) {
 			sb.append(", ");
-			sb.append(strings.on);
-			sb.append(" ");
-			sb.append(strings.day);
+			sb.append(strings.onThe);
 			sb.append(" ");
 			sb.append(String.valueOf(bymonthdayList.get(0).intValue()));
+			
+		} else {
+			if (bysetposList.size() > 1) throw new UnsupportedOperationException("Unsupported configuration [BYSETPOS]");
+			if (bymonthdayList.size() > 1) throw new UnsupportedOperationException("Unsupported configuration [BYMONTHDAY]");
+		}
+		
+		if (bymonthList.size() == 1) {
 			sb.append(" ");
-			sb.append(monthNameString(bymonthdayList.get(0)));
+			sb.append(strings.of);
+			sb.append(" ");
+			sb.append(monthNameString(bymonthList.get(0)));
+			
+		} else {
+			throw new UnsupportedOperationException("Unsupported configuration [BYMONTH]");
 		}
 	}
 	
-	private void stringifyEnd(StringBuilder sb, Recur recur) throws ParseException {
+	private void stringifyEnd(StringBuilder sb, Recur recur) {
 		if (recur.getCount() > 0) {
-			sb.append(", ");
+			sb.append(" (");
 			stringifyCount(sb, recur.getCount());
+			sb.append(")");
 		} else if (recur.getUntil() != null) {
-			sb.append(", ");
+			sb.append(" (");
 			stringifyUntil(sb, recur.getUntil());
+			sb.append(")");
 		}
 	}
 	
@@ -320,6 +378,29 @@ public class RRuleStringify {
 		return true;
 	}
 	
+	private boolean isLastDay(NumberList setposList, NumberList monthdayList) {
+		if (setposList.size() != 1) return false; // Not really necessary (safe check)
+		if (setposList.get(0) != -1) return false;
+		if (monthdayList.size() != 4) return false;
+		if (!monthdayList.contains(28)) return false;
+		if (!monthdayList.contains(29)) return false;
+		if (!monthdayList.contains(30)) return false;
+		if (!monthdayList.contains(31)) return false;
+		return true;
+	}
+	
+	private boolean isSecondLastDay(NumberList setposList, NumberList monthdayList) {
+		if (setposList.size() != 1) return false; // Not really necessary (safe check)
+		if (setposList.get(0) != -2) return false;
+		if (monthdayList.size() != 5) return false;
+		if (!monthdayList.contains(27)) return false;
+		if (!monthdayList.contains(28)) return false;
+		if (!monthdayList.contains(29)) return false;
+		if (!monthdayList.contains(30)) return false;
+		if (!monthdayList.contains(31)) return false;
+		return true;
+	}
+	
 	private boolean isNthSetpos(int nth) {
 		if (nth == 1) return true;
 		if (nth == 2) return true;
@@ -350,22 +431,26 @@ public class RRuleStringify {
 		}
 	}
 	
-	private String nthString(int nth) {
-		if (nth == 1) {
-			return strings.nth1st;
-		} else if (nth == 2) {
-			return strings.nth2nd;
-		} else if (nth == 3) {
-			return strings.nth3rd;
-		} else if (nth == 4) {
-			return strings.nth4th;
+	private String onTheNthString(int nth) {
+		StringBuilder sb = new StringBuilder();
+		if (nth == -1) {
+			sb.append(strings.onTheLast);
 		} else if (nth == -2) {
-			return strings.nthLast2nd;
-		} else if (nth == -1) {
-			return strings.nthLast;
+			sb.append(strings.onThe2ndLast);
 		} else {
-			return null;
+			sb.append(strings.onThe);
+			sb.append(" ");
+			if (nth == 1) {
+				sb.append(strings.nth1st);
+			} else if (nth == 2) {
+				sb.append(strings.nth2nd);
+			} else if (nth == 3) {
+				sb.append(strings.nth3rd);
+			} else if (nth == 4) {
+				sb.append(strings.nth4th);
+			}
 		}
+		return sb.toString();
 	}
 	
 	private String weekdayNameString(WeekDay.Day day, boolean shortName) {
@@ -457,6 +542,7 @@ public class RRuleStringify {
 		public String days; // Eg. Every 2 (days)
 		public String weekday; // Eg. Every (weekday)
 		public String weekdays; // Eg. weekdays
+		public String weekend;
 		public String week; // Eg. Every (week)
 		public String weeks; // Eg. Every 2 (weeks)
 		public String month; // Eg. Every (month)
@@ -466,7 +552,9 @@ public class RRuleStringify {
 		public String and; // Eg. and
 		public String on;
 		public String of;
-		public String onthe;
+		public String onThe;
+		public String onTheLast;
+		public String onThe2ndLast;
 		public String time;
 		public String times;
 		public String endsBy;
@@ -474,8 +562,6 @@ public class RRuleStringify {
 		public String nth2nd;
 		public String nth3rd;
 		public String nth4th;
-		public String nthLast2nd;
-		public String nthLast;
 		
 		public Strings(Locale locale) {
 			String[] shortDayNames = DateTimeUtils.getDayNamesShort(locale);
@@ -494,7 +580,7 @@ public class RRuleStringify {
 			dayNameLongFR = longDayNames[Calendar.FRIDAY];
 			dayNameLongSA = longDayNames[Calendar.SATURDAY];
 			dayNameLongSU = longDayNames[Calendar.SUNDAY];
-			String[] longMonthNames = DateTimeUtils.getMonthNamesShort(locale);
+			String[] longMonthNames = DateTimeUtils.getMonthNamesLong(locale);
 			monthNameLongJan = longMonthNames[Calendar.JANUARY];
 			monthNameLongFeb = longMonthNames[Calendar.FEBRUARY];
 			monthNameLongMar = longMonthNames[Calendar.MARCH];
