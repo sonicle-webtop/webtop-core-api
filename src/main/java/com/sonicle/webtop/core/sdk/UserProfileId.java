@@ -55,4 +55,8 @@ public class UserProfileId extends DomainAccount {
 	public String getUserId() {
 		return getUser();
 	}
+	
+	public static boolean isWildcardUser(UserProfileId profileId) {
+		return "*".equals(profileId.getUserId());
+	}
 }
