@@ -45,5 +45,6 @@ public enum RecipientFieldType {
 	@SerializedName("mobile") MOBILE,
 	@SerializedName("pager") PAGER,
 	@SerializedName("email") EMAIL,
+	@SerializedName("list") LIST,
 	@SerializedName("im") IM;
 }
