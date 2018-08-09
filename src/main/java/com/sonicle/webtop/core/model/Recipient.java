@@ -46,6 +46,7 @@ public class Recipient {
 	private String personal;
 	private String address;
 	private Type type;
+	private String recipientId;
 	
 	public Recipient() {
 		this.type = Type.TO;
@@ -67,6 +68,16 @@ public class Recipient {
 		this.personal = personal;
 		this.address = address;
 		this.type = type;
+	}
+	
+	public Recipient(String source, String sourceName, String origin, String personal, String address, Type type, String recipientId) {
+		this.source = source;
+		this.sourceName = sourceName;
+		this.origin = origin;
+		this.personal = personal;
+		this.address = address;
+		this.type = type;
+		this.recipientId = recipientId;
 	}
 	
 	public String getSource() {
@@ -115,6 +126,14 @@ public class Recipient {
 	
 	public void setType(Type type) {
 		this.type = type;
+	}
+	
+	public String getRecipientId() {
+		return recipientId;
+	}
+	
+	public void setRecipientId(String id) {
+		this.recipientId=id;
 	}
 	
 	public static enum Type {
