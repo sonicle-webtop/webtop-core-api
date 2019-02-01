@@ -48,6 +48,7 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.DtStamp;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.util.UidGenerator;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
 
 /**
@@ -173,6 +174,10 @@ public class ICal4jUtils {
 		}
 	}
 	
+	public static Date toIC4jDate(org.joda.time.LocalDate date) {
+		return new Date(date.toDate().getTime());
+	}
+	
 	public static org.joda.time.DateTime ifiniteDate() {
 		return ifiniteDate(org.joda.time.DateTimeZone.UTC);
 	}
@@ -246,6 +251,12 @@ public class ICal4jUtils {
 		} catch(ParseException ex) {
 			return null;
 		}
+	}
+	
+	public static boolean equals(Recur recur1, Recur recur2) {
+		if (recur1 == null) return false;
+		if (recur2 == null) return false;
+		return StringUtils.equals(recur1.toString(), recur2.toString());
 	}
 	
 	public static PeriodList calculateRecurrenceSet(org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTime recStart, RRule rr, org.joda.time.DateTime from, org.joda.time.DateTime to, org.joda.time.DateTimeZone tz) {
