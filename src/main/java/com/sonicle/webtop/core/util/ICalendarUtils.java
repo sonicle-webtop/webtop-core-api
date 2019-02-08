@@ -208,16 +208,16 @@ public class ICalendarUtils {
 	}
 	
 	public static TimeZone guessTimeZone(TimeZone tz, DateTimeZone defaultTz) {
-		if (tz == null) return ICal4jUtils.getTimeZone(defaultTz.getID());
+		if (tz == null) return ICal4jUtils.toIC4jTimezone(defaultTz.getID());
 		
 		// During iCal import we can found non standard timezones coming from
 		// custom/private timezone database implementation.
 		// If we make a call to registry.getTimeZone() it ensures that a 
 		// cleared timezone will be returned.
-		// Calling .getTimeZone() using "/inverse.ca/20091015_1/Europe/Rome" 
+			// Calling .getTimeZone() using "/inverse.ca/20091015_1/Europe/Rome" 
 		// we get back "Europe/Rome"; thats we are looking for.
-		TimeZone guessedTz = ICal4jUtils.getTimeZone(tz.getID());
-		return (guessedTz != null) ? guessedTz : ICal4jUtils.getTimeZone(defaultTz.getID());
+		TimeZone guessedTz = ICal4jUtils.toIC4jTimezone(tz.getID());
+		return (guessedTz != null) ? guessedTz : ICal4jUtils.toIC4jTimezone(defaultTz.getID());
 	}
 	
 	public static String buildUid(String id, String internetName) {

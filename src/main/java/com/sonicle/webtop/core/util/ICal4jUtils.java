@@ -32,10 +32,14 @@
  */
 package com.sonicle.webtop.core.util;
 
+import java.io.FileInputStream;
 import java.net.SocketException;
 import java.text.ParseException;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.PeriodList;
@@ -45,11 +49,15 @@ import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.parameter.Value;
+import net.fortuna.ical4j.model.property.DateProperty;
 import net.fortuna.ical4j.model.property.DtStamp;
+import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.util.UidGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 
 /**
  *
@@ -59,12 +67,55 @@ public class ICal4jUtils {
 	//public final static TimeZoneRegistry tzRegistry = new TimeZoneRegistryImpl();
 	public final static TimeZoneRegistry tzRegistry = TimeZoneRegistryFactory.getInstance().createRegistry();
 	
-	public static TimeZone getTimeZone(String timezoneId) {
-		return tzRegistry.getTimeZone(timezoneId);
+	/**
+	 * Converts JodaTime timezone object into a ICal4j timezone object
+	 * @param timezone JodaTime timezone
+	 * @return ICal4j timezone
+	 */
+	public static TimeZone toIC4jTimezone(org.joda.time.DateTimeZone timezone) {
+		return (timezone != null) ? toIC4jTimezone(timezone.getID()) : null;
 	}
 	
-	public static TimeZone getTimeZone(org.joda.time.DateTimeZone tz) {
-		return getTimeZone(tz.getID());
+	/**
+	 * Converts JodaTime timezone ID into a ICal4j timezone object
+	 * @param jodaTimezoneId JodaTime timezone ID
+	 * @return ICal4j timezone
+	 */
+	public static TimeZone toIC4jTimezone(String jodaTimezoneId) {
+		return tzRegistry.getTimeZone(jodaTimezoneId);
+	}
+	
+	/**
+	 * Clears-out the timezone returning the standard timezone value.
+	 * Sometimes, we can find non standard timezones coming from custom/private 
+	 * timezone database implementation. A call to the registry, ensures that a
+	 * cleared timezone will be returned.
+	 * For example, using "/inverse.ca/20091015_1/Europe/Rome" as timezone ID,
+	 * we get back "Europe/Rome"; thats we are looking for.
+	 * @param timezone ICal4j timezone
+	 * @return ICal4j timezone
+	 */
+	public static TimeZone clearIC4jTimezone(TimeZone timezone) {
+		return (timezone == null) ? null : tzRegistry.getTimeZone(timezone.getID());
+	}
+	
+	/**
+	 * Converts ICal4j timezone object into a JodaTime timezone object
+	 * @param timezone ICal4j timezone
+	 * @return JodaTime timezone
+	 */
+	public static DateTimeZone toJodaTimezone(TimeZone timezone) {
+		TimeZone clearedTimezone = ICal4jUtils.clearIC4jTimezone(timezone);
+		return (clearedTimezone != null) ? toJodaTimezone(clearedTimezone.getID()) : null;
+	}
+	
+	/**
+	 * Converts ICal4j timezone ID into a JodaTime timezone object
+	 * @param ic4jTimezoneId ICal4j timezone ID
+	 * @return JodaTime timezone
+	 */
+	public static DateTimeZone toJodaTimezone(String ic4jTimezoneId) {
+		return org.joda.time.DateTimeZone.forID(ic4jTimezoneId);
 	}
 	
 	public static String generateUid(String hostName, String pid) {
@@ -77,6 +128,10 @@ public class ICal4jUtils {
 		}
 	}
 	
+	public static Date getDate(DateProperty dateProperty) {
+		return (dateProperty != null) ? dateProperty.getDate() : null;
+	}
+	
 	public static void addProperty(Component component, Property property) {
 		component.getProperties().add(property);
 	}
@@ -87,58 +142,15 @@ public class ICal4jUtils {
 		addProperty(component, property);
 	}
 	
-	public static DateTime createDateTime(org.joda.time.DateTime dt) {
-		DateTime dt1 = new DateTime(dt.toDate());
-		if(dt.getZone().equals(org.joda.time.DateTimeZone.UTC)) {
-			dt1.setUtc(true);
-		} else {
-			dt1.setTimeZone(getTimeZone(dt.getZone().getID()));
-		}
-		return dt1;
-	}
-	
-	public static org.joda.time.DateTime fromICal4jDate(Date date, TimeZone timezone) {
-		org.joda.time.DateTimeZone tz = org.joda.time.DateTimeZone.forID(timezone.getID());
-		return fromICal4jDate(date, tz);
-	}
-	
-	public static org.joda.time.DateTime fromICal4jDate(Date date, org.joda.time.DateTimeZone tz) {
-		/*
-		org.joda.time.LocalDate ld = new org.joda.time.LocalDate(date.getTime());
-		DateTimeZone tz = DateTimeZone.forID(timezone.getID());
-		return new org.joda.time.DateTime(tz).withDate(ld);
-		*/
-		return new org.joda.time.DateTime(date.getTime(), tz);
-	}
-	
-	public static org.joda.time.DateTime toJodaDateTime(DateTime date) {
-		return new org.joda.time.DateTime(date, org.joda.time.DateTimeZone.forID(date.getTimeZone().getID()));
-	}
-	
-	public static org.joda.time.DateTime toJodaDateTime(Date date, org.joda.time.DateTimeZone tz) {
-		return new org.joda.time.DateTime(date, tz);
-	}
-	
-	public static Period toICal4jPeriod(org.joda.time.DateTime start, org.joda.time.DateTime end, org.joda.time.DateTimeZone tz) {
-		return new Period(toICal4jDateTime(start, tz), toICal4jDateTime(end, tz));
-	}
-	
-	/**
-	 * @deprecated use toIC4jDateTimeUTC() or toIC4jDateTimeLocal() instead
-	 */
-	public static DateTime toICal4jDateTime(org.joda.time.DateTime dateTime, org.joda.time.DateTimeZone timezone) {
-		DateTime dt = new DateTime(dateTime.toDate());
-		if (timezone != null) {
-			dt.setTimeZone(tzRegistry.getTimeZone(timezone.getID()));
-		}
-		return dt;
+	public static boolean isAllDay(VEvent event) {
+		return StringUtils.contains(event.getStartDate().toString(), "VALUE=DATE");
 	}
 	
 	/**
 	 * Creates an iCal4j DateTime with UTC time.
 	 * The date with UTC time, or absolute time, is identified by a LATIN
 	 * CAPITAL LETTER Z suffix character, the UTC designator, appended to
-	 * the time value.  For example, the following represents January 19,
+	 * the time value. For example, the following represents January 19,
 	 * 1998, at 0700 UTC:
 	 * 19980119T070000Z
 	 * @param dateTime
@@ -156,27 +168,180 @@ public class ICal4jUtils {
 	 * The date and local time with reference to time zone information is
 	 * identified by the use the "TZID" property parameter to reference
 	 * the appropriate time zone definition.  "TZID" is discussed in
-	 * detail in Section 3.2.19.  For example, the following represents
+	 * detail in Section 3.2.19. For example, the following represents
 	 * 2:00 A.M. in New York on January 19, 1998:
 	 * TZID=America/New_York:19980119T020000
 	 * @param dateTime
-	 * @param withZone
+	 * @param timezone
 	 * @param addZoneReference
 	 * @return 
 	 */
-	public static DateTime toIC4jDateTimeLocal(org.joda.time.DateTime dateTime, org.joda.time.DateTimeZone withZone, boolean addZoneReference) {
-		if (withZone != null) {
-			final DateTime dt = new DateTime(dateTime.withZone(withZone).toDate().getTime());
-			if (addZoneReference) dt.setTimeZone(tzRegistry.getTimeZone(withZone.getID()));
+	public static DateTime toIC4jDateTime(org.joda.time.DateTime dateTime, org.joda.time.DateTimeZone timezone, boolean addZoneReference) {
+		if (timezone != null) {
+			final DateTime dt = new DateTime(dateTime.withZone(timezone).toDate().getTime());
+			if (addZoneReference) dt.setTimeZone(toIC4jTimezone(timezone));
 			return dt;
 		} else {
 			return new DateTime(dateTime.toDate().getTime());
 		}
 	}
 	
+	/**
+	 * Creates an iCal4j DateTime from a Joda LocalDate.
+	 * For example, the following represents January 19, 1998:
+	 * VALUE=DATE:19980119
+	 * @param date Joda date
+	 * @return ICal4j Date
+	 */
 	public static Date toIC4jDate(org.joda.time.LocalDate date) {
-		return new Date(date.toDate().getTime());
+		//return new Date(date.toDate().getTime());
+		try {
+			return new Date(date.toString("yyyyMMdd"));
+		} catch (ParseException ex) {
+			return null;
+		}
 	}
+	
+	public static org.joda.time.DateTime toJodaDateTime(DateTime dateTime) {
+		return toJodaDateTime(dateTime, null);
+	}
+	
+	public static org.joda.time.DateTime toJodaDateTime(DateTime dateTime, org.joda.time.DateTimeZone defaultTimezone) {
+		if (dateTime == null) return null;
+		org.joda.time.DateTimeZone tz = toJodaTimezone(dateTime.getTimeZone());
+		if ((tz == null) && (defaultTimezone != null)) tz = defaultTimezone;
+		if (tz != null) {
+			return new org.joda.time.DateTime(dateTime.getTime(), tz);
+		} else {
+			return new org.joda.time.DateTime(dateTime.getTime());
+		}
+	}
+	
+	public static org.joda.time.LocalDate toJodaLocalDate(Date date) {
+		return (date == null) ? null : new org.joda.time.LocalDate(date.getTime());	
+	}
+	
+	public static void main(String[] args) {
+		try {
+			java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone("Europe/Riga"));
+			
+			net.fortuna.ical4j.model.Calendar cal = ICalendarUtils.parse(new FileInputStream("C:/calendar.ics"));
+			net.fortuna.ical4j.model.component.VEvent ve = (VEvent)cal.getComponents().get(0);
+			
+			org.joda.time.DateTime start = null;
+			org.joda.time.DateTime end = null;
+			org.joda.time.DateTimeZone defaultTz = org.joda.time.DateTimeZone.forID("Europe/Rome");
+			boolean isAllDay = ICal4jUtils.isAllDay(ve);
+			if (isAllDay) {
+				start = ICal4jUtils.toJodaLocalDate(ve.getStartDate().getDate()).toDateTimeAtStartOfDay(defaultTz);
+				end = ICal4jUtils.toJodaLocalDate(ve.getEndDate().getDate()).minusDays(1).toDateTime(new org.joda.time.LocalTime(23, 59, 59, 0), defaultTz);
+
+			} else {
+				start = ICal4jUtils.toJodaDateTime((DateTime)ve.getStartDate().getDate(), defaultTz);
+				end = ICal4jUtils.toJodaDateTime((DateTime)ve.getEndDate().getDate(), defaultTz);
+			}
+			DateTimeZone eventTimezone = start.getZone();
+			
+			//https://theeventscalendar.com/support/forums/topic/issue-with-timezones-and-all-day-events-cont/
+			//org.joda.time.DateTime xxx1 = ICal4jUtils.toJodaDateTime((DateTime)ve.getStartDate().getDate());
+			//org.joda.time.DateTime xxx2 = ICal4jUtils.toJodaDateTime((DateTime)ve.getEndDate().getDate());
+			//TZID=Europe/Rome:
+			//TZID=Europe/Rome:20180606T113000
+			//String a = xxx2.toString();
+			
+		} catch(Throwable t) {
+			System.out.println(t.getMessage());
+		}
+	}
+	
+	/*
+	public static org.joda.time.DateTime toJodaDateTime2(DateTime dateTime, org.joda.time.DateTimeZone defaultTimezone) {
+		org.joda.time.DateTimeZone tz = toJodaTimezone(dateTime.getTimeZone());
+		return new org.joda.time.DateTime(dateTime.getTime(), (tz != null) ? tz : defaultTimezone);
+	}
+	
+	public static void main(String[] args) {
+		try {
+			net.fortuna.ical4j.model.Calendar cal = ICalendarUtils.parse(new FileInputStream("C:/calendar.ics"));
+			net.fortuna.ical4j.model.component.VEvent ve = (VEvent)cal.getComponents().get(0);
+			org.joda.time.DateTime xxx1 = ICal4jUtils.toJodaDateTime((DateTime)ve.getStartDate().getDate());
+			org.joda.time.DateTime xxx2 = ICal4jUtils.toJodaDateTime((DateTime)ve.getEndDate().getDate());
+			//TZID=Europe/Rome:
+			//TZID=Europe/Rome:20180606T113000
+			String a = xxx2.toString();
+		} catch(Throwable t) {
+			System.out.println(t.getMessage());
+		}
+	}
+	*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public static DateTime createDateTime(org.joda.time.DateTime dt) {
+		DateTime dt1 = new DateTime(dt.toDate());
+		if(dt.getZone().equals(org.joda.time.DateTimeZone.UTC)) {
+			dt1.setUtc(true);
+		} else {
+			dt1.setTimeZone(toIC4jTimezone(dt.getZone().getID()));
+		}
+		return dt1;
+	}
+	
+	public static org.joda.time.DateTime fromICal4jDate(Date date, TimeZone timezone) {
+		return fromICal4jDate(date, toJodaTimezone(timezone));
+	}
+	
+	public static org.joda.time.DateTime fromICal4jDate(Date date, org.joda.time.DateTimeZone tz) {
+		/*
+		org.joda.time.LocalDate ld = new org.joda.time.LocalDate(date.getTime());
+		DateTimeZone tz = DateTimeZone.forID(timezone.getID());
+		return new org.joda.time.DateTime(tz).withDate(ld);
+		*/
+		return new org.joda.time.DateTime(date.getTime(), tz);
+	}
+	
+	public static org.joda.time.DateTime toJodaDateTimeOLD(DateTime date) {
+		return new org.joda.time.DateTime(date, org.joda.time.DateTimeZone.forID(date.getTimeZone().getID()));
+	}
+	
+	public static org.joda.time.DateTime toJodaDateTimeOLD(Date date, org.joda.time.DateTimeZone tz) {
+		return new org.joda.time.DateTime(date, tz);
+	}
+	
+	public static Period toICal4jPeriod(org.joda.time.DateTime start, org.joda.time.DateTime end, org.joda.time.DateTimeZone tz) {
+		return new Period(toICal4jDateTime(start, tz), toICal4jDateTime(end, tz));
+	}
+	
+	/**
+	 * @deprecated use toIC4jDateTimeUTC() or toIC4jDateTimeLocal() instead
+	 */
+	@Deprecated
+	public static DateTime toICal4jDateTime(org.joda.time.DateTime dateTime, org.joda.time.DateTimeZone timezone) {
+		DateTime dt = new DateTime(dateTime.toDate());
+		if (timezone != null) {
+			dt.setTimeZone(tzRegistry.getTimeZone(timezone.getID()));
+		}
+		return dt;
+	}
+	
+	
 	
 	public static org.joda.time.DateTime ifiniteDate() {
 		return ifiniteDate(org.joda.time.DateTimeZone.UTC);
@@ -201,7 +366,7 @@ public class ICal4jUtils {
 	
 	public static org.joda.time.DateTime calculateRecurrenceStart(org.joda.time.DateTime eventStart, Recur recur, org.joda.time.DateTimeZone tz) {
 		Date d = recur.getNextDate(ICal4jUtils.toICal4jDateTime(eventStart, tz), ICal4jUtils.toICal4jDateTime(eventStart.minusDays(1), tz));
-		return toJodaDateTime(d, tz);
+		return toJodaDateTimeOLD(d, tz);
 	}
 	
 	@Deprecated
@@ -211,7 +376,7 @@ public class ICal4jUtils {
 		PeriodList periods = vevent.calculateRecurrenceSet(ICal4jUtils.toICal4jPeriod(eventStart, ifiniteDate(), tz));
 		if((periods == null) || periods.isEmpty()) return null;
 		Period last = (Period)periods.toArray()[periods.size()-1];
-		return toJodaDateTime(last.getEnd(), tz);
+		return toJodaDateTimeOLD(last.getEnd(), tz);
 	}
 	
 	public static org.joda.time.DateTime calculateRecurEnd(Recur recur, org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTimeZone eventTz) {
@@ -223,7 +388,7 @@ public class ICal4jUtils {
 			return null;
 		} else {
 			Period last = (Period)periods.toArray()[periods.size()-1];
-			return toJodaDateTime(last.getEnd(), eventTz);
+			return toJodaDateTimeOLD(last.getEnd(), eventTz);
 		}
 	}
 	

@@ -358,7 +358,7 @@ public class RRuleStringify {
 		DateTimeFormatter fmt = DateTimeUtils.createFormatter(dateFormat, timezone);
 		sb.append(strings.endsBy);
 		sb.append(" ");
-		sb.append(fmt.print(ICal4jUtils.toJodaDateTime(until, DateTimeZone.UTC)));
+		sb.append(fmt.print(ICal4jUtils.toJodaDateTimeOLD(until, DateTimeZone.UTC)));
 	}
 	
 	private boolean isWeekdayDayList(WeekDayList list) {
