@@ -379,6 +379,7 @@ public class ICal4jUtils {
 		return toJodaDateTimeOLD(last.getEnd(), tz);
 	}
 	
+	@Deprecated
 	public static org.joda.time.DateTime calculateRecurEnd(Recur recur, org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTimeZone eventTz) {
 		VEvent veDummy = new VEvent(ICal4jUtils.toICal4jDateTime(eventStart, eventTz), ICal4jUtils.toICal4jDateTime(eventEnd, eventTz), "");
 		veDummy.getProperties().add(new RRule(recur));
@@ -389,6 +390,19 @@ public class ICal4jUtils {
 		} else {
 			Period last = (Period)periods.toArray()[periods.size()-1];
 			return toJodaDateTimeOLD(last.getEnd(), eventTz);
+		}
+	}
+	
+	public static org.joda.time.DateTime calculateRecurEnd(Recur recur, org.joda.time.DateTime eventStart, org.joda.time.DateTimeZone eventTz) {
+		VEvent veDummy = new VEvent(ICal4jUtils.toICal4jDateTime(eventStart, eventTz), ICal4jUtils.toICal4jDateTime(eventStart, eventTz), "");
+		veDummy.getProperties().add(new RRule(recur));
+		
+		PeriodList periods = veDummy.calculateRecurrenceSet(ICal4jUtils.toICal4jPeriod(eventStart, ifiniteDate(), eventTz));
+		if ((periods == null) || periods.isEmpty()) {
+			return null;
+		} else {
+			Period last = (Period)periods.toArray()[periods.size()-1];
+			return fromICal4jDate(last.getStart(), eventTz);
 		}
 	}
 	
