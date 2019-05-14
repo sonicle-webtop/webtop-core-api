@@ -33,23 +33,12 @@
 package com.sonicle.webtop.core.model;
 
 import com.google.gson.annotations.SerializedName;
-import org.joda.time.DateTime;
 
 /**
  *
  * @author malbinola
  */
-public class MasterData {
-	private String domainId;
-	private String masterDataId;
-	private String parentMasterDataId;
-	private String externalId;
-	private String type;
-	private RevisionStatus revisionStatus;
-	private DateTime revisionTimestamp;
-	private Integer revisionSequence;
-	private LoskStatus lockStatus;
-	private String description;
+public class MasterData extends BaseMasterData {
 	private String address;
 	private String city;
 	private String postalCode;
@@ -60,86 +49,6 @@ public class MasterData {
 	private String mobile;
 	private String email;
 	private String notes;
-
-	public String getDomainId() {
-		return domainId;
-	}
-
-	public void setDomainId(String domainId) {
-		this.domainId = domainId;
-	}
-
-	public String getMasterDataId() {
-		return masterDataId;
-	}
-
-	public void setMasterDataId(String masterDataId) {
-		this.masterDataId = masterDataId;
-	}
-
-	public String getParentMasterDataId() {
-		return parentMasterDataId;
-	}
-
-	public void setParentMasterDataId(String parentMasterDataId) {
-		this.parentMasterDataId = parentMasterDataId;
-	}
-
-	public String getExternalId() {
-		return externalId;
-	}
-
-	public void setExternalId(String externalId) {
-		this.externalId = externalId;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public RevisionStatus getRevisionStatus() {
-		return revisionStatus;
-	}
-
-	public void setRevisionStatus(RevisionStatus revisionStatus) {
-		this.revisionStatus = revisionStatus;
-	}
-
-	public DateTime getRevisionTimestamp() {
-		return revisionTimestamp;
-	}
-
-	public void setRevisionTimestamp(DateTime revisionTimestamp) {
-		this.revisionTimestamp = revisionTimestamp;
-	}
-
-	public Integer getRevisionSequence() {
-		return revisionSequence;
-	}
-
-	public void setRevisionSequence(Integer revisionSequence) {
-		this.revisionSequence = revisionSequence;
-	}
-
-	public LoskStatus getLockStatus() {
-		return lockStatus;
-	}
-
-	public void setLockStatus(LoskStatus lockStatus) {
-		this.lockStatus = lockStatus;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
 
 	public String getAddress() {
 		return address;
@@ -221,19 +130,12 @@ public class MasterData {
 		this.notes = notes;
 	}
 	
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
 	public static enum Type {
 		@SerializedName("C") CUSTOMER,
 		@SerializedName("S") SUPPLIER;
-	}
-	
-	public static enum RevisionStatus {
-		@SerializedName("M") MODIFIED,
-		@SerializedName("D") DELETED;
-	}
-	
-	public static enum LoskStatus {
-		@SerializedName("L") LOCKED,
-		@SerializedName("A") ALERT,
-		@SerializedName("W") WARNING;
 	}
 }
