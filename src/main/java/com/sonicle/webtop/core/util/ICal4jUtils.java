@@ -32,12 +32,12 @@
  */
 package com.sonicle.webtop.core.util;
 
-import com.sonicle.commons.time.DateTimeUtils;
 import java.io.FileInputStream;
 import java.net.SocketException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
+import java.util.List;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateList;
@@ -53,12 +53,10 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.DateProperty;
 import net.fortuna.ical4j.model.property.DtStamp;
-import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.util.UidGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
 
 /**
  *
@@ -475,7 +473,7 @@ public class ICal4jUtils {
 	 */
 	public static boolean adjustRecurUntilDate(Recur recur, org.joda.time.LocalTime eventStartTime, org.joda.time.DateTimeZone eventTimezone) {
 		if (recurHasUntilDate(recur)) {
-			LocalDate untilDate = toJodaLocalDate(recur.getUntil(), eventTimezone);
+			org.joda.time.LocalDate untilDate = toJodaLocalDate(recur.getUntil(), eventTimezone);
 			setRecurUntilDate(recur, untilDate.toDateTime(eventStartTime, eventTimezone));
 			return true;
 		} else {
@@ -525,14 +523,73 @@ public class ICal4jUtils {
 	
 	/**
 	 * Computes date instances substained by the passed recurrence rule.
-	 * @param recur The recurrence rule.
-	 * @param start The starting date-time from which begin calculations
-	 * @param eventTimezone Event timezone.
+	 * @param recur Recurrence rule.
+	 * @param recurStart Recurrence's start date.
+	 * @param eventStart Event's start date.
+	 * @param eventEnd Event's end date.
+	 * @param eventTimezone Event's zone info.
 	 * @param rangeFrom Period lower bound.
 	 * @param rangeTo Period upper bound.
 	 * @param limit Max dates to return.
-	 * @return Dates included in range
+	 * @return Dates included within the range
 	 */
+	public static List<org.joda.time.LocalDate> calculateRecurrenceSet(Recur recur, org.joda.time.DateTime recurStart, org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTimeZone eventTimezone, org.joda.time.DateTime rangeFrom, org.joda.time.DateTime rangeTo, int limit) {
+		// Dates computation needs to be performed using VEvent otherwise recur
+		// does not take into account some aspects related to recurrence start
+		// and so wrong dates are returned (eg. WEEKLY with missing BYDAY)
+		
+		DateTime rstartDate = toIC4jDateTime(recurStart, eventTimezone, false);
+		VEvent veDummy = new VEvent(toIC4jDateTime(eventStart, eventTimezone, false), toIC4jDateTime(eventEnd, eventTimezone, false), "");
+		veDummy.getProperties().add(new RRule(recur));
+		
+		ArrayList<org.joda.time.LocalDate> dates = new ArrayList<>();
+		PeriodList list = veDummy.calculateRecurrenceSet(createPeriod(rangeFrom, rangeTo, eventTimezone));
+		Iterator<Period> it = list.iterator();
+		int count = 0;
+		while (it.hasNext()) {
+			Period period = it.next();
+			if (period.getStart().compareTo(rstartDate) >= 0) {
+				if (count > limit) break;
+				dates.add(toJodaLocalDate(period.getStart(), eventTimezone));
+				count++;
+			}
+		}
+		return dates;
+	}
+	
+	/**
+	 * Returns recurrence's end boundary.
+	 * @param recur Recurrence rule.
+	 * @param recurStart Recurrence's start date.
+	 * @param eventStart Event's start date.
+	 * @param eventEnd Event's end date.
+	 * @param eventTimezone Event's zone info.
+	 * @return The last date within recurrence
+	 */
+	public static org.joda.time.DateTime calculateRecurrenceEnd(Recur recur, org.joda.time.DateTime recurStart, org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTimeZone eventTimezone) {
+		// Dates computation needs to be performed using VEvent otherwise recur
+		// does not take into account some aspects related to recurrence start
+		// and so wrong dates are returned (eg. WEEKLY with missing BYDAY)
+		
+		VEvent veDummy = new VEvent(toIC4jDateTime(eventStart, eventTimezone, false), toIC4jDateTime(eventEnd, eventTimezone, false), "");
+		veDummy.getProperties().add(new RRule(recur));
+		
+		PeriodList list = veDummy.calculateRecurrenceSet(createPeriod(recurStart, ifiniteDate(eventTimezone), eventTimezone));
+		if (list.isEmpty()) {
+			return null;
+		} else {
+			//TODO: evaluate to get the last element in a smart way, this is O(n), Guava's Streams.findLast(stream) can do it in between O(log n) and O(n).
+			Period lastPeriod = null;
+			Iterator<Period> it = list.iterator();
+			while (it.hasNext()) lastPeriod = it.next();
+			return (lastPeriod == null) ? null : toJodaDateTime(lastPeriod.getStart(), eventTimezone);
+		}
+	}
+	
+	/**
+	 * @deprecated it can returns bad dates due to recurStart not observed
+	 */
+	/*
 	public static DateList calculateRecurrenceSet(Recur recur, org.joda.time.DateTime start, org.joda.time.DateTimeZone eventTimezone, org.joda.time.DateTime rangeFrom, org.joda.time.DateTime rangeTo, int limit) {
 		DateTime base = toICal4jDateTime(start, eventTimezone);
 		
@@ -546,7 +603,12 @@ public class ICal4jUtils {
 		}
 		return recur.getDates(base, periodStart, periodEnd, Value.DATE, limit);
 	}
+	*/
 	
+	/**
+	 * @deprecated it can returns bad dates due to recurStart not observed
+	 */
+	/*
 	public static org.joda.time.DateTime calculateRecurrenceEnd(Recur recur, org.joda.time.DateTime start, org.joda.time.DateTimeZone eventTimezone) {
 		DateTime base = toICal4jDateTime(start, eventTimezone);
 		DateTime periodStart = toIC4jDateTime(start, eventTimezone, false);
@@ -554,6 +616,7 @@ public class ICal4jUtils {
 		DateList dates = recur.getDates(base, periodStart, periodEnd, Value.DATE_TIME);
 		return dates.isEmpty() ? null : toJodaDateTime(dates.get(dates.size()-1), eventTimezone);
 	}
+	*/
 	
 	/**
 	 * @deprecated
