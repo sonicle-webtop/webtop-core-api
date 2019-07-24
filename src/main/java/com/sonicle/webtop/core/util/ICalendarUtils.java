@@ -44,6 +44,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Iterator;
+import java.util.Properties;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -85,40 +86,24 @@ import org.joda.time.DateTimeZone;
  */
 public class ICalendarUtils {
 	
-	public static void setUnfoldingRelaxed(boolean value) {
-		System.setProperty("ical4j.unfolding.relaxed", String.valueOf(value));
+	public static void setUnfoldingRelaxed(Properties properties, boolean value) {
+		properties.setProperty("ical4j.unfolding.relaxed", String.valueOf(value));
 	}
 	
-	public static void setParsingRelaxed(boolean value) {
-		System.setProperty("ical4j.parsing.relaxed", String.valueOf(value));
+	public static void setParsingRelaxed(Properties properties, boolean value) {
+		properties.setProperty("ical4j.parsing.relaxed", String.valueOf(value));
 	}
 	
-	public static void setValidationRelaxed(boolean value) {
-		System.setProperty("ical4j.validation.relaxed", String.valueOf(value));
+	public static void setValidationRelaxed(Properties properties, boolean value) {
+		properties.setProperty("ical4j.validation.relaxed", String.valueOf(value));
 	}
 	
-	public static void setCompatibilityOutlook(boolean value) {
-		System.setProperty("ical4j.compatibility.outlook", String.valueOf(value));
+	public static void setCompatibilityOutlook(Properties properties, boolean value) {
+		properties.setProperty("ical4j.compatibility.outlook", String.valueOf(value));
 	}
 	
-	public static void setCompatibilityNotes(boolean value) {
-		System.setProperty("ical4j.compatibility.notes", String.valueOf(value));
-	}
-	
-	public static void relaxParsingAndCompatibility() {
-		relaxParsing();
-		relaxCompatibility();
-	}
-	
-	public static void relaxParsing() {
-		setUnfoldingRelaxed(true);
-		setParsingRelaxed(true);
-		setValidationRelaxed(true);
-	}
-	
-	public static void relaxCompatibility() {
-		setCompatibilityOutlook(true);
-		setCompatibilityNotes(true);
+	public static void setCompatibilityNotes(Properties properties, boolean value) {
+		properties.setProperty("ical4j.compatibility.notes", String.valueOf(value));
 	}
 	
 	public static Calendar parse(String s) throws IOException, ParserException {
