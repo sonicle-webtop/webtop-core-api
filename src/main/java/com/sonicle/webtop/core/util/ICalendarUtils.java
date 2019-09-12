@@ -33,6 +33,7 @@
  */
 package com.sonicle.webtop.core.util;
 
+import com.sonicle.commons.LangUtils;
 import com.sonicle.commons.MailUtils;
 import com.sonicle.commons.time.DateTimeUtils;
 import com.sonicle.webtop.core.util.ical4j.model.property.PreferredLanguage;
@@ -71,13 +72,11 @@ import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.joda.time.DateTimeZone;
 
 /**
@@ -180,12 +179,9 @@ public class ICalendarUtils {
 	 */
 	public static String print(VEvent ve) {
 		if (ve == null) return null;
-		ToStringBuilder builder = new ToStringBuilder(ve);
-		Uid uid = ve.getUid();
-		builder.append("uid", (uid == null) ? null : uid.getValue());
-		Summary sum = ve.getSummary();
-		builder.append("summary", (sum == null) ? null : sum.getValue());
-		return builder.toString();
+		String uid = (ve.getUid() != null) ? ve.getUid().getValue() : null;
+		String summ = (ve.getSummary() != null) ? ve.getSummary().getValue() : null;
+		return LangUtils.joinStrings(", ", uid, summ);
 	}
 	
 	public static boolean isBusy(Transp transparency) {
