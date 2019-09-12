@@ -32,16 +32,13 @@
  */
 package com.sonicle.webtop.core.util;
 
+import com.sonicle.commons.LangUtils;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
-import ezvcard.property.FormattedName;
-import ezvcard.property.Uid;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  *
@@ -64,7 +61,7 @@ public class VCardUtils {
 	public static List<VCard> parse(String s, boolean first) throws IOException {
 		if (first) {
 			VCard vCard = Ezvcard.parse(s).first();
-			return (vCard != null) ? Arrays.asList(vCard) : new ArrayList<VCard>(0);
+			return (vCard != null) ? Arrays.asList(vCard) : new ArrayList<>(0);
 		} else {
 			return Ezvcard.parse(s).all();
 		}
@@ -77,11 +74,8 @@ public class VCardUtils {
 	 */
 	public static String print(VCard vc) {
 		if (vc == null) return null;
-		ToStringBuilder builder = new ToStringBuilder(vc);
-		Uid uid = vc.getUid();
-		builder.append("uid", (uid == null) ? null : uid.getValue());
-		FormattedName fn = vc.getFormattedName();
-		builder.append("fn", (fn == null) ? null : fn.getValue());
-		return builder.toString();
+		String uid = (vc.getUid() != null) ? vc.getUid().getValue() : null;
+		String fn = (vc.getFormattedName() != null) ? vc.getFormattedName().getValue() : null;
+		return LangUtils.joinStrings(", ", uid, fn);
 	}
 }
