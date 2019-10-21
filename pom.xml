@@ -6,11 +6,17 @@
 	<version>5.6.5</version>
     <packaging>jar</packaging>
 	
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
+	<parent>
+		<groupId>com.sonicle.webtop</groupId>
+		<artifactId>webtop-superpom-service-api</artifactId>
+		<version>2</version>
+	</parent>
+	
+	<properties>
+		<!-- WEBTOP: service configuration -->
+		<webtop.service.baseArtifact>webtop-core</webtop.service.baseArtifact>
+		<webtop.service.package>com.sonicle.webtop.core</webtop.service.package>
+	</properties>
 	
 	<dependencies>
 		<dependency>
@@ -41,7 +47,114 @@
 		<dependency>
 			<groupId>org.mnode.ical4j</groupId>
 			<artifactId>ical4j</artifactId>
-			<version>2.0.0</version>
+			<version>${ical4j.version}</version>
 		</dependency>
 	</dependencies>
+	
+	<profiles>
+		<profile>
+			<id>generate-db-classes</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>properties-maven-plugin</artifactId>
+						<version>${properties-maven-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>read-artifact-properties</id>
+								<phase>validate</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.jooq</groupId>
+						<artifactId>jooq-codegen-maven</artifactId>
+						<version>${jooq-codegen-maven.version}</version>
+						<executions>
+							<execution>
+								<id>generate-db-classes</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+								<configuration>
+									<jdbc>
+										<driver>${webtop.service.db.jdbc.driver}</driver>
+										<url>${webtop.service.db.jdbc.url}</url>
+										<user>${webtop.service.db.jdbc.user}</user>
+										<password>${webtop.service.db.jdbc.password}</password>
+									</jdbc>
+									<generator>
+										<database>
+											<name>org.jooq.util.postgres.PostgresDatabase</name>
+											<includes>.*</includes>
+											<excludes></excludes>
+											<schemata>
+												<schema>
+													<inputSchema>${webtop.service.db.schema}</inputSchema>
+												</schema>
+												<schema>
+													<inputSchema>config</inputSchema>
+												</schema>
+											</schemata>
+											<customTypes>
+												<customType>
+													<name>JodaLocalDate</name>
+													<type>org.joda.time.LocalDate</type>
+													<converter>com.sonicle.webtop.core.jooq.LocalDateConverter</converter>
+												</customType>
+												<customType>
+													<name>JodaDateTime</name>
+													<type>org.joda.time.DateTime</type>
+													<converter>com.sonicle.webtop.core.jooq.DateTimeConverter</converter>
+												</customType>
+											</customTypes>
+											<forcedTypes>
+												<forcedType>
+													<name>JodaLocalDate</name>
+													<expression>.*</expression>
+													<types>date.*</types>
+												</forcedType>
+												<forcedType>
+													<name>JodaDateTime</name>
+													<expression>.*</expression>
+													<types>timestamp.*</types>
+												</forcedType>
+											</forcedTypes>
+										</database>
+										<generate>
+											<pojos>true</pojos>
+											<immutablePojos>false</immutablePojos>
+										</generate>
+										<target>
+											<packageName>${webtop.service.package}.jooq</packageName>
+											<directory>src/gen/jooq</directory>
+										</target>
+									</generator>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>profile-development</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+		</profile>
+		
+		<profile>
+			<id>profile-production</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+		</profile>
+	</profiles>
 </project>
