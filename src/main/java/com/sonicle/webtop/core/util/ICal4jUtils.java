@@ -36,12 +36,14 @@ import java.io.FileInputStream;
 import java.net.SocketException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.PeriodList;
 import net.fortuna.ical4j.model.Property;
@@ -53,7 +55,10 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.DateProperty;
 import net.fortuna.ical4j.model.property.DtStamp;
+import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.Duration;
 import net.fortuna.ical4j.model.property.RRule;
+import net.fortuna.ical4j.util.Dates;
 import net.fortuna.ical4j.util.UidGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
@@ -523,38 +528,64 @@ public class ICal4jUtils {
 	
 	/**
 	 * Computes date instances substained by the passed recurrence rule.
-	 * @param recur Recurrence rule.
-	 * @param recurStart Recurrence's start date.
-	 * @param eventStart Event's start date.
-	 * @param eventEnd Event's end date.
-	 * @param eventTimezone Event's zone info.
-	 * @param rangeFrom Period lower bound.
-	 * @param rangeTo Period upper bound.
-	 * @param limit Max dates to return.
-	 * @return Dates included within the range
+	 * @param recur
+	 * @param recurStart
+	 * @param eventStart
+	 * @param eventEnd
+	 * @param eventTimezone
+	 * @param rangeFrom
+	 * @param rangeTo
+	 * @param limit
+	 * @return 
 	 */
 	public static List<org.joda.time.LocalDate> calculateRecurrenceSet(Recur recur, org.joda.time.DateTime recurStart, org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTimeZone eventTimezone, org.joda.time.DateTime rangeFrom, org.joda.time.DateTime rangeTo, int limit) {
-		// Dates computation needs to be performed using VEvent otherwise recur
-		// does not take into account some aspects related to recurrence start
-		// and so wrong dates are returned (eg. WEEKLY with missing BYDAY)
+		// Dates computation needs to pass through VEvent otherwise recur may 
+		// not take into account some aspects relates to recurrence start and 
+		// so wrong dates are returned (eg. WEEKLY with missing BYDAY).
 		
-		DateTime rstartDate = toIC4jDateTime(recurStart, eventTimezone, false);
-		VEvent veDummy = new VEvent(toIC4jDateTime(eventStart, eventTimezone, false), toIC4jDateTime(eventEnd, eventTimezone, false), "");
+		int max = (limit == -1) ? Integer.MAX_VALUE : limit;
+		//Date realRecurStart = getRecurStartDate(recur, toIC4jDateTime(recurStart, eventTimezone, false), toIC4jDateTime(eventStart, eventTimezone, false));
+		org.joda.time.LocalDate realRecurStart = calculateRecurrenceStart(recur, recurStart, eventStart, eventTimezone);
+		//DateTime rstartDate = toIC4jDateTime(recurStart, eventTimezone, false);
+		
+		//org.joda.time.DateTime peStart = recurStart.isAfter(eventStart) ? recurStart : eventStart;
+		org.joda.time.DateTime peStart = recurStart;
+		if (eventStart.isBefore(peStart)) peStart = eventStart;
+		if (rangeFrom != null && rangeFrom.isAfter(peStart)) peStart = rangeFrom;
+		org.joda.time.DateTime peEnd = ifiniteDate(eventTimezone);
+		if ((rangeTo != null) && rangeTo.isBefore(peEnd)) peEnd = rangeTo;
+		
+		org.joda.time.DateTime veStart = eventStart.withDate(recurStart.toLocalDate());
+		VEvent veDummy = new VEvent(toIC4jDateTime(veStart, eventTimezone, false), "DUMMY");
 		veDummy.getProperties().add(new RRule(recur));
 		
-		ArrayList<org.joda.time.LocalDate> dates = new ArrayList<>();
-		PeriodList list = veDummy.calculateRecurrenceSet(createPeriod(rangeFrom, rangeTo, eventTimezone));
+		PeriodList list = veDummy.calculateRecurrenceSet(createPeriod(peStart, peEnd, eventTimezone));
+		ArrayList<org.joda.time.LocalDate> dates = new ArrayList<>(list.size() < max ? list.size() : max);
 		Iterator<Period> it = list.iterator();
-		int count = 0;
 		while (it.hasNext()) {
 			Period period = it.next();
-			if (period.getStart().compareTo(rstartDate) >= 0) {
-				if (count > limit) break;
+			org.joda.time.LocalDate date = toJodaLocalDate(period.getStart(), eventTimezone);
+			if (date.compareTo(realRecurStart) >= 0) {
 				dates.add(toJodaLocalDate(period.getStart(), eventTimezone));
-				count++;
-			}
+				if (dates.size() == max) break;
+			}	
 		}
 		return dates;
+	}
+	
+	/**
+	 * Returns recurrence's start boundary.
+	 * @param recur
+	 * @param recurStart
+	 * @param eventStart
+	 * @param eventTimezone
+	 * @return 
+	 */
+	public static org.joda.time.LocalDate calculateRecurrenceStart(Recur recur, org.joda.time.DateTime recurStart, org.joda.time.DateTime eventStart, org.joda.time.DateTimeZone eventTimezone) {
+		//TODO: replace this properly using ical4j objects (getRecurStartDate)
+		org.joda.time.DateTime seed = eventStart.withDate(recurStart.toLocalDate());
+		org.joda.time.DateTime start = recurStart.minusDays(1);
+		return toJodaLocalDate(recur.getNextDate(toICal4jDateTime(seed, eventTimezone), toIC4jDateTime(start, eventTimezone, false)), eventTimezone);
 	}
 	
 	/**
@@ -567,13 +598,23 @@ public class ICal4jUtils {
 	 * @return The last date within recurrence
 	 */
 	public static org.joda.time.DateTime calculateRecurrenceEnd(Recur recur, org.joda.time.DateTime recurStart, org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTimeZone eventTimezone) {
-		// Dates computation needs to be performed using VEvent otherwise recur
-		// does not take into account some aspects related to recurrence start
-		// and so wrong dates are returned (eg. WEEKLY with missing BYDAY)
+		DateTime seed = toICal4jDateTime(eventStart, eventTimezone);
+		//DateTime periodStart = toIC4jDateTime(recurStart, eventTimezone, false);
+		DateTime periodEnd = toIC4jDateTime(ifiniteDate(eventTimezone), eventTimezone, false);
+		return toJodaDateTime(getRecurLastDate(recur, seed, periodEnd), eventTimezone);
 		
-		VEvent veDummy = new VEvent(toIC4jDateTime(eventStart, eventTimezone, false), toIC4jDateTime(eventEnd, eventTimezone, false), "");
+		// Alternative implementation using getDates directly:
+		//DateList dates = recur.getDates(seed, periodStart, periodEnd, Value.DATE_TIME);
+		//return dates.isEmpty() ? null : toJodaDateTime(dates.get(dates.size()-1), eventTimezone);
+		
+		// Alternative implementation using veDummy:
+		/*
+		int eventDays = org.joda.time.Days.daysBetween(eventStart.toLocalDate(), eventEnd.toLocalDate()).getDays();
+		org.joda.time.DateTime start = eventStart.withDate(recurStart.toLocalDate());
+		org.joda.time.DateTime end = eventEnd.withDate(recurStart.toLocalDate().plusDays(eventDays));
+		VEvent veDummy = new VEvent(toIC4jDateTime(start, eventTimezone, false), toIC4jDateTime(end, eventTimezone, false), "");
 		veDummy.getProperties().add(new RRule(recur));
-		
+
 		PeriodList list = veDummy.calculateRecurrenceSet(createPeriod(recurStart, ifiniteDate(eventTimezone), eventTimezone));
 		if (list.isEmpty()) {
 			return null;
@@ -584,7 +625,188 @@ public class ICal4jUtils {
 			while (it.hasNext()) lastPeriod = it.next();
 			return (lastPeriod == null) ? null : toJodaDateTime(lastPeriod.getStart(), eventTimezone);
 		}
+		*/
 	}
+	
+	/**
+	 * //TODO: clone calculateRecurrenceStart here using only ical4j objects
+	 * @param recur
+	 * @param recurStart
+	 * @param eventStart
+	 * @param maxRangeEnd
+	 * @return 
+	 */
+	/*
+	private static Date getRecurStartDate(final Recur recur, Date recurStart, Date eventStart) {
+		// Replace Dur with TemporalAmount: https://github.com/ical4j/ical4j/issues/273
+		
+		Calendar calRecurStart = Dates.getCalendarInstance(recurStart);
+		Calendar calEventStart = Dates.getCalendarInstance(eventStart);
+		calEventStart.set(calRecurStart.get(Calendar.YEAR), calRecurStart.get(Calendar.MONTH), calRecurStart.get(Calendar.DAY_OF_MONTH));
+		
+		Dur days1 = new Dur(-1, 0, 0, 0);
+		Date seed = new Date(calEventStart);
+		Date startDate = new DateTime(days1.getTime(recurStart));
+		return recur.getNextDate(seed, startDate);
+	}
+	*/
+	
+	/**
+	 * Returns the highest possible start-date.
+	 * Heavly inspired by: https://github.com/Bedework/bw-calendar-engine/blob/master/bw-calendar-engine-ical/src/main/java/org/bedework/icalendar/RecurUtil.java
+	 * @param recur
+	 * @param start
+	 * @param maxRangeEnd
+	 * @return 
+	 */
+	private static Date getRecurLastDate(final Recur recur, Date start, final Date maxRangeEnd) {
+		// Replace Dur with TemporalAmount: https://github.com/ical4j/ical4j/issues/273
+		Date seed = start;
+		Date until = recur.getUntil();
+		// If until date is set, take it as last date
+		if (until != null) return until;
+		// If count is invalid, we do not have a last date
+		int count = recur.getCount();
+		if (count < 1) return null;
+		
+		Dur days100 = new Dur(100, 0, 0, 0);
+		int i = 0;
+		while ((i < count) && (start.before(maxRangeEnd))) {
+			Date end = new DateTime(days100.getTime(start));
+			DateList dates = recur.getDates(seed, start, end, Value.DATE_TIME);
+			
+			int size = dates.size();
+			i += size;
+			if (size != 0) until = (Date)dates.get(size -1);
+			start = end;
+		}
+		return until;
+	}
+	
+	/**
+	 * Replicate calculations made in VEvent's method calculateRecurrenceSet
+	 * (https://github.com/ical4j/ical4j/blob/develop/src/main/java/net/fortuna/ical4j/model/Component.java)
+	 * in order to determine if initial date was added to the list. This is 
+	 * useful to remove it later.
+	 * For example using:
+	 * FREQ=MONTHLY;COUNT=3;INTERVAL=1;BYDAY=MO;BYSETPOS=-1
+	 * with DTSTART 11/09/2019
+	 * we should have: 30Sep, 28Oct and 25Nov
+	 * 
+	 * VEvent's method calculateRecurrenceSet may add initial instance by  
+	 * default, if intersect with the specified period. It seems that ical4j 
+	 * implemented this behaviour for begin compliant to rfc5545 telling that
+	 * DTSTART property should define the first instance and should be 
+	 * synchronized with recurrence rule.
+	 * https://sourceforge.net/p/ical4j/discussion/368291/thread/6a3c5ea6/?limit=25#f5f9
+	 * https://tools.ietf.org/search/rfc5545#section-3.8.5.3
+	 * 
+	 * WARNING: below implementation in Component.java is different in more recent
+	 * ical4j versions, so keep in mind to check the upstream code when updating library version!
+	 * 
+	 * @param ve Event object
+	 * @param period Period object used within calculateRecurrenceSet
+	 * @return 
+	 */
+	private static boolean shouldSkipFirstRecurrenceSetInstance(VEvent ve, final Period period) {
+		final DtStart start = (DtStart)ve.getProperty(Property.DTSTART);
+		DateProperty end = (DateProperty)ve.getProperty(Property.DTEND);
+		if (end == null) {
+			end = (DateProperty)ve.getProperty(Property.DUE);
+		}
+		Duration duration = (Duration)ve.getProperty(Property.DURATION);
+		
+		Dur rDuration;
+		if (end == null && duration == null) {
+			rDuration = new Dur(start.getDate(), start.getDate());
+		} else if (duration == null) {
+			rDuration = new Dur(start.getDate(), end.getDate());
+		} else {
+			rDuration = duration.getDuration();
+		}
+		
+		Period startPeriod;
+		if (end != null) {
+			startPeriod = new Period(new DateTime(start.getDate()), new DateTime(end.getDate()));
+		} else {
+			if (duration == null) duration = new Duration(rDuration);
+			startPeriod = new Period(new DateTime(start.getDate()), duration.getDuration());
+		}
+		
+		return period.intersects(startPeriod);
+	}
+	
+	/*
+	private Date getLatestRecurrenceDate(final List<RRule> rrules, final List<RDate> rdates) {
+		
+		if ((rrules == null) && (rdates == null)) {
+			// Not a recurring event
+			return null;
+		}
+		
+		if (rrules != null) {
+			Iterator rit = rrules.iterator();
+			while (rit.hasNext()) {
+				RRule rr = (RRule)rit.next();
+				Date nextUntil = getRecurLastDate(rr.getRecur(), start, maxRangeEnd);
+				if (nextUntil == null) {
+					// No end date, so it's infinite.
+					return null;
+				}
+				
+				if ((until == null) || (nextUntil.after(until))) {
+					until = nextUntil;
+				}
+			}
+			
+			// We have many rules but none with a finite end date
+			if (until == null) return null;
+		}
+		
+		if (rdates != null) {
+			Iterator rit = rdates.iterator();
+			while (rit.hasNext()) {
+				RDate rd = (RDate)rit.next();
+				
+				if (Value.PERIOD.equals(rd.getParameter(Parameter.VALUE))) {
+					PeriodList pl = rd.getPeriods();
+					Iterator it = pl.iterator();
+					while (it.hasNext()) {
+						Period p = (Period)it.next();
+						
+						// Not sure if a single date gives a null end
+						Date nextUntil = p.getEnd();
+						if (nextUntil == null) {
+							nextUntil = p.getStart();
+						}
+						
+						if ((until == null) || (nextUntil.after(until))) {
+							until = nextUntil;
+						}
+					}
+				} else {
+					DateList startDates = rd.getDates();
+					for (int i=0; i<startDates.size(); i++) {
+						Date startDate = (Date)startDates.get(i);
+						Date endDate = new Date(dur.getTime(startDate));
+						if ((until == null) || (endDate.after(until))) {
+							until = endDate;
+						}
+					}
+				}
+			}
+		}
+		
+		if (until instanceof DateTime) {
+			until = new DateTime(dur.getTime(until));
+			((DateTime)until).setUtc(true);
+		} else {
+			until = new Date(dur.getTime(until));
+		}
+		
+		return until;
+	}
+	*/
 	
 	/**
 	 * @deprecated it can returns bad dates due to recurStart not observed
