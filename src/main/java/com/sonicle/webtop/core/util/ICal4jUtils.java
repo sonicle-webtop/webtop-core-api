@@ -555,8 +555,15 @@ public class ICal4jUtils {
 		org.joda.time.DateTime peEnd = ifiniteDate(eventTimezone);
 		if ((rangeTo != null) && rangeTo.isBefore(peEnd)) peEnd = rangeTo;
 		
+		// We need to use recurStart date (at event startDate time) as start 
+		// because otherwise we may lose instances on the end if the recur start
+		// date does not match event start. We need also to set a duration 
+		// according to the real event length in days, this is useful to have 
+		// right instances in case of multi-day events that starts before 
+		// specified view range.
 		org.joda.time.DateTime veStart = eventStart.withDate(recurStart.toLocalDate());
-		VEvent veDummy = new VEvent(toIC4jDateTime(veStart, eventTimezone, false), "DUMMY");
+		int veDays = org.joda.time.Days.daysBetween(eventStart.toLocalDate(), eventEnd.toLocalDate()).getDays(); // Calendar days length
+		VEvent veDummy = new VEvent(toIC4jDateTime(veStart, eventTimezone, false), new Dur(veDays, 0, 0, 0), "DUMMY");
 		veDummy.getProperties().add(new RRule(recur));
 		
 		PeriodList list = veDummy.calculateRecurrenceSet(createPeriod(peStart, peEnd, eventTimezone));
