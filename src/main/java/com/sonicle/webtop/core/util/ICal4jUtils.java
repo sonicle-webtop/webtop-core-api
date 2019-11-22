@@ -547,6 +547,7 @@ public class ICal4jUtils {
 		//Date realRecurStart = getRecurStartDate(recur, toIC4jDateTime(recurStart, eventTimezone, false), toIC4jDateTime(eventStart, eventTimezone, false));
 		org.joda.time.LocalDate realRecurStart = calculateRecurrenceStart(recur, recurStart, eventStart, eventTimezone);
 		//DateTime rstartDate = toIC4jDateTime(recurStart, eventTimezone, false);
+		if (realRecurStart == null) return new ArrayList<>(0);
 		
 		//org.joda.time.DateTime peStart = recurStart.isAfter(eventStart) ? recurStart : eventStart;
 		org.joda.time.DateTime peStart = recurStart;
@@ -590,9 +591,9 @@ public class ICal4jUtils {
 	 */
 	public static org.joda.time.LocalDate calculateRecurrenceStart(Recur recur, org.joda.time.DateTime recurStart, org.joda.time.DateTime eventStart, org.joda.time.DateTimeZone eventTimezone) {
 		//TODO: replace this properly using ical4j objects (getRecurStartDate)
-		org.joda.time.DateTime seed = eventStart.withDate(recurStart.toLocalDate());
-		org.joda.time.DateTime start = recurStart.minusDays(1);
-		return toJodaLocalDate(recur.getNextDate(toICal4jDateTime(seed, eventTimezone), toIC4jDateTime(start, eventTimezone, false)), eventTimezone);
+		org.joda.time.DateTime seed = eventStart.withZone(eventTimezone).withDate(recurStart.toLocalDate());
+		org.joda.time.DateTime start = recurStart.withZone(eventTimezone).minusDays(1);
+		return toJodaLocalDate(recur.getNextDate(toIC4jDateTimeUTC(seed), toIC4jDateTimeUTC(start)), eventTimezone);
 	}
 	
 	/**
