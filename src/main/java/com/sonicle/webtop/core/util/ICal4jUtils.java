@@ -593,7 +593,8 @@ public class ICal4jUtils {
 		//TODO: replace this properly using ical4j objects (getRecurStartDate)
 		org.joda.time.DateTime seed = eventStart.withZone(eventTimezone).withDate(recurStart.toLocalDate());
 		org.joda.time.DateTime start = recurStart.withZone(eventTimezone).minusDays(1);
-		return toJodaLocalDate(recur.getNextDate(toIC4jDateTimeUTC(seed), toIC4jDateTimeUTC(start)), eventTimezone);
+		// Do not use toICal4jDateTimeUTC otherwise, due to zone translation, boundaries may be wrong for all-day events!
+		return toJodaLocalDate(recur.getNextDate(toICal4jDateTime(seed, eventTimezone), toIC4jDateTime(start, eventTimezone, false)), eventTimezone);
 	}
 	
 	/**
