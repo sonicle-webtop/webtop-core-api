@@ -22,6 +22,11 @@ public class Sequences {
 	public static final org.jooq.Sequence<java.lang.Long> SEQ_ACTIVITIES = new org.jooq.impl.SequenceImpl<java.lang.Long>("seq_activities", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
 	/**
+	 * The sequence <code>core.seq_audit_log</code>
+	 */
+	public static final org.jooq.Sequence<java.lang.Long> SEQ_AUDIT_LOG = new org.jooq.impl.SequenceImpl<java.lang.Long>("seq_audit_log", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+	/**
 	 * The sequence <code>core.seq_causals</code>
 	 */
 	public static final org.jooq.Sequence<java.lang.Long> SEQ_CAUSALS = new org.jooq.impl.SequenceImpl<java.lang.Long>("seq_causals", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

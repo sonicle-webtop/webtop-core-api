@@ -27,6 +27,11 @@ public class Tables {
 	public static final com.sonicle.webtop.core.jooq.core.tables.Activities ACTIVITIES = com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES;
 
 	/**
+	 * The table core.audit_log
+	 */
+	public static final com.sonicle.webtop.core.jooq.core.tables.AuditLog AUDIT_LOG = com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG;
+
+	/**
 	 * The table core.autosave
 	 */
 	public static final com.sonicle.webtop.core.jooq.core.tables.Autosave AUTOSAVE = com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE;
