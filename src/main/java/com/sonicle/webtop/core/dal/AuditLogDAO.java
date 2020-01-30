@@ -33,10 +33,10 @@
  */
 package com.sonicle.webtop.core.dal;
 
-import com.sonicle.webtop.core.bol.OSysLog;
-import static com.sonicle.webtop.core.jooq.core.Sequences.SEQ_SYSLOG;
-import static com.sonicle.webtop.core.jooq.core.Tables.SYSLOG;
-import com.sonicle.webtop.core.jooq.core.tables.records.SyslogRecord;
+import com.sonicle.webtop.core.bol.OAuditLog;
+import com.sonicle.webtop.core.jooq.core.Sequences;
+import static com.sonicle.webtop.core.jooq.core.Tables.AUDIT_LOG;
+import com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord;
 import java.sql.Connection;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -46,24 +46,24 @@ import org.jooq.DSLContext;
  *
  * @author malbinola
  */
-public class SysLogDAO extends BaseDAO {
-	private final static SysLogDAO INSTANCE = new SysLogDAO();
+public class AuditLogDAO extends BaseDAO {
+	private final static AuditLogDAO INSTANCE = new AuditLogDAO();
 
-	public static SysLogDAO getInstance() {
+	public static AuditLogDAO getInstance() {
 		return INSTANCE;
 	}
 
 	public Long getSequence(Connection con) throws DAOException {
 		DSLContext dsl = getDSL(con);
-		Long nextID = dsl.nextval(SEQ_SYSLOG);
+		Long nextID = dsl.nextval(Sequences.SEQ_AUDIT_LOG);
 		return nextID;
 	}
 	
-	public int insert(Connection con, OSysLog item) throws DAOException {
+	public int insert(Connection con, OAuditLog item) throws DAOException {
 		DSLContext dsl = getDSL(con);
-		SyslogRecord record = dsl.newRecord(SYSLOG, item);
+		AuditLogRecord record = dsl.newRecord(AUDIT_LOG, item);
 		return dsl
-			.insertInto(SYSLOG)
+			.insertInto(AUDIT_LOG)
 			.set(record)
 			.execute();
 	}
@@ -72,9 +72,9 @@ public class SysLogDAO extends BaseDAO {
 		DateTime boundaryDate = DateTime.now(DateTimeZone.UTC).withTimeAtStartOfDay().minusDays(days);
 		DSLContext dsl = getDSL(con);
 		return dsl
-			.delete(SYSLOG)
+			.delete(AUDIT_LOG)
 			.where(
-				SYSLOG.TIMESTAMP.lessThan(boundaryDate)
+				AUDIT_LOG.TIMESTAMP.lessThan(boundaryDate)
 			)
 			.execute();
 	}
@@ -82,9 +82,9 @@ public class SysLogDAO extends BaseDAO {
 	public int deleteByDomain(Connection con, String domainId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
-			.delete(SYSLOG)
+			.delete(AUDIT_LOG)
 			.where(
-				SYSLOG.DOMAIN_ID.equal(domainId)
+				AUDIT_LOG.DOMAIN_ID.equal(domainId)
 			)
 			.execute();
 	}

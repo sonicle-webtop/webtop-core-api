@@ -33,27 +33,16 @@
  */
 package com.sonicle.webtop.core.bol;
 
-import com.sonicle.webtop.core.jooq.core.tables.pojos.Syslog;
-import org.apache.commons.lang3.StringUtils;
+import com.sonicle.webtop.core.jooq.core.tables.pojos.AuditLog;
 
 /**
  *
  * @author malbinola
  */
-public class OSysLog extends Syslog {
-	
-	@Override
-	public void setSwName(String swName) {
-		super.setSwName(StringUtils.left(swName, 50));
-	}
-	
-	@Override
-	public void setUserAgent(String userAgent) {
-		super.setUserAgent(StringUtils.left(userAgent, 512));
-	}
+public class OAuditLog extends AuditLog {
 	
 	@Override
 	public void setData(String data) {
-		super.setData(StringUtils.left(data, 255));
+		super.setData(data);
 	}
 }

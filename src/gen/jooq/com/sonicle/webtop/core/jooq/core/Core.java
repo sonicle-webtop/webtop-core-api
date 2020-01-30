@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Core extends org.jooq.impl.SchemaImpl {
 
-	private static final long serialVersionUID = -1954944243;
+	private static final long serialVersionUID = -1828341434;
 
 	/**
 	 * The reference instance of <code>core</code>
@@ -40,6 +40,7 @@ public class Core extends org.jooq.impl.SchemaImpl {
 	private final java.util.List<org.jooq.Sequence<?>> getSequences0() {
 		return java.util.Arrays.<org.jooq.Sequence<?>>asList(
 			com.sonicle.webtop.core.jooq.core.Sequences.SEQ_ACTIVITIES,
+			com.sonicle.webtop.core.jooq.core.Sequences.SEQ_AUDIT_LOG,
 			com.sonicle.webtop.core.jooq.core.Sequences.SEQ_CAUSALS,
 			com.sonicle.webtop.core.jooq.core.Sequences.SEQ_IM_CHATS,
 			com.sonicle.webtop.core.jooq.core.Sequences.SEQ_IM_MESSAGES,
@@ -65,6 +66,7 @@ public class Core extends org.jooq.impl.SchemaImpl {
 		return java.util.Arrays.<org.jooq.Table<?>>asList(
 			com.sonicle.webtop.core.jooq.core.tables.____Customers.____CUSTOMERS,
 			com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES,
+			com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG,
 			com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE,
 			com.sonicle.webtop.core.jooq.core.tables.Causals.CAUSALS,
 			com.sonicle.webtop.core.jooq.core.tables.CustomersDeprecated.CUSTOMERS_DEPRECATED,
