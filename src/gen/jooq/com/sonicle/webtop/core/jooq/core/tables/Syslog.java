@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Syslog extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.SyslogRecord> {
 
-	private static final long serialVersionUID = 1835861074;
+	private static final long serialVersionUID = -287315186;
 
 	/**
 	 * The reference instance of <code>core.syslog</code>
@@ -121,7 +121,7 @@ public class Syslog extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq
 	 */
 	@Override
 	public org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.SyslogRecord> getPrimaryKey() {
-		return com.sonicle.webtop.core.jooq.core.Keys.SYSLOG_PKEY1;
+		return com.sonicle.webtop.core.jooq.core.Keys.SYSLOG_PKEY;
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class Syslog extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq
 	 */
 	@Override
 	public java.util.List<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.SyslogRecord>> getKeys() {
-		return java.util.Arrays.<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.SyslogRecord>>asList(com.sonicle.webtop.core.jooq.core.Keys.SYSLOG_PKEY1);
+		return java.util.Arrays.<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.SyslogRecord>>asList(com.sonicle.webtop.core.jooq.core.Keys.SYSLOG_PKEY);
 	}
 
 	/**

@@ -32,6 +32,11 @@ public class Sequences {
 	public static final org.jooq.Sequence<java.lang.Long> SEQ_CAUSALS = new org.jooq.impl.SequenceImpl<java.lang.Long>("seq_causals", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
 	/**
+	 * The sequence <code>core.seq_custom_fields</code>
+	 */
+	public static final org.jooq.Sequence<java.lang.Long> SEQ_CUSTOM_FIELDS = new org.jooq.impl.SequenceImpl<java.lang.Long>("seq_custom_fields", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+	/**
 	 * The sequence <code>core.seq_im_chats</code>
 	 */
 	public static final org.jooq.Sequence<java.lang.Long> SEQ_IM_CHATS = new org.jooq.impl.SequenceImpl<java.lang.Long>("seq_im_chats", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

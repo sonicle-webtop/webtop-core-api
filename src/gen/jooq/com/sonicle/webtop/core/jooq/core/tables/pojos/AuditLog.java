@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables.pojos;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AuditLog implements java.io.Serializable {
 
-	private static final long serialVersionUID = -1584582631;
+	private static final long serialVersionUID = -193442357;
 
 	private java.lang.Long         auditLogId;
 	private org.joda.time.DateTime timestamp;
@@ -26,6 +26,7 @@ public class AuditLog implements java.io.Serializable {
 	private java.lang.String       context;
 	private java.lang.String       action;
 	private java.lang.String       referenceId;
+	private java.lang.String       ipAddress;
 	private java.lang.String       sessionId;
 	private java.lang.String       data;
 
@@ -40,6 +41,7 @@ public class AuditLog implements java.io.Serializable {
 		java.lang.String       context,
 		java.lang.String       action,
 		java.lang.String       referenceId,
+		java.lang.String       ipAddress,
 		java.lang.String       sessionId,
 		java.lang.String       data
 	) {
@@ -51,6 +53,7 @@ public class AuditLog implements java.io.Serializable {
 		this.context = context;
 		this.action = action;
 		this.referenceId = referenceId;
+		this.ipAddress = ipAddress;
 		this.sessionId = sessionId;
 		this.data = data;
 	}
@@ -117,6 +120,14 @@ public class AuditLog implements java.io.Serializable {
 
 	public void setReferenceId(java.lang.String referenceId) {
 		this.referenceId = referenceId;
+	}
+
+	public java.lang.String getIpAddress() {
+		return this.ipAddress;
+	}
+
+	public void setIpAddress(java.lang.String ipAddress) {
+		this.ipAddress = ipAddress;
 	}
 
 	public java.lang.String getSessionId() {

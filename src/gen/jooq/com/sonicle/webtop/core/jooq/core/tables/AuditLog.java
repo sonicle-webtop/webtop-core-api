@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AuditLog extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord> {
 
-	private static final long serialVersionUID = -424368435;
+	private static final long serialVersionUID = 1728163404;
 
 	/**
 	 * The reference instance of <code>core.audit_log</code>
@@ -39,37 +39,42 @@ public class AuditLog extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jo
 	/**
 	 * The column <code>core.audit_log.timestamp</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, org.joda.time.DateTime> TIMESTAMP = createField("timestamp", org.jooq.impl.SQLDataType.TIMESTAMP, this, "", new com.sonicle.webtop.core.jooq.DateTimeConverter());
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, org.joda.time.DateTime> TIMESTAMP = createField("timestamp", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "", new com.sonicle.webtop.core.jooq.DateTimeConverter());
 
 	/**
 	 * The column <code>core.audit_log.domain_id</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> DOMAIN_ID = createField("domain_id", org.jooq.impl.SQLDataType.VARCHAR.length(20), this, "");
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> DOMAIN_ID = createField("domain_id", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "");
 
 	/**
 	 * The column <code>core.audit_log.user_id</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "");
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "");
 
 	/**
 	 * The column <code>core.audit_log.service_id</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> SERVICE_ID = createField("service_id", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "");
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> SERVICE_ID = createField("service_id", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "");
 
 	/**
 	 * The column <code>core.audit_log.context</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> CONTEXT = createField("context", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "");
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> CONTEXT = createField("context", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "");
 
 	/**
 	 * The column <code>core.audit_log.action</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> ACTION = createField("action", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "");
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> ACTION = createField("action", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "");
 
 	/**
 	 * The column <code>core.audit_log.reference_id</code>.
 	 */
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> REFERENCE_ID = createField("reference_id", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "");
+
+	/**
+	 * The column <code>core.audit_log.ip_address</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> IP_ADDRESS = createField("ip_address", org.jooq.impl.SQLDataType.VARCHAR.length(39), this, "");
 
 	/**
 	 * The column <code>core.audit_log.session_id</code>.
