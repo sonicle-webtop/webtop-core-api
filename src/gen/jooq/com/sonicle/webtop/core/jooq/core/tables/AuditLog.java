@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AuditLog extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord> {
 
-	private static final long serialVersionUID = 1728163404;
+	private static final long serialVersionUID = -325781971;
 
 	/**
 	 * The reference instance of <code>core.audit_log</code>
@@ -70,11 +70,6 @@ public class AuditLog extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jo
 	 * The column <code>core.audit_log.reference_id</code>.
 	 */
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> REFERENCE_ID = createField("reference_id", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "");
-
-	/**
-	 * The column <code>core.audit_log.ip_address</code>.
-	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> IP_ADDRESS = createField("ip_address", org.jooq.impl.SQLDataType.VARCHAR.length(39), this, "");
 
 	/**
 	 * The column <code>core.audit_log.session_id</code>.
