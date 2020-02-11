@@ -1,6 +1,5 @@
 /*
- * WebTop Services is a Web Application framework developed by Sonicle S.r.l.
- * Copyright (C) 2014 Sonicle S.r.l.
+ * Copyright (C) 2020 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -11,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
  * details.
  *
  * You should have received a copy of the GNU Affero General Public License
@@ -19,7 +18,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301 USA.
  *
- * You can contact Sonicle S.r.l. at email address sonicle@sonicle.com
+ * You can contact Sonicle S.r.l. at email address sonicle[at]sonicle[dot]com
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -29,46 +28,64 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2014 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2020 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.sdk;
+package com.sonicle.webtop.core.model;
 
-import com.sonicle.commons.LangUtils;
-import java.text.MessageFormat;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.helpers.MessageFormatter;
 
 /**
  *
  * @author malbinola
  */
-public class WTRuntimeException extends RuntimeException {
+public class Tag {
+	protected String tagId;
+	protected String domainId;
+	protected Boolean builtIn;
+	protected String name;
+	protected String color;
 	
-	public WTRuntimeException() {
-		super();
+	public String getTagId() {
+		return tagId;
+	}
+
+	public void setTagId(String tagId) {
+		this.tagId = tagId;
 	}
 	
-	public WTRuntimeException(String message) {
-		super(message);
+	public String getDomainId() {
+		return domainId;
+	}
+
+	public void setDomainId(String domainId) {
+		this.domainId = domainId;
 	}
 	
-	public WTRuntimeException(Throwable cause) {
-		super(cause);
+	public Boolean getBuiltIn() {
+		return builtIn;
+	}
+
+	public void setBuiltIn(Boolean builtIn) {
+		this.builtIn = builtIn;
 	}
 	
-	public WTRuntimeException(String message, Object... arguments) {
-		super(LangUtils.escapeSingleQuote(formatMessage(message, arguments)));
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 	
-	public WTRuntimeException(Throwable cause, String message, Object... arguments) {
-		super(LangUtils.escapeSingleQuote(formatMessage(message, arguments)), cause);
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
 	}
 	
-	private static String formatMessage(String message, Object... arguments) {
-		if (StringUtils.contains(message, "{0}")) {
-			return MessageFormat.format(LangUtils.escapeMessageFormat(message), arguments);
-		} else {
-			return MessageFormatter.arrayFormat(message, arguments).getMessage();
-		}
+	public static String getHexColor(String color) {
+		return (StringUtils.indexOf(color, "#") == 0) ? StringUtils.substring(color, 1) : color;
 	}
 }

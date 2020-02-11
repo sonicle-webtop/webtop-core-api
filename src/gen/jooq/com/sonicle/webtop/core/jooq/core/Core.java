@@ -90,6 +90,7 @@ public class Core extends org.jooq.impl.SchemaImpl {
 			com.sonicle.webtop.core.jooq.core.tables.SharesData.SHARES_DATA,
 			com.sonicle.webtop.core.jooq.core.tables.SnoozedReminders.SNOOZED_REMINDERS,
 			com.sonicle.webtop.core.jooq.core.tables.Syslog.SYSLOG,
+			com.sonicle.webtop.core.jooq.core.tables.Tags.TAGS,
 			com.sonicle.webtop.core.jooq.core.tables.UpgradeStatements.UPGRADE_STATEMENTS,
 			com.sonicle.webtop.core.jooq.core.tables.UserSettings.USER_SETTINGS,
 			com.sonicle.webtop.core.jooq.core.tables.Users.USERS,
