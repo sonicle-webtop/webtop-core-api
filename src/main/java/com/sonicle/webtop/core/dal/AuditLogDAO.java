@@ -33,15 +33,19 @@
  */
 package com.sonicle.webtop.core.dal;
 
+import com.sonicle.webtop.core.app.sdk.AuditReferenceDataEntry;
 import com.sonicle.webtop.core.bol.OAuditLog;
 import com.sonicle.webtop.core.jooq.core.Sequences;
 import static com.sonicle.webtop.core.jooq.core.Tables.AUDIT_LOG;
 import com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord;
 import java.sql.Connection;
-import java.util.List;
+import java.util.Collection;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jooq.Batch;
+import org.jooq.BatchBindStep;
 import org.jooq.DSLContext;
+import static org.jooq.impl.DSL.*;
 
 /**
  *
@@ -62,11 +66,42 @@ public class AuditLogDAO extends BaseDAO {
 	
 	public int insert(Connection con, OAuditLog item) throws DAOException {
 		DSLContext dsl = getDSL(con);
-		AuditLogRecord record = dsl.newRecord(AUDIT_LOG, item);
 		return dsl
 			.insertInto(AUDIT_LOG)
-			.set(record)
+			.set(AUDIT_LOG.TIMESTAMP, item.getTimestamp())
+			.set(AUDIT_LOG.DOMAIN_ID, item.getDomainId())
+			.set(AUDIT_LOG.USER_ID, item.getUserId())
+			.set(AUDIT_LOG.SERVICE_ID, item.getServiceId())
+			.set(AUDIT_LOG.CONTEXT, item.getContext())
+			.set(AUDIT_LOG.ACTION, item.getAction())
+			.set(AUDIT_LOG.REFERENCE_ID, item.getReferenceId())
+			.set(AUDIT_LOG.SESSION_ID, item.getSessionId())
+			.set(AUDIT_LOG.DATA, item.getData())
 			.execute();
+	}
+	
+	public int[] batchInsert(Connection con, OAuditLog baseItem, Collection<AuditReferenceDataEntry> entries) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		BatchBindStep batch = dsl.batch(
+			dsl.insertInto(AUDIT_LOG, 
+				AUDIT_LOG.TIMESTAMP, AUDIT_LOG.DOMAIN_ID, AUDIT_LOG.USER_ID, AUDIT_LOG.SERVICE_ID, 
+				AUDIT_LOG.CONTEXT, AUDIT_LOG.ACTION, AUDIT_LOG.REFERENCE_ID, AUDIT_LOG.SESSION_ID, AUDIT_LOG.DATA)
+				.values((DateTime)null, null, null, null, null, null, null, null, null)
+		);
+		for (AuditReferenceDataEntry entry : entries) {
+			batch.bind(
+				baseItem.getTimestamp(),
+				baseItem.getDomainId(),
+				baseItem.getUserId(),
+				baseItem.getServiceId(),
+				baseItem.getContext(),
+				baseItem.getAction(),
+				entry.getReference(),
+				baseItem.getSessionId(),
+				entry.getData()
+			);
+		}
+		return batch.execute();
 	}
 	
 	public int deleteByAge(Connection con, int days) throws DAOException {

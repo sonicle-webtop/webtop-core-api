@@ -147,6 +147,11 @@ public class Tables {
 	public static final com.sonicle.webtop.core.jooq.core.tables.Syslog SYSLOG = com.sonicle.webtop.core.jooq.core.tables.Syslog.SYSLOG;
 
 	/**
+	 * The table core.tags
+	 */
+	public static final com.sonicle.webtop.core.jooq.core.tables.Tags TAGS = com.sonicle.webtop.core.jooq.core.tables.Tags.TAGS;
+
+	/**
 	 * The table core.upgrade_statements
 	 */
 	public static final com.sonicle.webtop.core.jooq.core.tables.UpgradeStatements UPGRADE_STATEMENTS = com.sonicle.webtop.core.jooq.core.tables.UpgradeStatements.UPGRADE_STATEMENTS;
