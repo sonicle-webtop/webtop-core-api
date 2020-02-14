@@ -40,6 +40,7 @@ import static com.sonicle.webtop.core.jooq.core.Tables.AUDIT_LOG;
 import com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord;
 import java.sql.Connection;
 import java.util.Collection;
+import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jooq.Batch;
