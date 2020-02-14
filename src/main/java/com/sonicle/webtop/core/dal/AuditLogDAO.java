@@ -38,6 +38,7 @@ import com.sonicle.webtop.core.jooq.core.Sequences;
 import static com.sonicle.webtop.core.jooq.core.Tables.AUDIT_LOG;
 import com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord;
 import java.sql.Connection;
+import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jooq.DSLContext;
@@ -87,5 +88,23 @@ public class AuditLogDAO extends BaseDAO {
 				AUDIT_LOG.DOMAIN_ID.equal(domainId)
 			)
 			.execute();
+	}
+	
+	public List<OAuditLog> selectByReferenceId(Connection con, String domainId, String serviceId, String context, String action, String referenceId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select()
+			.from(AUDIT_LOG)
+			.where(
+				AUDIT_LOG.DOMAIN_ID.equal(domainId)
+				.and(AUDIT_LOG.SERVICE_ID.equal(serviceId))
+				.and(AUDIT_LOG.CONTEXT.equal(context))
+				.and(AUDIT_LOG.ACTION.equal(action))
+				.and(AUDIT_LOG.REFERENCE_ID.equal(referenceId))
+			)
+			.orderBy(
+				AUDIT_LOG.TIMESTAMP.asc()
+			)
+			.fetchInto(OAuditLog.class);
 	}
 }
