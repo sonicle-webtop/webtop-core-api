@@ -77,6 +77,11 @@ public class Tables {
 	public static final com.sonicle.webtop.core.jooq.core.tables.Languages LANGUAGES = com.sonicle.webtop.core.jooq.core.tables.Languages.LANGUAGES;
 
 	/**
+	 * The table core.licenses
+	 */
+	public static final com.sonicle.webtop.core.jooq.core.tables.Licenses LICENSES = com.sonicle.webtop.core.jooq.core.tables.Licenses.LICENSES;
+
+	/**
 	 * The table core.local_vault
 	 */
 	public static final com.sonicle.webtop.core.jooq.core.tables.LocalVault LOCAL_VAULT = com.sonicle.webtop.core.jooq.core.tables.LocalVault.LOCAL_VAULT;
