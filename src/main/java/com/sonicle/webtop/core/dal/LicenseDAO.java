@@ -37,6 +37,7 @@ import com.sonicle.webtop.core.bol.OLicense;
 import static com.sonicle.webtop.core.jooq.core.Tables.*;
 import com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord;
 import java.sql.Connection;
+import java.util.List;
 import org.jooq.DSLContext;
 
 /**
@@ -50,6 +51,17 @@ public class LicenseDAO extends BaseDAO {
 		return INSTANCE;
 	}
 
+	public List<OLicense> select(Connection con, String internetDomain) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select()
+			.from(LICENSES)
+			.where(
+					LICENSES.INTERNET_DOMAIN.equal(internetDomain)
+			)
+			.fetchInto(OLicense.class);
+	}
+	
 	public OLicense select(Connection con, String internetDomain, String productId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -93,4 +105,16 @@ public class LicenseDAO extends BaseDAO {
 			)
 			.execute();
 	}
+	
+	public int delete(Connection con, String internetDomain, String productId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(LICENSES)
+			.where(
+				LICENSES.INTERNET_DOMAIN.equal(internetDomain)
+				.and(LICENSES.PRODUCT_ID.equal(productId))
+			)
+			.execute();
+	}
+	
 }
