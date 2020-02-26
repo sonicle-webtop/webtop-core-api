@@ -32,11 +32,11 @@
  */
 package com.sonicle.webtop.core.dal;
 
+import com.sonicle.commons.IdentifierUtils;
 import com.sonicle.webtop.core.bol.OTag;
 import static com.sonicle.webtop.core.jooq.core.Tables.TAGS;
 import com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord;
 import java.sql.Connection;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,6 +50,10 @@ public class TagDAO extends BaseDAO {
 	private final static TagDAO INSTANCE = new TagDAO();
 	public static TagDAO getInstance() {
 		return INSTANCE;
+	}
+	
+	public String generateTagId() {
+		return IdentifierUtils.getTimeBasedShortID();
 	}
 	
 	public Set<String> selectIdsByDomain(Connection con, String domainId) throws DAOException {
@@ -116,14 +120,14 @@ public class TagDAO extends BaseDAO {
 			.fetchMap(TAGS.TAG_ID, OTag.class);
 	}
 	
-	public OTag selectByDomainId(Connection con, String domainId, String tagId) throws DAOException {
+	public OTag selectByDomain(Connection con, String domainId, String tagId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select()
 			.from(TAGS)
 			.where(
-				TAGS.DOMAIN_ID.equal(domainId)
-				.and(TAGS.TAG_ID.equal(tagId))
+				TAGS.TAG_ID.equal(tagId)
+				.and(TAGS.DOMAIN_ID.equal(domainId))
 			)
 			.fetchOneInto(OTag.class);
 	}

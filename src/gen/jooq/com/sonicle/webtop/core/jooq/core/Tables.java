@@ -42,6 +42,26 @@ public class Tables {
 	public static final com.sonicle.webtop.core.jooq.core.tables.Causals CAUSALS = com.sonicle.webtop.core.jooq.core.tables.Causals.CAUSALS;
 
 	/**
+	 * The table core.custom_fields
+	 */
+	public static final com.sonicle.webtop.core.jooq.core.tables.CustomFields CUSTOM_FIELDS = com.sonicle.webtop.core.jooq.core.tables.CustomFields.CUSTOM_FIELDS;
+
+	/**
+	 * The table core.custom_panels
+	 */
+	public static final com.sonicle.webtop.core.jooq.core.tables.CustomPanels CUSTOM_PANELS = com.sonicle.webtop.core.jooq.core.tables.CustomPanels.CUSTOM_PANELS;
+
+	/**
+	 * The table core.custom_panels_fields
+	 */
+	public static final com.sonicle.webtop.core.jooq.core.tables.CustomPanelsFields CUSTOM_PANELS_FIELDS = com.sonicle.webtop.core.jooq.core.tables.CustomPanelsFields.CUSTOM_PANELS_FIELDS;
+
+	/**
+	 * The table core.custom_panels_tags
+	 */
+	public static final com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags CUSTOM_PANELS_TAGS = com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags.CUSTOM_PANELS_TAGS;
+
+	/**
 	 * The table core.customers_deprecated
 	 */
 	public static final com.sonicle.webtop.core.jooq.core.tables.CustomersDeprecated CUSTOMERS_DEPRECATED = com.sonicle.webtop.core.jooq.core.tables.CustomersDeprecated.CUSTOMERS_DEPRECATED;
@@ -55,6 +75,11 @@ public class Tables {
 	 * The table core.domains
 	 */
 	public static final com.sonicle.webtop.core.jooq.core.tables.Domains DOMAINS = com.sonicle.webtop.core.jooq.core.tables.Domains.DOMAINS;
+
+	/**
+	 * The table core.domains_aliases
+	 */
+	public static final com.sonicle.webtop.core.jooq.core.tables.DomainsAliases DOMAINS_ALIASES = com.sonicle.webtop.core.jooq.core.tables.DomainsAliases.DOMAINS_ALIASES;
 
 	/**
 	 * The table core.file_types

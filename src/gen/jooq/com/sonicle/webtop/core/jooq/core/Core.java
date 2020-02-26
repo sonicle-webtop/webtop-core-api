@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Core extends org.jooq.impl.SchemaImpl {
 
-	private static final long serialVersionUID = 1482532470;
+	private static final long serialVersionUID = -2037861755;
 
 	/**
 	 * The reference instance of <code>core</code>
@@ -50,7 +50,6 @@ public class Core extends org.jooq.impl.SchemaImpl {
 			com.sonicle.webtop.core.jooq.core.Sequences.SEQ_SHARES,
 			com.sonicle.webtop.core.jooq.core.Sequences.SEQ_SNOOZED_REMINDERS,
 			com.sonicle.webtop.core.jooq.core.Sequences.SEQ_SYSLOG,
-			com.sonicle.webtop.core.jooq.core.Sequences.SEQ_TEST,
 			com.sonicle.webtop.core.jooq.core.Sequences.SEQ_UPGRADE_STATEMENTS,
 			com.sonicle.webtop.core.jooq.core.Sequences.SEQ_USERS_ASSOCIATIONS);
 	}
@@ -69,9 +68,14 @@ public class Core extends org.jooq.impl.SchemaImpl {
 			com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG,
 			com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE,
 			com.sonicle.webtop.core.jooq.core.tables.Causals.CAUSALS,
+			com.sonicle.webtop.core.jooq.core.tables.CustomFields.CUSTOM_FIELDS,
+			com.sonicle.webtop.core.jooq.core.tables.CustomPanels.CUSTOM_PANELS,
+			com.sonicle.webtop.core.jooq.core.tables.CustomPanelsFields.CUSTOM_PANELS_FIELDS,
+			com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags.CUSTOM_PANELS_TAGS,
 			com.sonicle.webtop.core.jooq.core.tables.CustomersDeprecated.CUSTOMERS_DEPRECATED,
 			com.sonicle.webtop.core.jooq.core.tables.DomainSettings.DOMAIN_SETTINGS,
 			com.sonicle.webtop.core.jooq.core.tables.Domains.DOMAINS,
+			com.sonicle.webtop.core.jooq.core.tables.DomainsAliases.DOMAINS_ALIASES,
 			com.sonicle.webtop.core.jooq.core.tables.FileTypes.FILE_TYPES,
 			com.sonicle.webtop.core.jooq.core.tables.ImChats.IM_CHATS,
 			com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES,
