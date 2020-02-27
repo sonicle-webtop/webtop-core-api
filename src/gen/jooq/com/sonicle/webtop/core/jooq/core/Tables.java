@@ -77,11 +77,6 @@ public class Tables {
 	public static final com.sonicle.webtop.core.jooq.core.tables.Domains DOMAINS = com.sonicle.webtop.core.jooq.core.tables.Domains.DOMAINS;
 
 	/**
-	 * The table core.domains_aliases
-	 */
-	public static final com.sonicle.webtop.core.jooq.core.tables.DomainsAliases DOMAINS_ALIASES = com.sonicle.webtop.core.jooq.core.tables.DomainsAliases.DOMAINS_ALIASES;
-
-	/**
 	 * The table core.file_types
 	 */
 	public static final com.sonicle.webtop.core.jooq.core.tables.FileTypes FILE_TYPES = com.sonicle.webtop.core.jooq.core.tables.FileTypes.FILE_TYPES;

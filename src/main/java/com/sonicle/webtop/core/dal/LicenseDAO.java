@@ -57,19 +57,20 @@ public class LicenseDAO extends BaseDAO {
 			.select()
 			.from(LICENSES)
 			.where(
-					LICENSES.INTERNET_DOMAIN.equal(internetDomain)
+				LICENSES.INTERNET_DOMAIN.equal(internetDomain)
 			)
 			.fetchInto(OLicense.class);
 	}
 	
-	public OLicense select(Connection con, String internetDomain, String productId) throws DAOException {
+	public OLicense select(Connection con, String serviceId, String productId, String internetDomain) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select()
 			.from(LICENSES)
 			.where(
-					LICENSES.INTERNET_DOMAIN.equal(internetDomain)
-					.and(LICENSES.PRODUCT_ID.equal(productId))
+				LICENSES.SERVICE_ID.equal(serviceId)
+				.and(LICENSES.PRODUCT_ID.equal(productId))
+				.and(LICENSES.INTERNET_DOMAIN.equal(internetDomain))
 			)
 			.fetchOneInto(OLicense.class);
 	}
@@ -89,8 +90,9 @@ public class LicenseDAO extends BaseDAO {
 			.update(LICENSES)
 			.set(LICENSES.LICENSE, item.getLicense())
 			.where(
-				LICENSES.INTERNET_DOMAIN.equal(item.getInternetDomain())
+				LICENSES.SERVICE_ID.equal(item.getServiceId())
 				.and(LICENSES.PRODUCT_ID.equal(item.getProductId()))
+				.and(LICENSES.INTERNET_DOMAIN.equal(item.getInternetDomain()))
 			)
 			.execute();
 	}
@@ -100,19 +102,21 @@ public class LicenseDAO extends BaseDAO {
 		return dsl
 			.delete(LICENSES)
 			.where(
-				LICENSES.INTERNET_DOMAIN.equal(item.getInternetDomain())
+				LICENSES.SERVICE_ID.equal(item.getServiceId())
 				.and(LICENSES.PRODUCT_ID.equal(item.getProductId()))
+				.and(LICENSES.INTERNET_DOMAIN.equal(item.getInternetDomain()))
 			)
 			.execute();
 	}
 	
-	public int delete(Connection con, String internetDomain, String productId) throws DAOException {
+	public int delete(Connection con, String serviceId, String productId, String internetDomain) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(LICENSES)
 			.where(
-				LICENSES.INTERNET_DOMAIN.equal(internetDomain)
+				LICENSES.SERVICE_ID.equal(serviceId)
 				.and(LICENSES.PRODUCT_ID.equal(productId))
+				.and(LICENSES.INTERNET_DOMAIN.equal(internetDomain))
 			)
 			.execute();
 	}

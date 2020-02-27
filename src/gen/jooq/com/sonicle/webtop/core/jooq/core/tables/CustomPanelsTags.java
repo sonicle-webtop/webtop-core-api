@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CustomPanelsTags extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.CustomPanelsTagsRecord> {
 
-	private static final long serialVersionUID = 994083747;
+	private static final long serialVersionUID = 1219381686;
 
 	/**
 	 * The reference instance of <code>core.custom_panels_tags</code>
@@ -61,6 +61,30 @@ public class CustomPanelsTags extends org.jooq.impl.TableImpl<com.sonicle.webtop
 
 	private CustomPanelsTags(java.lang.String alias, org.jooq.Table<com.sonicle.webtop.core.jooq.core.tables.records.CustomPanelsTagsRecord> aliased, org.jooq.Field<?>[] parameters) {
 		super(alias, com.sonicle.webtop.core.jooq.core.Core.CORE, aliased, parameters, "");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.CustomPanelsTagsRecord> getPrimaryKey() {
+		return com.sonicle.webtop.core.jooq.core.Keys.CUSTOM_PANELS_TAGS_PKEY;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public java.util.List<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.CustomPanelsTagsRecord>> getKeys() {
+		return java.util.Arrays.<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.CustomPanelsTagsRecord>>asList(com.sonicle.webtop.core.jooq.core.Keys.CUSTOM_PANELS_TAGS_PKEY);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public java.util.List<org.jooq.ForeignKey<com.sonicle.webtop.core.jooq.core.tables.records.CustomPanelsTagsRecord, ?>> getReferences() {
+		return java.util.Arrays.<org.jooq.ForeignKey<com.sonicle.webtop.core.jooq.core.tables.records.CustomPanelsTagsRecord, ?>>asList(com.sonicle.webtop.core.jooq.core.Keys.CUSTOM_PANELS_TAGS__CUSTOM_PANELS_TAGS_CUSTOM_PANEL_ID_FKEY, com.sonicle.webtop.core.jooq.core.Keys.CUSTOM_PANELS_TAGS__CUSTOM_PANELS_TAGS_TAG_ID_FKEY);
 	}
 
 	/**
