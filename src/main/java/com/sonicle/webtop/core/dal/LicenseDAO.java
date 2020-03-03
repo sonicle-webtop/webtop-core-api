@@ -46,23 +46,22 @@ import org.jooq.DSLContext;
  */
 public class LicenseDAO extends BaseDAO {
 	private final static LicenseDAO INSTANCE = new LicenseDAO();
-
 	public static LicenseDAO getInstance() {
 		return INSTANCE;
 	}
-
-	public List<OLicense> select(Connection con, String internetDomain) throws DAOException {
+	
+	public List<OLicense> selectByInternetName(Connection con, String internetName) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select()
 			.from(LICENSES)
 			.where(
-				LICENSES.INTERNET_DOMAIN.equal(internetDomain)
+				LICENSES.INTERNET_DOMAIN.equal(internetName)
 			)
 			.fetchInto(OLicense.class);
 	}
 	
-	public OLicense select(Connection con, String serviceId, String productId, String internetDomain) throws DAOException {
+	public OLicense select(Connection con, String serviceId, String productId, String internetName) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select()
@@ -70,7 +69,7 @@ public class LicenseDAO extends BaseDAO {
 			.where(
 				LICENSES.SERVICE_ID.equal(serviceId)
 				.and(LICENSES.PRODUCT_ID.equal(productId))
-				.and(LICENSES.INTERNET_DOMAIN.equal(internetDomain))
+				.and(LICENSES.INTERNET_DOMAIN.equal(internetName))
 			)
 			.fetchOneInto(OLicense.class);
 	}
@@ -109,16 +108,15 @@ public class LicenseDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int delete(Connection con, String serviceId, String productId, String internetDomain) throws DAOException {
+	public int delete(Connection con, String serviceId, String productId, String internetName) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(LICENSES)
 			.where(
 				LICENSES.SERVICE_ID.equal(serviceId)
 				.and(LICENSES.PRODUCT_ID.equal(productId))
-				.and(LICENSES.INTERNET_DOMAIN.equal(internetDomain))
+				.and(LICENSES.INTERNET_DOMAIN.equal(internetName))
 			)
 			.execute();
 	}
-	
 }

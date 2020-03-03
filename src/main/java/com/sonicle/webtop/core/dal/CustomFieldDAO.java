@@ -35,13 +35,20 @@ package com.sonicle.webtop.core.dal;
 import com.sonicle.commons.EnumUtils;
 import com.sonicle.commons.IdentifierUtils;
 import com.sonicle.webtop.core.bol.OCustomField;
+import com.sonicle.webtop.core.bol.VCustomField;
 import static com.sonicle.webtop.core.jooq.core.Tables.CUSTOM_FIELDS;
+import static com.sonicle.webtop.core.jooq.core.Tables.CUSTOM_PANELS_FIELDS;
 import com.sonicle.webtop.core.jooq.core.tables.records.CustomFieldsRecord;
 import com.sonicle.webtop.core.model.CustomField;
 import java.sql.Connection;
 import java.util.Map;
 import org.joda.time.DateTime;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.Param;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
 
 /**
  *
@@ -57,7 +64,48 @@ public class CustomFieldDAO extends BaseDAO {
 		return IdentifierUtils.getTimeBasedShortID();
 	}
 	
-	public Map<String, OCustomField> selectOnlineByDomainService(Connection con, String domainId, String serviceId) throws DAOException {
+	public Map<String, VCustomField> viewOnlineByDomainService(Connection con, String domainId, String serviceId, int limit) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		
+		Table<?> cpfinner = DSL
+			.selectDistinct(
+				CUSTOM_PANELS_FIELDS.CUSTOM_PANEL_ID
+			)
+			.from(CUSTOM_PANELS_FIELDS)
+			.where(
+				CUSTOM_PANELS_FIELDS.CUSTOM_FIELD_ID.equal(CUSTOM_FIELDS.CUSTOM_FIELD_ID)
+			)
+			.asTable("cpfinner");
+		
+		Field<String> customPanelIds = DSL
+			.select(DSL.groupConcat(cpfinner.field("custom_panel_id"), "|"))
+			.from(cpfinner)
+			.asField("custom_panel_ids");
+		
+		return dsl
+			.select(
+				CUSTOM_FIELDS.fields()
+			)
+			.select(
+				customPanelIds
+			)
+			.from(CUSTOM_FIELDS)
+			.where(
+				CUSTOM_FIELDS.DOMAIN_ID.equal(domainId)
+				.and(CUSTOM_FIELDS.SERVICE_ID.equal(serviceId))
+				.and(
+					CUSTOM_FIELDS.REVISION_STATUS.equal(EnumUtils.toSerializedName(CustomField.RevisionStatus.NEW))
+					.or(CUSTOM_FIELDS.REVISION_STATUS.equal(EnumUtils.toSerializedName(CustomField.RevisionStatus.MODIFIED)))
+				)
+			)
+			.orderBy(
+				CUSTOM_FIELDS.NAME.asc()
+			)
+			.limit(limit == -1 ? (Param)null : DSL.inline(limit, Integer.class))
+			.fetchMap(CUSTOM_FIELDS.CUSTOM_FIELD_ID, VCustomField.class);
+	}
+	
+	public Map<String, OCustomField> selectOnlineByDomainService(Connection con, String domainId, String serviceId, int limit) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select()
@@ -73,6 +121,7 @@ public class CustomFieldDAO extends BaseDAO {
 			.orderBy(
 				CUSTOM_FIELDS.NAME.asc()
 			)
+			.limit(limit == -1 ? (Param)null : DSL.inline(limit, Integer.class))
 			.fetchMap(CUSTOM_FIELDS.CUSTOM_FIELD_ID, OCustomField.class);
 	}
 	

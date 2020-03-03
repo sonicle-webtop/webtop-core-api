@@ -45,6 +45,8 @@ import java.util.Map;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.Param;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 
 /**
@@ -79,22 +81,32 @@ public class CustomPanelDAO extends BaseDAO {
 	}
 	*/
 	
-	public Map<String, VCustomPanel> viewUsedByDomainServiceTags(Connection con, String domainId, String serviceId, Collection<String> usedByTagIds) throws DAOException {
+	public Map<String, VCustomPanel> viewUsedByDomainServiceTags(Connection con, String domainId, String serviceId, Collection<String> usedByTagIds, int fieldsLimit) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		
-		Field<String> customFieldIds = DSL
-			.select(DSL.groupConcat(CUSTOM_PANELS_FIELDS.CUSTOM_FIELD_ID, "|"))
+		Table<?> cpfinner = DSL
+			.selectDistinct(
+				CUSTOM_PANELS_FIELDS.CUSTOM_FIELD_ID
+			)
 			.from(CUSTOM_PANELS_FIELDS)
 			.where(
 				CUSTOM_PANELS_FIELDS.CUSTOM_PANEL_ID.equal(CUSTOM_PANELS.CUSTOM_PANEL_ID)
-			).asField("custom_field_ids");
+			)
+			.limit(fieldsLimit == -1 ? (Param)null : DSL.inline(fieldsLimit, Integer.class))
+			.asTable("cpfinner");
+		
+		Field<String> customFieldIds = DSL
+			.select(DSL.groupConcat(cpfinner.field("custom_field_id"), "|"))
+			.from(cpfinner)
+			.asField("custom_field_ids");
 		
 		Field<String> tagIds = DSL
 			.select(DSL.groupConcat(CUSTOM_PANELS_TAGS.TAG_ID, "|"))
 			.from(CUSTOM_PANELS_TAGS)
 			.where(
 				CUSTOM_PANELS_TAGS.CUSTOM_PANEL_ID.equal(CUSTOM_PANELS.CUSTOM_PANEL_ID)
-			).asField("tag_ids");
+			)
+			.asField("tag_ids");
 		
 		Condition cndtTags = DSL.notExists(
 			DSL.selectOne()
