@@ -30,7 +30,7 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2020 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.util;
+package com.sonicle.webtop.core.app.util;
 
 import com.sonicle.webtop.core.app.sdk.WTIntegrityException;
 import com.sonicle.webtop.core.dal.DAOException;
@@ -44,15 +44,15 @@ import java.sql.SQLException;
  */
 public class ExceptionUtils {
 	
-	public static WTException wrapException(Exception ex) {
-		if (ex instanceof WTException) {
-			return (WTException)ex;
-		} else if (ex instanceof DAOIntegrityViolationException) {
-			return new WTIntegrityException(ex);
-		} else if ((ex instanceof SQLException) || (ex instanceof DAOException)) {
-			return new WTException(ex, "DB error");
+	public static WTException wrapThrowable(Throwable t) {
+		if (t instanceof WTException) {
+			return (WTException)t;
+		} else if (t instanceof DAOIntegrityViolationException) {
+			return new WTIntegrityException(t);
+		} else if ((t instanceof SQLException) || (t instanceof DAOException)) {
+			return new WTException(t, "DB error");
 		} else {
-			return new WTException(ex);
+			return new WTException(t);
 		}
 	}
 }
