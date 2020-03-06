@@ -33,12 +33,16 @@
  */
 package com.sonicle.webtop.core.dal;
 
+import com.sonicle.commons.time.DateTimeUtils;
 import com.sonicle.webtop.core.bol.OMessageQueue;
 import static com.sonicle.webtop.core.jooq.core.Sequences.SEQ_MESSAGES_QUEUE;
 import static com.sonicle.webtop.core.jooq.core.Tables.*;
 import com.sonicle.webtop.core.jooq.core.tables.records.MessagesQueueRecord;
 import java.sql.Connection;
+import java.util.Collection;
 import java.util.List;
+import org.joda.time.DateTime;
+import org.jooq.BatchBindStep;
 import org.jooq.DSLContext;
 
 /**
@@ -68,13 +72,29 @@ public class MessageQueueDAO extends BaseDAO {
 			.fetchInto(OMessageQueue.class);
 	}
 	
-	public int insert(Connection con, OMessageQueue item) throws DAOException {
+	public int[] batchInsert(Connection con, Collection<OMessageQueue> messages) throws DAOException {
 		DSLContext dsl = getDSL(con);
-		MessagesQueueRecord record = dsl.newRecord(MESSAGES_QUEUE, item);
-		return dsl
-			.insertInto(MESSAGES_QUEUE)
-			.set(record)
-			.execute();
+		DateTime queuedOn = DateTimeUtils.now();
+		BatchBindStep batch = dsl.batch(
+			dsl.insertInto(MESSAGES_QUEUE,
+				MESSAGES_QUEUE.DOMAIN_ID,
+				MESSAGES_QUEUE.USER_ID,
+				MESSAGES_QUEUE.MESSAGE_TYPE,
+				MESSAGES_QUEUE.MESSAGE_RAW,
+				MESSAGES_QUEUE.QUEUED_ON
+			)
+			.values((String)null, null, null, null, null)
+		);
+		for (OMessageQueue message : messages) {
+			batch.bind(
+				message.getDomainId(),
+				message.getUserId(),
+				message.getMessageType(),
+				message.getMessageRaw(),
+				queuedOn
+			);
+		}
+		return batch.execute();
 	}
 	
 	public int updatePidIfNullByDomainUser(Connection con, String domainId, String userId, String pid) throws DAOException {
