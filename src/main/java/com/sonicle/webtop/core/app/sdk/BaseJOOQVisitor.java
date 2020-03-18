@@ -91,7 +91,7 @@ public abstract class BaseJOOQVisitor extends AbstractVoidContextNodeVisitor<Con
 	@Override
 	protected Condition visit(OrNode node) {
 		//Condition condition = DSL.and(conditions); in jOOQ 3.6+
-		Condition result = DSL.trueCondition();
+		Condition result = DSL.falseCondition();
 		List<Condition> conditions = node.getChildren().stream()
 				.map(this::visitAny).collect(Collectors.toList());
 		for (Condition condition : conditions) {
