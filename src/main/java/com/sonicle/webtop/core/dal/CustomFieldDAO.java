@@ -64,8 +64,50 @@ public class CustomFieldDAO extends BaseDAO {
 		return IdentifierUtils.getTimeBasedShortID();
 	}
 	
-	public Map<String, VCustomField> viewOnlineByDomainService(Connection con, String domainId, String serviceId, int limit) throws DAOException {
+	public Map<String, String> viewOnlineTypeByDomainService(Connection con, String domainId, String serviceId) throws DAOException {
+		return viewOnlineTypeByDomainServiceSearchable(con, domainId, serviceId, null);
+	}
+	
+	public Map<String, String> viewOnlineTypeByDomainServiceSearchable(Connection con, String domainId, String serviceId, Boolean searchable) throws DAOException {
 		DSLContext dsl = getDSL(con);
+		
+		Condition searchableCndt = DSL.trueCondition();
+		if (searchable != null) {
+			searchableCndt = (searchable == true) ? CUSTOM_FIELDS.SEARCHABLE.isTrue() : CUSTOM_FIELDS.SEARCHABLE.isFalse();
+		}
+		
+		return dsl
+			.select(
+				CUSTOM_FIELDS.CUSTOM_FIELD_ID,
+				CUSTOM_FIELDS.TYPE
+			)
+			.from(CUSTOM_FIELDS)
+			.where(
+				CUSTOM_FIELDS.DOMAIN_ID.equal(domainId)
+				.and(CUSTOM_FIELDS.SERVICE_ID.equal(serviceId))
+				.and(
+					CUSTOM_FIELDS.REVISION_STATUS.equal(EnumUtils.toSerializedName(CustomField.RevisionStatus.NEW))
+					.or(CUSTOM_FIELDS.REVISION_STATUS.equal(EnumUtils.toSerializedName(CustomField.RevisionStatus.MODIFIED)))
+				)
+				.and(searchableCndt)
+			)
+			.orderBy(
+				CUSTOM_FIELDS.NAME.asc()
+			)
+			.fetchMap(CUSTOM_FIELDS.CUSTOM_FIELD_ID, CUSTOM_FIELDS.TYPE);
+	}
+	
+	public Map<String, VCustomField> viewOnlineByDomainService(Connection con, String domainId, String serviceId, int limit) throws DAOException {
+		return viewOnlineByDomainServiceSearchable(con, domainId, serviceId, null, limit);
+	}
+	
+	public Map<String, VCustomField> viewOnlineByDomainServiceSearchable(Connection con, String domainId, String serviceId, Boolean searchable, int limit) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		
+		Condition searchableCndt = DSL.trueCondition();
+		if (searchable != null) {
+			searchableCndt = (searchable == true) ? CUSTOM_FIELDS.SEARCHABLE.isTrue() : CUSTOM_FIELDS.SEARCHABLE.isFalse();
+		}
 		
 		Table<?> cpfinner = DSL
 			.selectDistinct(
@@ -97,6 +139,7 @@ public class CustomFieldDAO extends BaseDAO {
 					CUSTOM_FIELDS.REVISION_STATUS.equal(EnumUtils.toSerializedName(CustomField.RevisionStatus.NEW))
 					.or(CUSTOM_FIELDS.REVISION_STATUS.equal(EnumUtils.toSerializedName(CustomField.RevisionStatus.MODIFIED)))
 				)
+				.and(searchableCndt)
 			)
 			.orderBy(
 				CUSTOM_FIELDS.NAME.asc()
@@ -106,7 +149,16 @@ public class CustomFieldDAO extends BaseDAO {
 	}
 	
 	public Map<String, OCustomField> selectOnlineByDomainService(Connection con, String domainId, String serviceId, int limit) throws DAOException {
+		return selectOnlineByDomainServiceSearchable(con, domainId, serviceId, null, limit);
+	}
+	
+	public Map<String, OCustomField> selectOnlineByDomainServiceSearchable(Connection con, String domainId, String serviceId, Boolean searchable, int limit) throws DAOException {
 		DSLContext dsl = getDSL(con);
+		Condition searchableCndt = DSL.trueCondition();
+		if (searchable != null) {
+			searchableCndt = (searchable == true) ? CUSTOM_FIELDS.SEARCHABLE.isTrue() : CUSTOM_FIELDS.SEARCHABLE.isFalse();
+		}
+		
 		return dsl
 			.select()
 			.from(CUSTOM_FIELDS)
@@ -117,6 +169,7 @@ public class CustomFieldDAO extends BaseDAO {
 					CUSTOM_FIELDS.REVISION_STATUS.equal(EnumUtils.toSerializedName(CustomField.RevisionStatus.NEW))
 					.or(CUSTOM_FIELDS.REVISION_STATUS.equal(EnumUtils.toSerializedName(CustomField.RevisionStatus.MODIFIED)))
 				)
+				.and(searchableCndt)
 			)
 			.orderBy(
 				CUSTOM_FIELDS.NAME.asc()
@@ -179,6 +232,7 @@ public class CustomFieldDAO extends BaseDAO {
 			.set(CUSTOM_FIELDS.NAME, item.getName())
 			.set(CUSTOM_FIELDS.DESCRIPTION, item.getDescription())
 			.set(CUSTOM_FIELDS.TYPE, item.getType())
+			.set(CUSTOM_FIELDS.SEARCHABLE, item.getSearchable())
 			.set(CUSTOM_FIELDS.PROPERTIES, item.getProperties())
 			.set(CUSTOM_FIELDS.VALUES, item.getValues())
 			.set(CUSTOM_FIELDS.LABEL_I18N, item.getLabelI18n())

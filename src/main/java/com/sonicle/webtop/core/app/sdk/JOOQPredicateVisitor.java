@@ -51,25 +51,25 @@ import org.jooq.impl.DSL;
  *
  * @author malbinola
  */
-public abstract class BaseJOOQVisitor extends AbstractVoidContextNodeVisitor<Condition> {
+public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisitor<Condition> {
 	protected final Function<Object, Object> normalizer;
 	protected boolean ignoreCase = false;
 	protected boolean forceStringLikeComparison = false;
 	
-	public BaseJOOQVisitor() {
+	public JOOQPredicateVisitor() {
 		this(new DefaultNormalizer());
 	}
 	
-	public BaseJOOQVisitor(Function<Object, Object> normalizer) {
+	public JOOQPredicateVisitor(Function<Object, Object> normalizer) {
 		this.normalizer = normalizer;
 	}
 	
-	public <T extends BaseJOOQVisitor> T withIgnoreCase(boolean ignoreCase) {
+	public <T extends JOOQPredicateVisitor> T withIgnoreCase(boolean ignoreCase) {
 		this.ignoreCase = ignoreCase;
 		return (T)this;
 	}
 	
-	public <T extends BaseJOOQVisitor> T withForceStringLikeComparison(boolean forceStringLikeComparison) {
+	public <T extends JOOQPredicateVisitor> T withForceStringLikeComparison(boolean forceStringLikeComparison) {
 		this.forceStringLikeComparison = forceStringLikeComparison;
 		return (T)this;
 	}
@@ -119,8 +119,8 @@ public abstract class BaseJOOQVisitor extends AbstractVoidContextNodeVisitor<Con
 				}
 				
 			} else if (hasBooleanType(field)) {
-				String value = (String)single(values);
-				return Boolean.parseBoolean(value) ? field.isTrue() : field.isFalse();	
+				Boolean value = singleAsBoolean(values);
+				return true == value ? field.isTrue() : field.isFalse();
 			}
 			return field.equal(field.getDataType().convert(single(values)));
 
@@ -134,8 +134,8 @@ public abstract class BaseJOOQVisitor extends AbstractVoidContextNodeVisitor<Con
 				}
 				
 			} else if (hasBooleanType(field)) {
-				String value = (String)single(values);
-				return Boolean.parseBoolean(value) ? field.isFalse() : field.isTrue();
+				Boolean value = singleAsBoolean(values);
+				return true == value ? field.isFalse() : field.isTrue();
 			}
 			return field.notEqual(field.getDataType().convert(single(values)));
 			
@@ -181,6 +181,11 @@ public abstract class BaseJOOQVisitor extends AbstractVoidContextNodeVisitor<Con
 	
 	protected String singleAsString(Collection<?> values) {
 		return (String)single(values);
+	}
+	
+	protected Boolean singleAsBoolean(Collection<?> values) {
+		Object ovalue = single(values);
+		return (ovalue instanceof String) ? Boolean.parseBoolean((String)ovalue) : (Boolean)ovalue;
 	}
 	
 	protected String valueToSmartLikePattern(String value) {

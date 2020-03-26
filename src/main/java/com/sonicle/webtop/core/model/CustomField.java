@@ -53,6 +53,7 @@ public class CustomField {
 	protected String name;
 	protected String description;
 	protected Type type;
+	protected Boolean searchable;
 	protected Props props;
 	protected Values values;
 	protected LabelI18n labelI18n;
@@ -127,6 +128,14 @@ public class CustomField {
 
 	public void setType(Type type) {
 		this.type = type;
+	}
+	
+	public Boolean getSearchable() {
+		return searchable;
+	}
+
+	public void setSearchable(Boolean searchable) {
+		this.searchable = searchable;
 	}
 	
 	public Props getProps() {
@@ -289,6 +298,11 @@ public class CustomField {
 		
 		public T type(CustomField.Type type) {
 			item.setType(type);
+			return (T)this;
+		}
+		
+		public T searchable(boolean searchable) {
+			item.setSearchable(searchable);
 			return (T)this;
 		}
 		
