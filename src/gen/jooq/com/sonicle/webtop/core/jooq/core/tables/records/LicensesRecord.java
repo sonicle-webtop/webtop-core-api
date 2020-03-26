@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables.records;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LicensesRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord> implements org.jooq.Record4<java.lang.String, java.lang.String, java.lang.String, java.lang.String> {
 
-	private static final long serialVersionUID = -889575415;
+	private static final long serialVersionUID = -2044830174;
 
 	/**
 	 * Setter for <code>core.licenses.service_id</code>.
@@ -47,16 +47,16 @@ public class LicensesRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicl
 	}
 
 	/**
-	 * Setter for <code>core.licenses.internet_domain</code>.
+	 * Setter for <code>core.licenses.internet_name</code>.
 	 */
-	public void setInternetDomain(java.lang.String value) {
+	public void setInternetName(java.lang.String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>core.licenses.internet_domain</code>.
+	 * Getter for <code>core.licenses.internet_name</code>.
 	 */
-	public java.lang.String getInternetDomain() {
+	public java.lang.String getInternetName() {
 		return (java.lang.String) getValue(2);
 	}
 
@@ -127,7 +127,7 @@ public class LicensesRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicl
 	 */
 	@Override
 	public org.jooq.Field<java.lang.String> field3() {
-		return com.sonicle.webtop.core.jooq.core.tables.Licenses.LICENSES.INTERNET_DOMAIN;
+		return com.sonicle.webtop.core.jooq.core.tables.Licenses.LICENSES.INTERNET_NAME;
 	}
 
 	/**
@@ -159,7 +159,7 @@ public class LicensesRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicl
 	 */
 	@Override
 	public java.lang.String value3() {
-		return getInternetDomain();
+		return getInternetName();
 	}
 
 	/**
@@ -193,7 +193,7 @@ public class LicensesRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicl
 	 */
 	@Override
 	public LicensesRecord value3(java.lang.String value) {
-		setInternetDomain(value);
+		setInternetName(value);
 		return this;
 	}
 
@@ -228,12 +228,12 @@ public class LicensesRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicl
 	/**
 	 * Create a detached, initialised LicensesRecord
 	 */
-	public LicensesRecord(java.lang.String serviceId, java.lang.String productId, java.lang.String internetDomain, java.lang.String license) {
+	public LicensesRecord(java.lang.String serviceId, java.lang.String productId, java.lang.String internetName, java.lang.String license) {
 		super(com.sonicle.webtop.core.jooq.core.tables.Licenses.LICENSES);
 
 		setValue(0, serviceId);
 		setValue(1, productId);
-		setValue(2, internetDomain);
+		setValue(2, internetName);
 		setValue(3, license);
 	}
 }

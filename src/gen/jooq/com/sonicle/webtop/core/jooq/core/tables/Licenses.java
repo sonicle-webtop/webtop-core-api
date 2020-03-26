@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Licenses extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord> {
 
-	private static final long serialVersionUID = 1144313629;
+	private static final long serialVersionUID = 1147107396;
 
 	/**
 	 * The reference instance of <code>core.licenses</code>
@@ -42,9 +42,9 @@ public class Licenses extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jo
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord, java.lang.String> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "");
 
 	/**
-	 * The column <code>core.licenses.internet_domain</code>.
+	 * The column <code>core.licenses.internet_name</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord, java.lang.String> INTERNET_DOMAIN = createField("internet_domain", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "");
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord, java.lang.String> INTERNET_NAME = createField("internet_name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "");
 
 	/**
 	 * The column <code>core.licenses.license</code>.

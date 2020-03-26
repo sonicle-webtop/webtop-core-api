@@ -16,11 +16,11 @@ package com.sonicle.webtop.core.jooq.core.tables.pojos;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Licenses implements java.io.Serializable {
 
-	private static final long serialVersionUID = -1973637280;
+	private static final long serialVersionUID = 856598848;
 
 	private java.lang.String serviceId;
 	private java.lang.String productId;
-	private java.lang.String internetDomain;
+	private java.lang.String internetName;
 	private java.lang.String license;
 
 	public Licenses() {}
@@ -28,12 +28,12 @@ public class Licenses implements java.io.Serializable {
 	public Licenses(
 		java.lang.String serviceId,
 		java.lang.String productId,
-		java.lang.String internetDomain,
+		java.lang.String internetName,
 		java.lang.String license
 	) {
 		this.serviceId = serviceId;
 		this.productId = productId;
-		this.internetDomain = internetDomain;
+		this.internetName = internetName;
 		this.license = license;
 	}
 
@@ -53,12 +53,12 @@ public class Licenses implements java.io.Serializable {
 		this.productId = productId;
 	}
 
-	public java.lang.String getInternetDomain() {
-		return this.internetDomain;
+	public java.lang.String getInternetName() {
+		return this.internetName;
 	}
 
-	public void setInternetDomain(java.lang.String internetDomain) {
-		this.internetDomain = internetDomain;
+	public void setInternetName(java.lang.String internetName) {
+		this.internetName = internetName;
 	}
 
 	public java.lang.String getLicense() {

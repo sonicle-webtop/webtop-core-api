@@ -56,7 +56,7 @@ public class LicenseDAO extends BaseDAO {
 			.select()
 			.from(LICENSES)
 			.where(
-				LICENSES.INTERNET_DOMAIN.equal(internetName)
+				LICENSES.INTERNET_NAME.equal(internetName)
 			)
 			.fetchInto(OLicense.class);
 	}
@@ -69,7 +69,7 @@ public class LicenseDAO extends BaseDAO {
 			.where(
 				LICENSES.SERVICE_ID.equal(serviceId)
 				.and(LICENSES.PRODUCT_ID.equal(productId))
-				.and(LICENSES.INTERNET_DOMAIN.equal(internetName))
+				.and(LICENSES.INTERNET_NAME.equal(internetName))
 			)
 			.fetchOneInto(OLicense.class);
 	}
@@ -91,7 +91,7 @@ public class LicenseDAO extends BaseDAO {
 			.where(
 				LICENSES.SERVICE_ID.equal(item.getServiceId())
 				.and(LICENSES.PRODUCT_ID.equal(item.getProductId()))
-				.and(LICENSES.INTERNET_DOMAIN.equal(item.getInternetDomain()))
+				.and(LICENSES.INTERNET_NAME.equal(item.getInternetName()))
 			)
 			.execute();
 	}
@@ -103,7 +103,7 @@ public class LicenseDAO extends BaseDAO {
 			.where(
 				LICENSES.SERVICE_ID.equal(item.getServiceId())
 				.and(LICENSES.PRODUCT_ID.equal(item.getProductId()))
-				.and(LICENSES.INTERNET_DOMAIN.equal(item.getInternetDomain()))
+				.and(LICENSES.INTERNET_NAME.equal(item.getInternetName()))
 			)
 			.execute();
 	}
@@ -115,7 +115,7 @@ public class LicenseDAO extends BaseDAO {
 			.where(
 				LICENSES.SERVICE_ID.equal(serviceId)
 				.and(LICENSES.PRODUCT_ID.equal(productId))
-				.and(LICENSES.INTERNET_DOMAIN.equal(internetName))
+				.and(LICENSES.INTERNET_NAME.equal(internetName))
 			)
 			.execute();
 	}
