@@ -96,4 +96,14 @@ public class CustomPanelFieldDAO extends BaseDAO {
 			)
 			.execute();
 	}
+	
+	public int deleteByField(Connection con, String customFieldId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(CUSTOM_PANELS_FIELDS)
+			.where(
+				CUSTOM_PANELS_FIELDS.CUSTOM_FIELD_ID.equal(customFieldId)
+			)
+			.execute();
+	}
 }
