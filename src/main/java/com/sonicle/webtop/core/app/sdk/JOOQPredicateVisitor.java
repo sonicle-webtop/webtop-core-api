@@ -188,24 +188,16 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 		return (ovalue instanceof String) ? Boolean.parseBoolean((String)ovalue) : (Boolean)ovalue;
 	}
 	
-	protected String valueToSmartLikePattern(String value) {
-		if (valueContainsWildcard(value)) {
-			return valueToLikePattern(value);
-		} else {
-			return valueToLikePattern("*" + value + "*");
-		}
+	protected String valueToLikePattern(String value) {
+		value = StringUtils.replace(value, "*", "%");
+		value = StringUtils.replace(value, "\\*", "*");
+		return value;
 	}
 	
 	protected boolean valueContainsWildcard(String value) {
 		int escapedAsterisks = StringUtils.countMatches(value, "\\*");
 		int asterisks = StringUtils.countMatches(value, "*");
 		return asterisks > escapedAsterisks;
-	}
-	
-	protected String valueToLikePattern(String value) {
-		value = StringUtils.replace(value, "*", "%");
-		value = StringUtils.replace(value, "\\*", "*");
-		return value;
 	}
 	
 	protected static class DefaultNormalizer implements Function<Object, Object> {

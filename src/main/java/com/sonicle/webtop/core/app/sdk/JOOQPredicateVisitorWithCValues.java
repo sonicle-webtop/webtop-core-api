@@ -50,11 +50,11 @@ public abstract class JOOQPredicateVisitorWithCValues extends JOOQPredicateVisit
 		this.negatedEqualityIsStrict = negatedEqualityIsStrict;
 	}
 	
-	abstract protected Condition cvalueCondition(QBuilderWithCValues.Type cvalueType, ComparisonOperator operator, Collection<?> values);
+	abstract protected Condition cvalueCondition(QueryBuilderWithCValues.Type cvalueType, ComparisonOperator operator, Collection<?> values);
 	
 	protected CValueCondition getCustomFieldCondition(final CompId fieldName, final ComparisonOperator operator, final Collection<?> values) {
 		String tk0 = fieldName.getToken(0);
-		QBuilderWithCValues.Type cvalueType = EnumUtils.getEnum(QBuilderWithCValues.Type.class, tk0);
+		QueryBuilderWithCValues.Type cvalueType = EnumUtils.getEnum(QueryBuilderWithCValues.Type.class, tk0);
 		boolean negatedCond = false; // True if returned condition must be treated as negated (not exist).
 		Condition cond = null;
 		if (!negatedEqualityIsStrict) {
@@ -68,7 +68,7 @@ public abstract class JOOQPredicateVisitorWithCValues extends JOOQPredicateVisit
 			// 3) NE true  -> EQ true  yes (already excluded by query logic)
 			// 4) NE false -> EQ true  no (already excluded by query logic)
 			
-			if (QBuilderWithCValues.Type.CVBOOL.equals(cvalueType)) {
+			if (QueryBuilderWithCValues.Type.CVBOOL.equals(cvalueType)) {
 				negatedCond = (false == singleAsBoolean(values));
 				cond = cvalueCondition(cvalueType, ComparisonOperator.EQ, Arrays.asList(true));
 				

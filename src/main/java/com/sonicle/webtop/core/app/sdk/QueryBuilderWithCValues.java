@@ -32,7 +32,6 @@
  */
 package com.sonicle.webtop.core.app.sdk;
 
-import com.github.rutledgepaulv.qbuilders.builders.QBuilder;
 import com.github.rutledgepaulv.qbuilders.conditions.Condition;
 import com.github.rutledgepaulv.qbuilders.properties.concrete.BooleanProperty;
 import com.github.rutledgepaulv.qbuilders.properties.concrete.DoubleProperty;
@@ -51,10 +50,14 @@ import org.joda.time.DateTimeZone;
  * @author malbinola
  * @param <T>
  */
-public abstract class QBuilderWithCValues<T extends QBuilder<T>> extends QBuilder<T> {
+public abstract class QueryBuilderWithCValues<T extends QueryBuilder<T>> extends QueryBuilder<T> {
 	
 	public static enum Type {
 		CVSTRING, CVNUMBER, CVBOOL, CVDATE, CVTEXT
+	}
+	
+	public QueryBuilderWithCValues(boolean stringSmartComparison) {
+		super(stringSmartComparison);
 	}
 	
 	public StringProperty<T> customValueString(String fieldId) {
@@ -80,9 +83,9 @@ public abstract class QBuilderWithCValues<T extends QBuilder<T>> extends QBuilde
 	protected Condition<T> customValueCondition(String customFieldId, CustomField.Type customFieldType, String value, boolean negated, DateTimeZone timezone) {
 		if (CustomField.Type.TEXT.equals(customFieldType) || CustomField.Type.COMBOBOX.equals(customFieldType)) {
 			if (negated) {
-				return customValueString(customFieldId).ne(value);
+				return customValueString(customFieldId).ne(prepareStringValue(value));
 			} else {
-				return customValueString(customFieldId).eq(value);
+				return customValueString(customFieldId).eq(prepareStringValue(value));
 			}
 			
 		} else if (CustomField.Type.NUMBER.equals(customFieldType)) {
