@@ -85,12 +85,16 @@ public class CustomPanelDAO extends BaseDAO {
 		DSLContext dsl = getDSL(con);
 		
 		Table<?> cpfinner = DSL
-			.selectDistinct(
+			.select(
+			//.selectDistinct(
 				CUSTOM_PANELS_FIELDS.CUSTOM_FIELD_ID
 			)
 			.from(CUSTOM_PANELS_FIELDS)
 			.where(
 				CUSTOM_PANELS_FIELDS.CUSTOM_PANEL_ID.equal(CUSTOM_PANELS.CUSTOM_PANEL_ID)
+			)
+			.orderBy(
+				CUSTOM_PANELS_FIELDS.ORDER.asc()
 			)
 			.limit(fieldsLimit == -1 ? (Param)null : DSL.inline(fieldsLimit, Integer.class))
 			.asTable("cpfinner");
@@ -162,11 +166,15 @@ public class CustomPanelDAO extends BaseDAO {
 		DSLContext dsl = getDSL(con);
 		
 		Field<String> customFieldIds = DSL
-			.select(DSL.groupConcat(CUSTOM_PANELS_FIELDS.CUSTOM_FIELD_ID, "|"))
+			.select(
+				DSL.groupConcat(CUSTOM_PANELS_FIELDS.CUSTOM_FIELD_ID).orderBy(CUSTOM_PANELS_FIELDS.ORDER).separator("|")
+			)
+			//.select(DSL.groupConcat(CUSTOM_PANELS_FIELDS.CUSTOM_FIELD_ID, "|")) //FIXME: missing order by
 			.from(CUSTOM_PANELS_FIELDS)
 			.where(
 				CUSTOM_PANELS_FIELDS.CUSTOM_PANEL_ID.equal(CUSTOM_PANELS.CUSTOM_PANEL_ID)
-			).asField("custom_field_ids");
+			)
+			.asField("custom_field_ids");
 		
 		Field<String> tagIds = DSL
 			.select(DSL.groupConcat(CUSTOM_PANELS_TAGS.TAG_ID, "|"))
