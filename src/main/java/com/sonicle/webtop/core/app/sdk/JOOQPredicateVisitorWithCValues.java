@@ -35,9 +35,19 @@ package com.sonicle.webtop.core.app.sdk;
 import com.github.rutledgepaulv.qbuilders.operators.ComparisonOperator;
 import com.sonicle.commons.EnumUtils;
 import com.sonicle.commons.web.json.CompId;
+import static com.sonicle.webtop.core.jooq.core.Tables.CUSTOM_FIELDS;
+import static com.sonicle.webtop.core.jooq.core.Tables.CUSTOM_PANELS_FIELDS;
+import static com.sonicle.webtop.core.jooq.core.Tables.CUSTOM_PANELS_TAGS;
+import com.sonicle.webtop.core.jooq.core.tables.CustomFields;
+import com.sonicle.webtop.core.jooq.core.tables.CustomPanelsFields;
+import com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags;
 import java.util.Arrays;
 import java.util.Collection;
 import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.TableLike;
+import static org.jooq.impl.DSL.exists;
+import static org.jooq.impl.DSL.selectOne;
 
 /**
  *
@@ -50,13 +60,37 @@ public abstract class JOOQPredicateVisitorWithCValues extends JOOQPredicateVisit
 		this.negatedEqualityIsStrict = negatedEqualityIsStrict;
 	}
 	
-	abstract protected Condition cvalueCondition(QueryBuilderWithCValues.Type cvalueType, ComparisonOperator operator, Collection<?> values);
+	abstract protected Field<?> getFieldEntityIdOfEntityTable();
+	abstract protected TableLike<?> getTableTags();
+	abstract protected Field<String> getFieldTagIdOfTableTags();
+	abstract protected Condition getConditionTagsForCurrentEntity();
+	abstract protected TableLike<?> getTableCustomValues();
+	abstract protected Condition getConditionCustomValuesForCurrentEntityAndField(final String fieldId);
+	abstract protected Condition getConditionCustomValuesForFieldValue(final QueryBuilderWithCValues.Type cvalueType, final ComparisonOperator operator, final Collection<?> values);
 	
-	protected CValueCondition getCustomFieldCondition(final CompId fieldName, final ComparisonOperator operator, final Collection<?> values) {
-		String tk0 = fieldName.getToken(0);
+	protected Condition generateCValueCondition(final CompId fieldName, final ComparisonOperator operator, final Collection<?> values) {
+		String tk0 = fieldName.getToken(0); // -> field type
+		String tk1 = fieldName.getToken(1); // -> field id
 		QueryBuilderWithCValues.Type cvalueType = EnumUtils.getEnum(QueryBuilderWithCValues.Type.class, tk0);
-		boolean negatedCond = false; // True if returned condition must be treated as negated (not exist).
-		Condition cond = null;
+		
+		CustomFields PV_CUSTOM_FIELDS = CUSTOM_FIELDS.as("pvis_cf");
+		CustomPanelsFields PV_CUSTOM_PANELS_FIELDS = CUSTOM_PANELS_FIELDS.as("pvis_cpf");
+		CustomPanelsTags PV_CUSTOM_PANELS_TAGS = CUSTOM_PANELS_TAGS.as("pvis_cpt");
+		
+		Condition cfieldExistenceCond = exists(
+				selectOne()
+				.from(PV_CUSTOM_FIELDS)
+				.join(PV_CUSTOM_PANELS_FIELDS).on(PV_CUSTOM_FIELDS.CUSTOM_FIELD_ID.eq(PV_CUSTOM_PANELS_FIELDS.CUSTOM_FIELD_ID))
+				.join(PV_CUSTOM_PANELS_TAGS).on(PV_CUSTOM_PANELS_FIELDS.CUSTOM_PANEL_ID.eq(PV_CUSTOM_PANELS_TAGS.CUSTOM_PANEL_ID))
+				.join(getTableTags()).on(PV_CUSTOM_PANELS_TAGS.TAG_ID.eq(getFieldTagIdOfTableTags()))
+				.where(
+					PV_CUSTOM_FIELDS.CUSTOM_FIELD_ID.eq(tk1)
+					.and(getConditionTagsForCurrentEntity())
+				)
+			);
+		
+		boolean valueNotExists = false; // True if returned condition must be treated as negated (not exist).
+		Condition cvalueCond = null;
 		if (!negatedEqualityIsStrict) {
 			
 			// Boolean values needs to be adjusted in order to give correct results:
@@ -69,20 +103,41 @@ public abstract class JOOQPredicateVisitorWithCValues extends JOOQPredicateVisit
 			// 4) NE false -> EQ true  no (already excluded by query logic)
 			
 			if (QueryBuilderWithCValues.Type.CVBOOL.equals(cvalueType)) {
-				negatedCond = (false == singleAsBoolean(values));
-				cond = cvalueCondition(cvalueType, ComparisonOperator.EQ, Arrays.asList(true));
+				valueNotExists = (false == singleAsBoolean(values));
+				cvalueCond = getConditionCustomValuesForFieldValue(cvalueType, ComparisonOperator.EQ, Arrays.asList(true));
 				
 			} else {
 				ComparisonOperator sop = toStraightOperator(operator);
-				negatedCond = !operator.equals(sop);
-				cond = cvalueCondition(cvalueType, sop, values);
+				valueNotExists = !operator.equals(sop);
+				cvalueCond = getConditionCustomValuesForFieldValue(cvalueType, sop, values);
 			}
 		} else {
-			cond = cvalueCondition(cvalueType, operator, values);
+			cvalueCond = getConditionCustomValuesForFieldValue(cvalueType, operator, values);
 		}
+		if (cvalueCond == null) throw new UnsupportedOperationException("Custom value not supported: " + tk0);
 		
-		if (cond == null) throw new UnsupportedOperationException("Custom value not supported: " + tk0);
-		return new CValueCondition(negatedCond, cond);
+		if (valueNotExists) {
+			return cfieldExistenceCond
+					.andNotExists(
+						selectOne()
+						.from(getTableCustomValues())
+						.where(
+							getConditionCustomValuesForCurrentEntityAndField(tk1)
+							.and(cvalueCond)
+						)
+					);
+
+		} else {
+			return cfieldExistenceCond
+					.andExists(
+						selectOne()
+						.from(getTableCustomValues())
+						.where(
+							getConditionCustomValuesForCurrentEntityAndField(tk1)
+							.and(cvalueCond)
+						)
+			);
+		}
 	}
 	
 	protected ComparisonOperator toStraightOperator(ComparisonOperator operator) {
@@ -92,15 +147,5 @@ public abstract class JOOQPredicateVisitorWithCValues extends JOOQPredicateVisit
 			return ComparisonOperator.IN;
 		}
 		return operator;
-	}
-	
-	public static class CValueCondition {
-		public final boolean negated;
-		public final Condition condition;
-		
-		public CValueCondition(boolean negated, Condition condition) {
-			this.negated = negated;
-			this.condition = condition;
-		}
 	}
 }

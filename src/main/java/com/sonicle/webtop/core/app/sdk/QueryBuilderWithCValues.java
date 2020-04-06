@@ -42,6 +42,7 @@ import com.sonicle.commons.time.DateTimeUtils;
 import com.sonicle.commons.web.json.CompId;
 import com.sonicle.webtop.core.model.CustomField;
 import java.time.Instant;
+import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
 
@@ -81,46 +82,32 @@ public abstract class QueryBuilderWithCValues<T extends QueryBuilder<T>> extends
 	}
 	
 	protected Condition<T> customValueCondition(String customFieldId, CustomField.Type customFieldType, String value, boolean negated, DateTimeZone timezone) {
-		if (CustomField.Type.TEXT.equals(customFieldType) || CustomField.Type.COMBOBOX.equals(customFieldType)) {
-			if (negated) {
-				return customValueString(customFieldId).ne(prepareStringValue(value));
-			} else {
-				return customValueString(customFieldId).eq(prepareStringValue(value));
-			}
+		if (CustomField.Type.TEXT.equals(customFieldType)) {
+			return toCondition(customValueString(customFieldId), asSmartStringValue(value), negated);
 			
-		} else if (CustomField.Type.NUMBER.equals(customFieldType)) {
-			if (negated) {
-				return customValueNumber(customFieldId).ne(Double.valueOf(value));
-			} else {
-				return customValueNumber(customFieldId).eq(Double.valueOf(value));
-			}
-			
-		} else if (CustomField.Type.CHECKBOX.equals(customFieldType)) {
-			Boolean bool = Boolean.parseBoolean(value);
-			if (negated ? !bool : bool) {
-				return customValueBoolean(customFieldId).isTrue();
-			} else {
-				return customValueBoolean(customFieldId).isFalse();
-			}
+		} else if (CustomField.Type.TEXTAREA.equals(customFieldType)) {
+			return toCondition(customValueText(customFieldId), asSmartStringValue(value), negated);
 		
+		} else if (CustomField.Type.NUMBER.equals(customFieldType)) {
+			return toCondition(customValueNumber(customFieldId), splitOperator(value), negated);
+			
 		} else if (CustomField.Type.DATE.equals(customFieldType)) {
-			String date = StringUtils.replace(value, "/", "-");
-			Instant instant = DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(date), DateTimeUtils.toZoneId(DateTimeZone.UTC));
-			if (negated) {
-				return customValueDate(customFieldId).ne(instant);
-			} else {
-				return customValueDate(customFieldId).eq(instant);
-			}
+			return toCondition(customValueDate(customFieldId), InstantType.DATE, DateTimeZone.UTC, splitOperator(value), negated);
 			
 		} else if (CustomField.Type.TIME.equals(customFieldType)) {
+			return toCondition(customValueDate(customFieldId), InstantType.TIME, DateTimeZone.UTC, splitOperator(value), negated);
+			/*
 			Instant instant = DateTimeUtils.toInstant(DateTimeUtils.parseLocalTime(value), DateTimeUtils.toZoneId(DateTimeZone.UTC));
 			if (negated) {
 				return customValueDate(customFieldId).ne(instant);
 			} else {
 				return customValueDate(customFieldId).eq(instant);
 			}
+			*/
 			
 		} else if (CustomField.Type.DATE_TIME.equals(customFieldType)) {
+			return toCondition(customValueDate(customFieldId), InstantType.DATE_TIME, DateTimeZone.UTC, splitOperator(value), negated);
+			/*
 			String datetime = StringUtils.replace(value, "/", "-");
 			datetime = StringUtils.replace(datetime, " " , "T");
 			Instant instant = DateTimeUtils.toInstant(DateTimeUtils.parseDateTime(datetime, DateTimeUtils.toZoneId(timezone)));
@@ -129,14 +116,28 @@ public abstract class QueryBuilderWithCValues<T extends QueryBuilder<T>> extends
 			} else {
 				return customValueDate(customFieldId).eq(instant);
 			}
+			*/
 			
-		} else if (CustomField.Type.TEXTAREA.equals(customFieldType)) {
-			if (negated) {
-				return customValueText(customFieldId).ne(value);
+		} else if (CustomField.Type.CHECKBOX.equals(customFieldType)) {
+			return toCondition(customValueBoolean(customFieldId), value, negated);
+			/*
+			Boolean bool = Boolean.parseBoolean(value);
+			if (negated ? !bool : bool) {
+				return customValueBoolean(customFieldId).isTrue();
 			} else {
-				return customValueText(customFieldId).eq(value);
+				return customValueBoolean(customFieldId).isFalse();
 			}
-			
+			*/
+		
+		} else if (CustomField.Type.COMBOBOX.equals(customFieldType)) {
+			return toCondition(customValueString(customFieldId), value, negated);
+			/*
+			if (negated) {
+				return customValueString(customFieldId).ne(toStringValue(value));
+			} else {
+				return customValueString(customFieldId).eq(toStringValue(value));
+			}
+			*/
 		} else {
 			return null;
 		}
