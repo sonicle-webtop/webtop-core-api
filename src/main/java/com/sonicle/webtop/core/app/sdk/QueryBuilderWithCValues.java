@@ -32,18 +32,14 @@
  */
 package com.sonicle.webtop.core.app.sdk;
 
-import com.github.rutledgepaulv.qbuilders.conditions.Condition;
-import com.github.rutledgepaulv.qbuilders.properties.concrete.BooleanProperty;
-import com.github.rutledgepaulv.qbuilders.properties.concrete.DoubleProperty;
-import com.github.rutledgepaulv.qbuilders.properties.concrete.InstantProperty;
-import com.github.rutledgepaulv.qbuilders.properties.concrete.StringProperty;
+import com.sonicle.commons.qbuilders.conditions.Condition;
+import com.sonicle.commons.qbuilders.properties.concrete.BooleanProperty;
+import com.sonicle.commons.qbuilders.properties.concrete.DoubleProperty;
+import com.sonicle.commons.qbuilders.properties.concrete.InstantProperty;
+import com.sonicle.commons.qbuilders.properties.concrete.StringProperty;
 import com.sonicle.commons.EnumUtils;
-import com.sonicle.commons.time.DateTimeUtils;
 import com.sonicle.commons.web.json.CompId;
 import com.sonicle.webtop.core.model.CustomField;
-import java.time.Instant;
-import java.util.Arrays;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
 
 /**
@@ -57,89 +53,53 @@ public abstract class QueryBuilderWithCValues<T extends QueryBuilder<T>> extends
 		CVSTRING, CVNUMBER, CVBOOL, CVDATE, CVTEXT
 	}
 	
-	public QueryBuilderWithCValues(boolean stringSmartComparison) {
-		super(stringSmartComparison);
-	}
-	
-	public StringProperty<T> customValueString(String fieldId) {
+	public StringProperty<T> customValueString(final String fieldId) {
 		return string(new CompId(EnumUtils.getName(Type.CVSTRING), fieldId).toString());
 	}
 	
-	public DoubleProperty<T> customValueNumber(String fieldId) {
+	public DoubleProperty<T> customValueNumber(final String fieldId) {
 		return doubleNum(new CompId(EnumUtils.getName(Type.CVNUMBER), fieldId).toString());
 	}
 	
-	public BooleanProperty<T> customValueBoolean(String fieldId) {
+	public BooleanProperty<T> customValueBoolean(final String fieldId) {
 		return bool(new CompId(EnumUtils.getName(Type.CVBOOL), fieldId).toString());
 	}
 	
-	public InstantProperty<T> customValueDate(String fieldId) {
+	public InstantProperty<T> customValueDate(final String fieldId) {
 		return instant(new CompId(EnumUtils.getName(Type.CVDATE), fieldId).toString());
 	}
 	
-	public StringProperty<T> customValueText(String fieldId) {
+	public StringProperty<T> customValueText(final String fieldId) {
 		return string(new CompId(EnumUtils.getName(Type.CVTEXT), fieldId).toString());
 	}
 	
-	protected Condition<T> customValueCondition(String customFieldId, CustomField.Type customFieldType, String value, boolean negated, DateTimeZone timezone) {
+	protected Condition<T> customValueCondition(final String customFieldId, final CustomField.Type customFieldType, final String value, final boolean negated, final boolean smartStringComparison, final DateTimeZone timezone) {
 		if (CustomField.Type.TEXT.equals(customFieldType)) {
-			return toCondition(customValueString(customFieldId), asSmartStringValue(value), negated);
+			return condition(customValueString(customFieldId), asStringValue(value, smartStringComparison), negated);
 			
 		} else if (CustomField.Type.TEXTAREA.equals(customFieldType)) {
-			return toCondition(customValueText(customFieldId), asSmartStringValue(value), negated);
+			return condition(customValueText(customFieldId), asStringValue(value, smartStringComparison), negated);
 		
 		} else if (CustomField.Type.NUMBER.equals(customFieldType)) {
-			return toCondition(customValueNumber(customFieldId), splitOperator(value), negated);
+			return condition(customValueNumber(customFieldId), splitOperator(value), negated);
 			
 		} else if (CustomField.Type.DATE.equals(customFieldType)) {
-			return toCondition(customValueDate(customFieldId), InstantType.DATE, DateTimeZone.UTC, splitOperator(value), negated);
+			return condition(customValueDate(customFieldId), InstantType.DATE, DateTimeZone.UTC, splitOperator(value), negated);
 			
 		} else if (CustomField.Type.TIME.equals(customFieldType)) {
-			return toCondition(customValueDate(customFieldId), InstantType.TIME, DateTimeZone.UTC, splitOperator(value), negated);
-			/*
-			Instant instant = DateTimeUtils.toInstant(DateTimeUtils.parseLocalTime(value), DateTimeUtils.toZoneId(DateTimeZone.UTC));
-			if (negated) {
-				return customValueDate(customFieldId).ne(instant);
-			} else {
-				return customValueDate(customFieldId).eq(instant);
-			}
-			*/
+			return condition(customValueDate(customFieldId), InstantType.TIME, DateTimeZone.UTC, splitOperator(value), negated);
 			
 		} else if (CustomField.Type.DATE_TIME.equals(customFieldType)) {
-			return toCondition(customValueDate(customFieldId), InstantType.DATE_TIME, DateTimeZone.UTC, splitOperator(value), negated);
-			/*
-			String datetime = StringUtils.replace(value, "/", "-");
-			datetime = StringUtils.replace(datetime, " " , "T");
-			Instant instant = DateTimeUtils.toInstant(DateTimeUtils.parseDateTime(datetime, DateTimeUtils.toZoneId(timezone)));
-			if (negated) {
-				return customValueDate(customFieldId).ne(instant);
-			} else {
-				return customValueDate(customFieldId).eq(instant);
-			}
-			*/
+			return condition(customValueDate(customFieldId), InstantType.DATE_TIME, DateTimeZone.UTC, splitOperator(value), negated);
 			
 		} else if (CustomField.Type.CHECKBOX.equals(customFieldType)) {
-			return toCondition(customValueBoolean(customFieldId), value, negated);
-			/*
-			Boolean bool = Boolean.parseBoolean(value);
-			if (negated ? !bool : bool) {
-				return customValueBoolean(customFieldId).isTrue();
-			} else {
-				return customValueBoolean(customFieldId).isFalse();
-			}
-			*/
+			return condition(customValueBoolean(customFieldId), value, negated);
 		
 		} else if (CustomField.Type.COMBOBOX.equals(customFieldType)) {
-			return toCondition(customValueString(customFieldId), value, negated);
-			/*
-			if (negated) {
-				return customValueString(customFieldId).ne(toStringValue(value));
-			} else {
-				return customValueString(customFieldId).eq(toStringValue(value));
-			}
-			*/
+			return condition(customValueString(customFieldId), value, negated);
+			
 		} else {
-			return null;
+			throw new UnsupportedOperationException("CustomField type not supported: " + customFieldType);
 		}
 	}
 }

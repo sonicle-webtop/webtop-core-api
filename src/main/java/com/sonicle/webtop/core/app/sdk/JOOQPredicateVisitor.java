@@ -32,14 +32,17 @@
  */
 package com.sonicle.webtop.core.app.sdk;
 
-import com.github.rutledgepaulv.qbuilders.nodes.AndNode;
-import com.github.rutledgepaulv.qbuilders.nodes.ComparisonNode;
-import com.github.rutledgepaulv.qbuilders.nodes.OrNode;
-import com.github.rutledgepaulv.qbuilders.operators.ComparisonOperator;
-import com.github.rutledgepaulv.qbuilders.visitors.AbstractVoidContextNodeVisitor;
+import com.sonicle.commons.qbuilders.nodes.AbstractNode;
+import com.sonicle.commons.qbuilders.nodes.AndNode;
+import com.sonicle.commons.qbuilders.nodes.ComparisonNode;
+import com.sonicle.commons.qbuilders.nodes.LogicalNode;
+import com.sonicle.commons.qbuilders.nodes.OrNode;
+import com.sonicle.commons.qbuilders.operators.ComparisonOperator;
+import com.sonicle.commons.qbuilders.visitors.AbstractVoidContextNodeVisitor;
 import com.sonicle.commons.time.DateTimeUtils;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -80,11 +83,14 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 	protected Condition visit(AndNode node) {
 		//Condition condition = DSL.and(conditions); in jOOQ 3.6+
 		Condition result = DSL.trueCondition();
+		/*
 		List<Condition> conditions = node.getChildren().stream()
 				.map(this::visitAny).collect(Collectors.toList());
 		for (Condition condition : conditions) {
 			result = result.and(condition);
 		}
+		*/
+		node.getChildren().stream().map(this::visitAny).forEach(result::and);
 		return result;
 	}
 
@@ -92,20 +98,27 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 	protected Condition visit(OrNode node) {
 		//Condition condition = DSL.and(conditions); in jOOQ 3.6+
 		Condition result = DSL.falseCondition();
+		/*
 		List<Condition> conditions = node.getChildren().stream()
 				.map(this::visitAny).collect(Collectors.toList());
 		for (Condition condition : conditions) {
 			result = result.or(condition);
 		}
+		*/
+		node.getChildren().stream().map(this::visitAny).forEach(result::or);
 		return result;
 	}
 	
 	@Override
 	protected Condition visit(ComparisonNode node) {
 		String fieldName = node.getField().asKey();
-		ComparisonOperator operator = node.getOperator();
-		Collection<?> values = node.getValues().stream().map(normalizer).collect(Collectors.toList());
-		return toCondition(fieldName, operator, values, node);
+		if (QueryBuilder.FIELD_DUMMY_TRUE.equals(fieldName)) {
+			return DSL.trueCondition();
+		} else {
+			ComparisonOperator operator = node.getOperator();
+			Collection<?> values = node.getValues().stream().map(normalizer).collect(Collectors.toList());
+			return toCondition(fieldName, operator, values, node);
+		}
 	}
 	
 	protected <T> Condition defaultCondition(Field<T> field, ComparisonOperator operator, Collection<?> values) {
@@ -140,7 +153,7 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 			return field.notEqual(field.getDataType().convert(single(values)));
 			
 		} else if (ComparisonOperator.EX.equals(operator)) {
-			throw new UnsupportedOperationException("Operator not supported: " + operator);
+			throw new UnsupportedOperationException("Operator not supported: " + operator.toString());
 			
 		} else if (ComparisonOperator.GT.equals(operator)) {
 			return field.greaterThan(field.getDataType().convert(single(values)));
@@ -153,7 +166,15 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 			
 		} else if (ComparisonOperator.LTE.equals(operator)) {
 			return field.lessOrEqual(field.getDataType().convert(single(values)));
-			
+		
+		} else if (ComparisonOperator.BTW.equals(operator)) {
+			Object[] multi = multiple(values, 2);
+			return field.between(field.getDataType().convert(multi[0]), field.getDataType().convert(multi[1]));
+		
+		} else if (ComparisonOperator.NBTW.equals(operator)) {
+			Object[] multi = multiple(values, 2);
+			return field.notBetween(field.getDataType().convert(multi[0]), field.getDataType().convert(multi[1]));
+		
 		} else if (ComparisonOperator.IN.equals(operator)) {
 			return field.in(field.getDataType().convert(values));
 			
@@ -164,10 +185,10 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 			return field.likeRegex((String)single(values));
 			
 		} else if (ComparisonOperator.SUB_CONDITION_ANY.equals(operator)) {
-			throw new UnsupportedOperationException("Operator not supported: " + operator);
+			throw new UnsupportedOperationException("Operator not supported: " + operator.toString());
 			
 		} else {
-			throw new UnsupportedOperationException("Operator not supported: " + operator);
+			throw new UnsupportedOperationException("Operator not supported: " + operator.toString());
 		}
 	}
 	

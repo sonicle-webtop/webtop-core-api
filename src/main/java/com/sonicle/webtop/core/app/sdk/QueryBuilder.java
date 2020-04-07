@@ -32,16 +32,14 @@
  */
 package com.sonicle.webtop.core.app.sdk;
 
-import com.github.rutledgepaulv.qbuilders.builders.QBuilder;
-import com.github.rutledgepaulv.qbuilders.conditions.Condition;
-import com.github.rutledgepaulv.qbuilders.properties.concrete.BooleanProperty;
-import com.github.rutledgepaulv.qbuilders.properties.concrete.DoubleProperty;
-import com.github.rutledgepaulv.qbuilders.properties.concrete.InstantProperty;
-import com.github.rutledgepaulv.qbuilders.properties.concrete.StringProperty;
+import com.sonicle.commons.qbuilders.builders.QBuilder;
+import com.sonicle.commons.qbuilders.conditions.Condition;
+import com.sonicle.commons.qbuilders.properties.concrete.BooleanProperty;
+import com.sonicle.commons.qbuilders.properties.concrete.DoubleProperty;
+import com.sonicle.commons.qbuilders.properties.concrete.InstantProperty;
+import com.sonicle.commons.qbuilders.properties.concrete.StringProperty;
 import com.sonicle.commons.time.DateTimeUtils;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
 
@@ -51,14 +49,13 @@ import org.joda.time.DateTimeZone;
  * @param <T>
  */
 public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
-	protected boolean stringSmartComparison;
+	public static final String FIELD_DUMMY_TRUE = "DUMMY_TRUE";
 	
-	public QueryBuilder(boolean stringSmartComparison) {
-		super();
-		this.stringSmartComparison = stringSmartComparison;
+	public Condition<T> trueCondition() {
+		return string(FIELD_DUMMY_TRUE).eq(FIELD_DUMMY_TRUE);
 	}
 	
-	public Condition<T> toCondition(StringProperty<T> property, String value, boolean negated) {
+	public Condition<T> condition(final StringProperty<T> property, final String value, final boolean negated) {
 		if (negated) {
 			return property.ne(value);
 		} else {
@@ -66,14 +63,14 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 		}
 	}
 	
-	public Condition<T> toCondition(DoubleProperty<T> property, ValueWithOperator valueWithOperator, boolean negated) {
+	public Condition<T> condition(final DoubleProperty<T> property, final ValueWithOperator valueWithOperator, final boolean negated) {
 		Double double1 = Double.valueOf(valueWithOperator.value1);
 		if (ValueOperator.BETWEEN.equals(valueWithOperator.operator)) {
 			Double double2 = Double.valueOf(valueWithOperator.value2);
 			if (negated) {
-				return and(Arrays.asList(property.lt(double1), property.gt(double2)));
+				return property.nbtw(double1, double2);
 			} else {
-				return and(Arrays.asList(property.gte(double1), property.lte(double2)));
+				return property.btw(double1, double2);
 			}
 			
 		} else if (ValueOperator.GT.equals(valueWithOperator.operator)) {
@@ -93,7 +90,7 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 		}
 	}
 	
-	public Condition<T> toCondition(BooleanProperty<T> property, String value, boolean negated) {
+	public Condition<T> condition(final BooleanProperty<T> property, final String value, final boolean negated) {
 		Boolean boolValue = Boolean.parseBoolean(value);
 		if (negated ? !boolValue : boolValue) {
 			return property.isTrue();
@@ -102,14 +99,14 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 		}
 	}
 	
-	public Condition<T> toCondition(InstantProperty<T> property, InstantType type, DateTimeZone timezone, ValueWithOperator valueWithOperator, boolean negated) {
+	public Condition<T> condition(final InstantProperty<T> property, final InstantType type, final DateTimeZone timezone, final ValueWithOperator valueWithOperator, boolean negated) {
 		Instant instant1 = asInstantValue(valueWithOperator.value1, type, timezone);
 		if (ValueOperator.BETWEEN.equals(valueWithOperator.operator)) {
 			Instant instant2 = asInstantValue(valueWithOperator.value2, type, timezone);
 			if (negated) {
-				return and(Arrays.asList(property.before(instant1, true), property.after(instant2, true)));
+				return property.nbtw(instant1, instant2);
 			} else {
-				return and(Arrays.asList(property.after(instant1, false), property.before(instant2, false)));
+				return property.btw(instant1, instant2);
 			}
 			
 		} else if (ValueOperator.GT.equals(valueWithOperator.operator)) {
@@ -129,11 +126,11 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 		}
 	}
 	
-	protected String asSmartStringValue(String value) {
+	protected static String asStringValue(final String value, final boolean stringSmartComparison) {
 		return stringSmartComparison ? buildSmartValue(value) : value;
 	}
 	
-	protected Instant asInstantValue(String value, InstantType type, DateTimeZone timezone) {
+	protected static Instant asInstantValue(final String value, final InstantType type, final DateTimeZone timezone) {
 		if (InstantType.DATE.equals(type)) {
 			return DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(value), DateTimeUtils.toZoneId(timezone));
 		} else if (InstantType.TIME.equals(type)) {
@@ -149,7 +146,7 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 	 * @param value
 	 * @return 
 	 */
-	protected String buildSmartValue(String value) {
+	protected static String buildSmartValue(final String value) {
 		if (valueContainsWildcard(value)) {
 			return value;
 		} else {
@@ -162,13 +159,13 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 	 * @param value
 	 * @return 
 	 */
-	protected boolean valueContainsWildcard(String value) {
+	protected static boolean valueContainsWildcard(final String value) {
 		int escapedAsterisks = StringUtils.countMatches(value, "\\*");
 		int asterisks = StringUtils.countMatches(value, "*");
 		return asterisks > escapedAsterisks;
 	}
 	
-	protected ValueWithOperator splitOperator(String value) {
+	protected static ValueWithOperator splitOperator(final String value) {
 		String trimmedValue = StringUtils.trim(value);
 		String substr = null;
 		
@@ -182,6 +179,11 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 			return new ValueWithOperator(ValueOperator.LTE, StringUtils.trim(substr));
 		}
 		
+		String[] tokens = StringUtils.split(trimmedValue, "<>", 2);
+		if (tokens.length == 2) {
+			return new ValueWithOperator(ValueOperator.BETWEEN, StringUtils.trim(tokens[0]), StringUtils.trim(tokens[1]));
+		}
+		
 		substr = StringUtils.substringAfter(trimmedValue, ">");
 		if (!StringUtils.isBlank(substr)) {
 			return new ValueWithOperator(ValueOperator.GT, StringUtils.trim(substr));
@@ -190,11 +192,6 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 		substr = StringUtils.substringAfter(trimmedValue, "<");
 		if (!StringUtils.isBlank(substr)) {
 			return new ValueWithOperator(ValueOperator.LT, StringUtils.trim(substr));
-		}
-		
-		String[] tokens = StringUtils.split(trimmedValue, "<>", 2);
-		if (tokens.length == 2) {
-			return new ValueWithOperator(ValueOperator.BETWEEN, StringUtils.trim(tokens[0]), StringUtils.trim(tokens[1]));
 		}
 		
 		return new ValueWithOperator(null, value);
@@ -223,15 +220,4 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 	public static enum ValueOperator {
 		GT, GTE, LT, LTE, BETWEEN
 	}
-	
-	
-	/*
-	public static void main(String args[]) {
-		
-		String[] tk1 = StringUtils.splitByWholeSeparator(">= 23423423", ">=", 2);
-		String[] tk2 = StringUtils.splitByWholeSeparator(" 23423423", ">=", 2);
-		String[] tk3 = StringUtils.splitByWholeSeparator(">=>= 23423423", ">=", 2);
-		String[] tk4 = StringUtils.splitByWholeSeparator("<= 23423423", ">=", 2);
-	}
-*/
 }

@@ -32,7 +32,7 @@
  */
 package com.sonicle.webtop.core.app.sdk;
 
-import com.github.rutledgepaulv.qbuilders.operators.ComparisonOperator;
+import com.sonicle.commons.qbuilders.operators.ComparisonOperator;
 import com.sonicle.commons.EnumUtils;
 import com.sonicle.commons.web.json.CompId;
 import static com.sonicle.webtop.core.jooq.core.Tables.CUSTOM_FIELDS;
