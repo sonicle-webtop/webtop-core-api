@@ -83,14 +83,11 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 	protected Condition visit(AndNode node) {
 		//Condition condition = DSL.and(conditions); in jOOQ 3.6+
 		Condition result = DSL.trueCondition();
-		/*
 		List<Condition> conditions = node.getChildren().stream()
 				.map(this::visitAny).collect(Collectors.toList());
 		for (Condition condition : conditions) {
 			result = result.and(condition);
 		}
-		*/
-		node.getChildren().stream().map(this::visitAny).forEach(result::and);
 		return result;
 	}
 
@@ -98,14 +95,11 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 	protected Condition visit(OrNode node) {
 		//Condition condition = DSL.and(conditions); in jOOQ 3.6+
 		Condition result = DSL.falseCondition();
-		/*
 		List<Condition> conditions = node.getChildren().stream()
 				.map(this::visitAny).collect(Collectors.toList());
 		for (Condition condition : conditions) {
 			result = result.or(condition);
 		}
-		*/
-		node.getChildren().stream().map(this::visitAny).forEach(result::or);
 		return result;
 	}
 	
