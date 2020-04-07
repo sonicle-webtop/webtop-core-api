@@ -46,6 +46,7 @@ import org.joda.time.LocalTime;
 public class CustomFieldValue {
 	protected String fieldId;
 	protected String stringValue;
+	protected String textValue;
 	protected Double numberValue;
 	protected Boolean booleanValue;
 	protected DateTime dateValue;
@@ -66,6 +67,14 @@ public class CustomFieldValue {
 
 	public void setStringValue(String stringValue) {
 		this.stringValue = stringValue;
+	}
+	
+	public String getTextValue() {
+		return textValue;
+	}
+
+	public void setTextValue(String textValue) {
+		this.textValue = textValue;
 	}
 
 	public Double getNumberValue() {
@@ -93,8 +102,10 @@ public class CustomFieldValue {
 	}
 	
 	public Object getValue(CustomField.Type type) {
-		if (CustomField.Type.TEXT.equals(type) || CustomField.Type.TEXTAREA.equals(type)) {
+		if (CustomField.Type.TEXT.equals(type)) {
 			return stringValue;
+		} else if (CustomField.Type.TEXTAREA.equals(type)) {
+			return textValue;
 		} else if (CustomField.Type.NUMBER.equals(type)) {
 			return numberValue;
 		} else if (CustomField.Type.DATE.equals(type)) {
@@ -113,8 +124,10 @@ public class CustomFieldValue {
 	}
 	
 	public void setValue(CustomField.Type type, Object value) {
-		if (CustomField.Type.TEXT.equals(type) || CustomField.Type.TEXTAREA.equals(type)) {
+		if (CustomField.Type.TEXT.equals(type)) {
 			stringValue = (String)value;
+		} else if (CustomField.Type.TEXTAREA.equals(type)) {
+			textValue = (String)value;
 		} else if (CustomField.Type.NUMBER.equals(type)) {
 			numberValue = (Double)value;
 		} else if (CustomField.Type.DATE.equals(type)) {
