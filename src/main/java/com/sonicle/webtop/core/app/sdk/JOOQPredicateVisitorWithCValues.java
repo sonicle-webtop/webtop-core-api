@@ -80,12 +80,24 @@ public abstract class JOOQPredicateVisitorWithCValues extends JOOQPredicateVisit
 		Condition cfieldExistenceCond = exists(
 				selectOne()
 				.from(PV_CUSTOM_FIELDS)
+				// Join below ensures that custom-field is not in D (deleted) 
+				// state: association between fields/panels is removed when a 
+				// field is deleted.
 				.join(PV_CUSTOM_PANELS_FIELDS).on(PV_CUSTOM_FIELDS.CUSTOM_FIELD_ID.eq(PV_CUSTOM_PANELS_FIELDS.CUSTOM_FIELD_ID))
-				.join(PV_CUSTOM_PANELS_TAGS).on(PV_CUSTOM_PANELS_FIELDS.CUSTOM_PANEL_ID.eq(PV_CUSTOM_PANELS_TAGS.CUSTOM_PANEL_ID))
-				.join(getTableTags()).on(PV_CUSTOM_PANELS_TAGS.TAG_ID.eq(getFieldTagIdOfTableTags()))
+				// Two joins below ensures that the custom-field is really 
+				// assigned to the current entity. Join can be null whether the 
+				// field is associated to a global panel. (see where)
+				.leftOuterJoin(PV_CUSTOM_PANELS_TAGS).on(PV_CUSTOM_PANELS_FIELDS.CUSTOM_PANEL_ID.eq(PV_CUSTOM_PANELS_TAGS.CUSTOM_PANEL_ID))
+				.leftOuterJoin(getTableTags()).on(PV_CUSTOM_PANELS_TAGS.TAG_ID.eq(getFieldTagIdOfTableTags()))
 				.where(
 					PV_CUSTOM_FIELDS.CUSTOM_FIELD_ID.eq(tk1)
-					.and(getConditionTagsForCurrentEntity())
+					.and(
+						// When customPanelId is null we have a field associated 
+						// to a global panel, and so is enought. Otherwise a match 
+						// needs to be found in OR clause.
+						PV_CUSTOM_PANELS_TAGS.CUSTOM_PANEL_ID.isNull()
+						.or(getConditionTagsForCurrentEntity())
+					)
 				)
 			);
 		
