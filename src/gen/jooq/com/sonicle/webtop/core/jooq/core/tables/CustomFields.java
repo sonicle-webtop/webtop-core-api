@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CustomFields extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.CustomFieldsRecord> {
 
-	private static final long serialVersionUID = 2051072150;
+	private static final long serialVersionUID = 928770082;
 
 	/**
 	 * The reference instance of <code>core.custom_fields</code>
@@ -94,7 +94,12 @@ public class CustomFields extends org.jooq.impl.TableImpl<com.sonicle.webtop.cor
 	/**
 	 * The column <code>core.custom_fields.searchable</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.CustomFieldsRecord, java.lang.Boolean> SEARCHABLE = createField("searchable", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.CustomFieldsRecord, java.lang.Boolean> SEARCHABLE = createField("searchable", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaulted(true), this, "");
+
+	/**
+	 * The column <code>core.custom_fields.previewable</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.CustomFieldsRecord, java.lang.Boolean> PREVIEWABLE = createField("previewable", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaulted(true), this, "");
 
 	/**
 	 * Create a <code>core.custom_fields</code> table reference

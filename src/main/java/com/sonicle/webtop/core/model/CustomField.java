@@ -54,6 +54,7 @@ public class CustomField {
 	protected String description;
 	protected Type type;
 	protected Boolean searchable;
+	protected Boolean previewable;
 	protected Props props;
 	protected Values values;
 	protected LabelI18n labelI18n;
@@ -136,6 +137,14 @@ public class CustomField {
 
 	public void setSearchable(Boolean searchable) {
 		this.searchable = searchable;
+	}
+	
+	public Boolean getPreviewable() {
+		return previewable;
+	}
+
+	public void setPreviewable(Boolean previewable) {
+		this.previewable = previewable;
 	}
 	
 	public Props getProps() {

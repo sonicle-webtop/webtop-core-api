@@ -98,15 +98,19 @@ public class CustomFieldDAO extends BaseDAO {
 	}
 	
 	public Map<String, VCustomField> viewOnlineByDomainService(Connection con, String domainId, String serviceId, int limit) throws DAOException {
-		return viewOnlineByDomainServiceSearchable(con, domainId, serviceId, null, limit);
+		return viewOnlineByDomainServiceSearchablePreviewable(con, domainId, serviceId, null, null, limit);
 	}
 	
-	public Map<String, VCustomField> viewOnlineByDomainServiceSearchable(Connection con, String domainId, String serviceId, Boolean searchable, int limit) throws DAOException {
+	public Map<String, VCustomField> viewOnlineByDomainServiceSearchablePreviewable(Connection con, String domainId, String serviceId, Boolean searchable, Boolean previewable, int limit) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		
 		Condition searchableCndt = DSL.trueCondition();
 		if (searchable != null) {
 			searchableCndt = (searchable == true) ? CUSTOM_FIELDS.SEARCHABLE.isTrue() : CUSTOM_FIELDS.SEARCHABLE.isFalse();
+		}
+		Condition previewableCndt = DSL.trueCondition();
+		if (previewable != null) {
+			previewableCndt = (previewable == true) ? CUSTOM_FIELDS.PREVIEWABLE.isTrue() : CUSTOM_FIELDS.PREVIEWABLE.isFalse();
 		}
 		
 		Table<?> cpfinner = DSL
@@ -140,6 +144,7 @@ public class CustomFieldDAO extends BaseDAO {
 					.or(CUSTOM_FIELDS.REVISION_STATUS.equal(EnumUtils.toSerializedName(CustomField.RevisionStatus.MODIFIED)))
 				)
 				.and(searchableCndt)
+				.and(previewableCndt)
 			)
 			.orderBy(
 				CUSTOM_FIELDS.NAME.asc()
@@ -233,6 +238,7 @@ public class CustomFieldDAO extends BaseDAO {
 			.set(CUSTOM_FIELDS.DESCRIPTION, item.getDescription())
 			.set(CUSTOM_FIELDS.TYPE, item.getType())
 			.set(CUSTOM_FIELDS.SEARCHABLE, item.getSearchable())
+			.set(CUSTOM_FIELDS.PREVIEWABLE, item.getPreviewable())
 			.set(CUSTOM_FIELDS.PROPERTIES, item.getProperties())
 			.set(CUSTOM_FIELDS.VALUES, item.getValues())
 			.set(CUSTOM_FIELDS.LABEL_I18N, item.getLabelI18n())

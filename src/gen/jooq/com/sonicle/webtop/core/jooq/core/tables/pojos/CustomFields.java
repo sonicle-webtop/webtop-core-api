@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables.pojos;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CustomFields implements java.io.Serializable {
 
-	private static final long serialVersionUID = -1523865512;
+	private static final long serialVersionUID = 1218235244;
 
 	private java.lang.String       customFieldId;
 	private java.lang.String       domainId;
@@ -31,6 +31,7 @@ public class CustomFields implements java.io.Serializable {
 	private java.lang.String       values;
 	private java.lang.String       labelI18n;
 	private java.lang.Boolean      searchable;
+	private java.lang.Boolean      previewable;
 
 	public CustomFields() {}
 
@@ -47,7 +48,8 @@ public class CustomFields implements java.io.Serializable {
 		java.lang.String       properties,
 		java.lang.String       values,
 		java.lang.String       labelI18n,
-		java.lang.Boolean      searchable
+		java.lang.Boolean      searchable,
+		java.lang.Boolean      previewable
 	) {
 		this.customFieldId = customFieldId;
 		this.domainId = domainId;
@@ -62,6 +64,7 @@ public class CustomFields implements java.io.Serializable {
 		this.values = values;
 		this.labelI18n = labelI18n;
 		this.searchable = searchable;
+		this.previewable = previewable;
 	}
 
 	public java.lang.String getCustomFieldId() {
@@ -166,5 +169,13 @@ public class CustomFields implements java.io.Serializable {
 
 	public void setSearchable(java.lang.Boolean searchable) {
 		this.searchable = searchable;
+	}
+
+	public java.lang.Boolean getPreviewable() {
+		return this.previewable;
+	}
+
+	public void setPreviewable(java.lang.Boolean previewable) {
+		this.previewable = previewable;
 	}
 }
