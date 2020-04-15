@@ -32,13 +32,13 @@
  */
 package com.sonicle.webtop.core.util;
 
-import java.io.FileInputStream;
 import java.net.SocketException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateList;
@@ -57,8 +57,8 @@ import net.fortuna.ical4j.model.property.DateProperty;
 import net.fortuna.ical4j.model.property.DtStamp;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Duration;
+import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.RRule;
-import net.fortuna.ical4j.util.Dates;
 import net.fortuna.ical4j.util.UidGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
@@ -107,8 +107,25 @@ public class ICal4jUtils {
 		return new org.joda.time.DateTime(2100, 12, 31, 0, 0, 0, tz);
 	}
 	
+	public static boolean recurHasCount(Recur recur) {
+		if (recur == null) return false;
+		return recur.getCount() > 0;
+	}
+	
+	public static boolean recurHasUntilDate(Recur recur) {
+		if (recur == null) return false;
+		return recur.getUntil() != null;
+	}
+	
+	public static boolean recurHasInfiniteEnd(Recur recur) {
+		if (recur == null) return false;
+		if (recurHasCount(recur)) return false;
+		if (recurHasUntilDate(recur)) return false;
+		return true;
+	}
+	
 	public static Period createPeriod(org.joda.time.DateTime start, org.joda.time.DateTime end, org.joda.time.DateTimeZone timezone) {
-		return new Period(toIC4jDateTime(start, timezone, false), toIC4jDateTime(end, timezone, false));
+		return new Period(toIC4jDateTime(start, timezone), toIC4jDateTime(end, timezone));
 	}
 	
 	public static DateTime createDateTime(org.joda.time.DateTime dateTime) {
@@ -209,18 +226,34 @@ public class ICal4jUtils {
 	}
 	
 	/**
+	 * Creates an iCal4j DateTime according to the passed timezone reference.
+	 * The date and local time with reference to time zone information is
+	 * identified by the use the "TZID" property parameter to reference
+	 * the appropriate time zone definition. "TZID" is discussed in
+	 * detail in Section 3.2.19. For example, the following represents
+	 * 2:00 A.M. in New York on January 19, 1998:
+	 * TZID=America/New_York:19980119T020000
+	 * @param dateTime The date-time to convert.
+	 * @param timezone The zone info of the instant.
+	 * @return DateTime object
+	 */
+	public static DateTime toIC4jDateTime(org.joda.time.DateTime dateTime, org.joda.time.DateTimeZone timezone) {
+		return toIC4jDateTime(dateTime, timezone, true);
+	}
+	
+	/**
 	 * Creates an iCal4j DateTime with local time and optionally adds the 
 	 * timezone reference.
 	 * The date and local time with reference to time zone information is
 	 * identified by the use the "TZID" property parameter to reference
-	 * the appropriate time zone definition.  "TZID" is discussed in
+	 * the appropriate time zone definition. "TZID" is discussed in
 	 * detail in Section 3.2.19. For example, the following represents
 	 * 2:00 A.M. in New York on January 19, 1998:
 	 * TZID=America/New_York:19980119T020000
-	 * @param dateTime
-	 * @param timezone
+	 * @param dateTime The date-time to convert.
+	 * @param timezone The zone info of the instant.
 	 * @param addZoneReference
-	 * @return 
+	 * @return DateTime object
 	 */
 	public static DateTime toIC4jDateTime(org.joda.time.DateTime dateTime, org.joda.time.DateTimeZone timezone, boolean addZoneReference) {
 		if (timezone != null) {
@@ -232,7 +265,59 @@ public class ICal4jUtils {
 		}
 	}
 	
+	/**
+	 * Creates a list of excluded dates suitable to use in conjunction with a recurrence rule.
+	 * @param excludedDates List of dates to exclude.
+	 * @param eventAllDay Event's all-day status.
+	 * @param eventStart Event's start time.
+	 * @param eventTimezone Event's zone info.
+	 * @param useUTC Specifies whether to explicit use UTC times in target collection (eg. exports).
+	 * @return ExDate objects list
+	 */
+	public static ExDate toIC4jExDate(Set<org.joda.time.LocalDate> excludedDates, boolean eventAllDay, org.joda.time.DateTime eventStart, org.joda.time.DateTimeZone eventTimezone, boolean useUTC) {
+		org.joda.time.LocalTime startTime = eventAllDay ? null : eventStart.withZone(eventTimezone).toLocalTime();
+		return toIC4jExDate(excludedDates, startTime, eventTimezone, useUTC);
+	}
 	
+	/**
+	 * Creates a list of excluded dates suitable to use in conjunction with a recurrence rule.
+	 * @param excludedDates List of dates to exclude.
+	 * @param defaultTime A reference time to use (for eg. event's start time), it can be null.
+	 * @param timezone A reference timezone to use.
+	 * @param useUTC Specifies whether to explicit use UTC times in target collection (eg. exports).
+	 * @return ExDate objects list
+	 */
+	public static ExDate toIC4jExDate(Set<org.joda.time.LocalDate> excludedDates, org.joda.time.LocalTime defaultTime, org.joda.time.DateTimeZone timezone, boolean useUTC) {
+		// Define the collection that hold dates...
+		DateList dateList = null;
+		if (defaultTime != null) {
+			dateList = new DateList(Value.DATE_TIME);
+			// Sets timezone info only if we have time defined, AD events must carry dates only!
+			if (useUTC) {
+				dateList.setUtc(true);
+			} else {
+				dateList.setTimeZone(ICal4jUtils.toIC4jTimezone(timezone));
+			}
+		} else {
+			dateList = new DateList(Value.DATE);
+		}
+		
+		// Fill the collection...
+		for (org.joda.time.LocalDate exclDate : excludedDates) {
+			if (Value.DATE_TIME.equals(dateList.getType())) {
+				org.joda.time.DateTime dt = exclDate.toDateTime(defaultTime, timezone);
+				if (useUTC) {
+					dateList.add(ICal4jUtils.toIC4jDateTimeUTC(dt));
+				} else {
+					// Skip forcing the zone reference, it's already set above on the collection setup!
+					dateList.add(ICal4jUtils.toIC4jDateTime(dt, timezone, false));
+				}
+			} else {
+				dateList.add(ICal4jUtils.toIC4jDate(exclDate));
+			}
+		}
+		return new ExDate(dateList);
+	}
 	
 	/**
 	 * Converts an iCal4j DateTime into a JodaTime DateTime.
@@ -309,166 +394,6 @@ public class ICal4jUtils {
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
-	public static void main(String[] args) {
-		try {
-			java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone("Europe/Riga"));
-			
-			net.fortuna.ical4j.model.Calendar cal = ICalendarUtils.parse(new FileInputStream("C:/calendar.ics"));
-			net.fortuna.ical4j.model.component.VEvent ve = (VEvent)cal.getComponents().get(0);
-			
-			org.joda.time.DateTime start = null;
-			org.joda.time.DateTime end = null;
-			org.joda.time.DateTimeZone defaultTz = org.joda.time.DateTimeZone.forID("Europe/Rome");
-			boolean isAllDay = ICal4jUtils.isAllDay(ve);
-			if (isAllDay) {
-				start = ICal4jUtils.toJodaLocalDate(ve.getStartDate().getDate(), defaultTz).toDateTimeAtStartOfDay(defaultTz);
-				end = ICal4jUtils.toJodaLocalDate(ve.getEndDate().getDate(), defaultTz).minusDays(1).toDateTime(new org.joda.time.LocalTime(23, 59, 59, 0), defaultTz);
-
-			} else {
-				start = ICal4jUtils.toJodaDateTime((DateTime)ve.getStartDate().getDate(), defaultTz);
-				end = ICal4jUtils.toJodaDateTime((DateTime)ve.getEndDate().getDate(), defaultTz);
-			}
-			DateTimeZone eventTimezone = start.getZone();
-			
-			//https://theeventscalendar.com/support/forums/topic/issue-with-timezones-and-all-day-events-cont/
-			//org.joda.time.DateTime xxx1 = ICal4jUtils.toJodaDateTime((DateTime)ve.getStartDate().getDate());
-			//org.joda.time.DateTime xxx2 = ICal4jUtils.toJodaDateTime((DateTime)ve.getEndDate().getDate());
-			//TZID=Europe/Rome:
-			//TZID=Europe/Rome:20180606T113000
-			//String a = xxx2.toString();
-			
-		} catch(Throwable t) {
-			System.out.println(t.getMessage());
-		}
-	}
-	
-	/*
-	public static org.joda.time.DateTime toJodaDateTime2(DateTime dateTime, org.joda.time.DateTimeZone defaultTimezone) {
-		org.joda.time.DateTimeZone tz = toJodaTimezone(dateTime.getTimeZone());
-		return new org.joda.time.DateTime(dateTime.getTime(), (tz != null) ? tz : defaultTimezone);
-	}
-	
-	public static void main(String[] args) {
-		try {
-			net.fortuna.ical4j.model.Calendar cal = ICalendarUtils.parse(new FileInputStream("C:/calendar.ics"));
-			net.fortuna.ical4j.model.component.VEvent ve = (VEvent)cal.getComponents().get(0);
-			org.joda.time.DateTime xxx1 = ICal4jUtils.toJodaDateTime((DateTime)ve.getStartDate().getDate());
-			org.joda.time.DateTime xxx2 = ICal4jUtils.toJodaDateTime((DateTime)ve.getEndDate().getDate());
-			//TZID=Europe/Rome:
-			//TZID=Europe/Rome:20180606T113000
-			String a = xxx2.toString();
-		} catch(Throwable t) {
-			System.out.println(t.getMessage());
-		}
-	}
-	*/
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
-	
-
-	
-	
-	
-	/**
-	 * @deprecated use toIC4jDateTimeUTC() or toIC4jDateTime() instead
-	 */
-	@Deprecated
-	public static DateTime toICal4jDateTime(org.joda.time.DateTime dateTime, org.joda.time.DateTimeZone timezone) {
-		DateTime dt = new DateTime(dateTime.toDate());
-		if (timezone != null) {
-			dt.setTimeZone(tzRegistry.getTimeZone(timezone.getID()));
-		}
-		return dt;
-	}
-	
-	@Deprecated
-	public static org.joda.time.DateTime calculateRecurrenceStart(org.joda.time.DateTime eventStart, RRule rrule, org.joda.time.DateTimeZone tz) {
-		return calculateRecurrenceStart(eventStart, rrule.getRecur(), tz);
-	}
-	
-	@Deprecated
-	public static org.joda.time.DateTime calculateRecurrenceStart(org.joda.time.DateTime eventStart, Recur recur, org.joda.time.DateTimeZone tz) {
-		Date d = recur.getNextDate(ICal4jUtils.toICal4jDateTime(eventStart, tz), ICal4jUtils.toICal4jDateTime(eventStart.minusDays(1), tz));
-		return toJodaDateTime(d, tz);
-	}
-	
-	@Deprecated
-	public static org.joda.time.DateTime calculateRecurrenceEnd(org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, RRule rr, org.joda.time.DateTimeZone tz) {
-		VEvent vevent = new VEvent(ICal4jUtils.toICal4jDateTime(eventStart, tz), ICal4jUtils.toICal4jDateTime(eventEnd, tz), "");
-		vevent.getProperties().add(rr);
-		PeriodList periods = vevent.calculateRecurrenceSet(ICal4jUtils.createPeriod(eventStart, ifiniteDate(), tz));
-		if((periods == null) || periods.isEmpty()) return null;
-		Period last = (Period)periods.toArray()[periods.size()-1];
-		return toJodaDateTime(last.getEnd(), tz);
-	}
-	
-	@Deprecated
-	public static org.joda.time.DateTime calculateRecurEnd(Recur recur, org.joda.time.DateTime eventStart, org.joda.time.DateTimeZone eventTz) {
-		VEvent veDummy = new VEvent(ICal4jUtils.toICal4jDateTime(eventStart, eventTz), ICal4jUtils.toICal4jDateTime(eventStart, eventTz), "");
-		veDummy.getProperties().add(new RRule(recur));
-		
-		PeriodList periods = veDummy.calculateRecurrenceSet(ICal4jUtils.createPeriod(eventStart, ifiniteDate(), eventTz));
-		if ((periods == null) || periods.isEmpty()) {
-			return null;
-		} else {
-			Period last = (Period)periods.toArray()[periods.size()-1];
-			return toJodaDateTime(last.getStart(), eventTz);
-		}
-	}
-	
-	
-	
-	
-	public static boolean recurHasCount(Recur recur) {
-		if (recur == null) return false;
-		return recur.getCount() > 0;
-	}
-	
-	public static boolean recurHasUntilDate(Recur recur) {
-		if (recur == null) return false;
-		return recur.getUntil() != null;
-	}
-	
-	public static boolean recurHasInfiniteEnd(Recur recur) {
-		if (recur == null) return false;
-		if (recurHasCount(recur)) return false;
-		if (recurHasUntilDate(recur)) return false;
-		return true;
-	}
-	
-	
 	/**
 	 * Updates, if necessary, the until-date setting it to the event start time in event timezone.
 	 * @param recur Recurrence rule.
@@ -528,17 +453,19 @@ public class ICal4jUtils {
 	
 	/**
 	 * Computes date instances substained by the passed recurrence rule.
-	 * @param recur
-	 * @param recurStart
-	 * @param eventStart
-	 * @param eventEnd
-	 * @param eventTimezone
-	 * @param rangeFrom
-	 * @param rangeTo
-	 * @param limit
-	 * @return 
+	 * @param recur Recurrence object instance.
+	 * @param recurStart Recurrence start instant.
+	 * @param recurExcludedDates List of dates to exclude from the final result.
+	 * @param eventAllDay Indicates whether the event is all-day or not.
+	 * @param eventStart Event's start instant.
+	 * @param eventEnd Event's end instant.
+	 * @param eventTimezone Event's zone info.
+	 * @param rangeFrom Desired starting range to evaluate.
+	 * @param rangeTo Desired ending range to evaluate.
+	 * @param limit Max number of elements to return, -1 means unlimited.
+	 * @return List of date instances.
 	 */
-	public static List<org.joda.time.LocalDate> calculateRecurrenceSet(Recur recur, org.joda.time.DateTime recurStart, org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTimeZone eventTimezone, org.joda.time.DateTime rangeFrom, org.joda.time.DateTime rangeTo, int limit) {
+	public static List<org.joda.time.LocalDate> calculateRecurrenceSet(Recur recur, org.joda.time.DateTime recurStart, Set<org.joda.time.LocalDate> recurExcludedDates, boolean eventAllDay, org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTimeZone eventTimezone, org.joda.time.DateTime rangeFrom, org.joda.time.DateTime rangeTo, int limit) {
 		// Dates computation needs to pass through VEvent otherwise recur may 
 		// not take into account some aspects relates to recurrence start and 
 		// so wrong dates are returned (eg. WEEKLY with missing BYDAY).
@@ -564,8 +491,11 @@ public class ICal4jUtils {
 		// specified view range.
 		org.joda.time.DateTime veStart = eventStart.withDate(recurStart.toLocalDate());
 		int veDays = org.joda.time.Days.daysBetween(eventStart.toLocalDate(), eventEnd.toLocalDate()).getDays(); // Calendar days length
-		VEvent veDummy = new VEvent(toIC4jDateTime(veStart, eventTimezone, false), new Dur(veDays, 0, 0, 0), "DUMMY");
+		VEvent veDummy = new VEvent(toIC4jDateTime(veStart, eventTimezone), new Dur(veDays, 0, 0, 0), "DUMMY");
 		veDummy.getProperties().add(new RRule(recur));
+		if ((recurExcludedDates != null) && !recurExcludedDates.isEmpty()) {
+			veDummy.getProperties().add(toIC4jExDate(recurExcludedDates, eventAllDay, eventStart, eventTimezone, false));
+		}
 		
 		PeriodList list = veDummy.calculateRecurrenceSet(createPeriod(peStart, peEnd, eventTimezone));
 		ArrayList<org.joda.time.LocalDate> dates = new ArrayList<>(list.size() < max ? list.size() : max);
@@ -594,7 +524,7 @@ public class ICal4jUtils {
 		org.joda.time.DateTime seed = eventStart.withZone(eventTimezone).withDate(recurStart.toLocalDate());
 		org.joda.time.DateTime start = recurStart.withZone(eventTimezone).minusDays(1);
 		// Do not use toICal4jDateTimeUTC otherwise, due to zone translation, boundaries may be wrong for all-day events!
-		return toJodaLocalDate(recur.getNextDate(toICal4jDateTime(seed, eventTimezone), toIC4jDateTime(start, eventTimezone, false)), eventTimezone);
+		return toJodaLocalDate(recur.getNextDate(toIC4jDateTime(seed, eventTimezone), toIC4jDateTime(start, eventTimezone)), eventTimezone);
 	}
 	
 	/**
@@ -607,9 +537,9 @@ public class ICal4jUtils {
 	 * @return The last date within recurrence
 	 */
 	public static org.joda.time.DateTime calculateRecurrenceEnd(Recur recur, org.joda.time.DateTime recurStart, org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTimeZone eventTimezone) {
-		DateTime seed = toICal4jDateTime(eventStart, eventTimezone);
-		//DateTime periodStart = toIC4jDateTime(recurStart, eventTimezone, false);
-		DateTime periodEnd = toIC4jDateTime(ifiniteDate(eventTimezone), eventTimezone, false);
+		DateTime seed = toIC4jDateTime(eventStart, eventTimezone);
+		//DateTime periodStart = toIC4jDateTime(recurStart, eventTimezone);
+		DateTime periodEnd = toIC4jDateTime(ifiniteDate(eventTimezone), eventTimezone);
 		return toJodaDateTime(getRecurLastDate(recur, seed, periodEnd), eventTimezone);
 		
 		// Alternative implementation using getDates directly:
@@ -852,6 +782,7 @@ public class ICal4jUtils {
 	/**
 	 * @deprecated
 	 */
+	/*
 	@Deprecated
 	public static PeriodList calculateRecurrenceSet(org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTime recStart, RRule rr, org.joda.time.DateTime from, org.joda.time.DateTime to, org.joda.time.DateTimeZone tz) {
 		org.joda.time.DateTime start, end;
@@ -869,8 +800,60 @@ public class ICal4jUtils {
 		vevent.getProperties().add(rr);
 		return vevent.calculateRecurrenceSet(ICal4jUtils.createPeriod(from, to, tz));
 	}
+	*/
 	
+	/**
+	 * @deprecated use toIC4jDateTimeUTC() or toIC4jDateTime() instead
+	 */
+	@Deprecated
+	public static DateTime toICal4jDateTime(org.joda.time.DateTime dateTime, org.joda.time.DateTimeZone timezone) {
+		DateTime dt = new DateTime(dateTime.toDate());
+		if (timezone != null) {
+			dt.setTimeZone(tzRegistry.getTimeZone(timezone.getID()));
+		}
+		return dt;
+	}
 	
+	/*
+	@Deprecated
+	public static org.joda.time.DateTime calculateRecurrenceStart(org.joda.time.DateTime eventStart, RRule rrule, org.joda.time.DateTimeZone tz) {
+		return calculateRecurrenceStart(eventStart, rrule.getRecur(), tz);
+	}
+	*/
+	
+	/*
+	@Deprecated
+	public static org.joda.time.DateTime calculateRecurrenceStart(org.joda.time.DateTime eventStart, Recur recur, org.joda.time.DateTimeZone tz) {
+		Date d = recur.getNextDate(ICal4jUtils.toICal4jDateTime(eventStart, tz), ICal4jUtils.toICal4jDateTime(eventStart.minusDays(1), tz));
+		return toJodaDateTime(d, tz);
+	}
+	*/
+	
+	@Deprecated
+	public static org.joda.time.DateTime calculateRecurrenceEnd(org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, RRule rr, org.joda.time.DateTimeZone tz) {
+		VEvent vevent = new VEvent(ICal4jUtils.toICal4jDateTime(eventStart, tz), ICal4jUtils.toICal4jDateTime(eventEnd, tz), "");
+		vevent.getProperties().add(rr);
+		PeriodList periods = vevent.calculateRecurrenceSet(ICal4jUtils.createPeriod(eventStart, ifiniteDate(), tz));
+		if((periods == null) || periods.isEmpty()) return null;
+		Period last = (Period)periods.toArray()[periods.size()-1];
+		return toJodaDateTime(last.getEnd(), tz);
+	}
+	
+	/*
+	@Deprecated
+	public static org.joda.time.DateTime calculateRecurEnd(Recur recur, org.joda.time.DateTime eventStart, org.joda.time.DateTimeZone eventTz) {
+		VEvent veDummy = new VEvent(ICal4jUtils.toICal4jDateTime(eventStart, eventTz), ICal4jUtils.toICal4jDateTime(eventStart, eventTz), "");
+		veDummy.getProperties().add(new RRule(recur));
+		
+		PeriodList periods = veDummy.calculateRecurrenceSet(ICal4jUtils.createPeriod(eventStart, ifiniteDate(), eventTz));
+		if ((periods == null) || periods.isEmpty()) {
+			return null;
+		} else {
+			Period last = (Period)periods.toArray()[periods.size()-1];
+			return toJodaDateTime(last.getStart(), eventTz);
+		}
+	}
+	*/
 	
 	/*
 	public static void calculateRecurrenceStart(VEvent event) {
@@ -926,4 +909,148 @@ public class ICal4jUtils {
                 content += "SUMMARY:" + eventname + "\n";
                 content += "TRANSP:OPAQUE" + "\n";
 */
+
+	/*
+	public static org.joda.time.DateTime toJodaDateTime2(DateTime dateTime, org.joda.time.DateTimeZone defaultTimezone) {
+		org.joda.time.DateTimeZone tz = toJodaTimezone(dateTime.getTimeZone());
+		return new org.joda.time.DateTime(dateTime.getTime(), (tz != null) ? tz : defaultTimezone);
+	}
+	
+	public static void main(String[] args) {
+		try {
+			net.fortuna.ical4j.model.Calendar cal = ICalendarUtils.parse(new FileInputStream("C:/calendar.ics"));
+			net.fortuna.ical4j.model.component.VEvent ve = (VEvent)cal.getComponents().get(0);
+			org.joda.time.DateTime xxx1 = ICal4jUtils.toJodaDateTime((DateTime)ve.getStartDate().getDate());
+			org.joda.time.DateTime xxx2 = ICal4jUtils.toJodaDateTime((DateTime)ve.getEndDate().getDate());
+			//TZID=Europe/Rome:
+			//TZID=Europe/Rome:20180606T113000
+			String a = xxx2.toString();
+		} catch(Throwable t) {
+			System.out.println(t.getMessage());
+		}
+	}
+	*/
+	
+	/**
+	 * WTCALENDAR-91
+	 * @throws Exception 
+	 */
+	public static void recur8days4times() throws Exception {
+		boolean ead = true;
+		org.joda.time.DateTimeZone etz = org.joda.time.DateTimeZone.forID("Europe/Rome");
+		org.joda.time.DateTime estart = new org.joda.time.DateTime(2019, 11, 1, 0, 0, 0, etz);
+		org.joda.time.DateTime eend = new org.joda.time.DateTime(2019, 11, 8, 0, 0, 0, etz);
+		org.joda.time.DateTime rstart = new org.joda.time.DateTime(2019, 11, 1, 0, 0, 0, etz);
+		Recur recur = new Recur("FREQ=MONTHLY;COUNT=4;INTERVAL=1;BYMONTHDAY=1");
+		
+		org.joda.time.LocalDate recStart = calculateRecurrenceStart(recur, rstart, estart, etz);
+		if (!"2019-11-01".equals(recStart.toString())) throw new Exception("Fail");
+		
+		org.joda.time.DateTime recEnd = calculateRecurrenceEnd(recur, rstart, estart, eend, etz);
+		if (!"2020-02-01T00:00:00.000+01:00".equals(recEnd.toString())) throw new Exception("Fail");
+		
+		List<org.joda.time.LocalDate> recSet = calculateRecurrenceSet(recur, rstart, null, ead, estart, eend, etz, null, null, -1);
+		if (recSet.size() != 4) throw new Exception("Fail");
+		if (!"2019-11-01".equals(recSet.get(0).toString())) throw new Exception("Fail");
+		if (!"2019-12-01".equals(recSet.get(1).toString())) throw new Exception("Fail");
+		if (!"2020-01-01".equals(recSet.get(2).toString())) throw new Exception("Fail");
+		if (!"2020-02-01".equals(recSet.get(3).toString())) throw new Exception("Fail");
+	}
+	
+	/**
+	 * WTCALENDAR-91
+	 * @throws Exception 
+	 */
+	public static void recur3days2times() throws Exception {
+		boolean ead = true;
+		org.joda.time.DateTimeZone etz = org.joda.time.DateTimeZone.forID("Europe/Rome");
+		org.joda.time.DateTime estart = new org.joda.time.DateTime(2019, 11, 4, 0, 0, 0, etz);
+		org.joda.time.DateTime eend = new org.joda.time.DateTime(2019, 11, 6, 0, 0, 0, etz);
+		org.joda.time.DateTime rstart = new org.joda.time.DateTime(2019, 11, 4, 0, 0, 0, etz);
+		Recur recur = new Recur("FREQ=WEEKLY;COUNT=2;INTERVAL=1");
+		
+		org.joda.time.LocalDate recStart = calculateRecurrenceStart(recur, rstart, estart, etz);
+		if (!"2019-11-04".equals(recStart.toString())) throw new Exception("Fail");
+		
+		org.joda.time.DateTime recEnd = calculateRecurrenceEnd(recur, rstart, estart, eend, etz);
+		if (!"2019-11-11T00:00:00.000+01:00".equals(recEnd.toString())) throw new Exception("Fail");
+		
+		List<org.joda.time.LocalDate> recSet = calculateRecurrenceSet(recur, rstart, null, ead, estart, eend, etz, null, null, -1);
+		if (recSet.size() != 2) throw new Exception("Fail");
+		if (!"2019-11-04".equals(recSet.get(0).toString())) throw new Exception("Fail");
+		if (!"2019-11-11".equals(recSet.get(1).toString())) throw new Exception("Fail");
+	}
+	
+	public static void recur1day2times() throws Exception {
+		boolean ead = false;
+		org.joda.time.DateTimeZone etz = org.joda.time.DateTimeZone.forID("Europe/Rome");
+		org.joda.time.DateTime estart = new org.joda.time.DateTime(2020, 1, 13, 12, 0, 0, etz);
+		org.joda.time.DateTime eend = new org.joda.time.DateTime(2020, 1, 13, 12, 30, 0, etz);
+		org.joda.time.DateTime rstart = new org.joda.time.DateTime(2020, 1, 13, 0, 0, 0, etz);
+		Recur recur = new Recur("FREQ=DAILY;COUNT=5;INTERVAL=1");
+		Set<org.joda.time.LocalDate> rexdates = new java.util.LinkedHashSet<>(Arrays.asList(
+				new org.joda.time.LocalDate(2020, 1, 13)
+		));
+		
+		org.joda.time.LocalDate recStart = calculateRecurrenceStart(recur, rstart, estart, etz);
+		if (!"2020-01-13".equals(recStart.toString())) throw new Exception("Fail");
+		
+		List<org.joda.time.LocalDate> recSet = calculateRecurrenceSet(recur, rstart, rexdates, ead, estart, eend, etz, null, null, -1);
+		if (recSet.size() != 4) throw new Exception("Fail");
+	}
+	
+	
+	public static void main(String[] args) {
+		try {
+			org.joda.time.DateTimeZone rome = org.joda.time.DateTimeZone.forID("Europe/Rome");
+			java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone("Europe/Riga"));
+			recur8days4times();
+			recur3days2times();
+			recur1day2times();
+			
+			org.joda.time.DateTimeZone jTz = org.joda.time.DateTimeZone.forID("Europe/Rome");
+			org.joda.time.DateTime jDt = new org.joda.time.DateTime(2020, 01, 14, 12, 0, 0, jTz);
+			DateTime icDt1 = toIC4jDateTime(jDt, jTz, true);
+			DateTime icDtUtc1 = toIC4jDateTimeUTC(jDt);
+			
+			java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone("Europe/Riga"));
+			
+			DateTime icDt2 = toIC4jDateTime(jDt, jTz, true);
+			DateTime icDtUtc2 = toIC4jDateTimeUTC(jDt);
+			
+			java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone("Europe/Riga"));
+			
+			
+			/*
+			java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone("Europe/Riga"));
+			
+			net.fortuna.ical4j.model.Calendar cal = ICalendarUtils.parse(new FileInputStream("C:/calendar.ics"));
+			net.fortuna.ical4j.model.component.VEvent ve = (VEvent)cal.getComponents().get(0);
+			
+			org.joda.time.DateTime start = null;
+			org.joda.time.DateTime end = null;
+			org.joda.time.DateTimeZone defaultTz = org.joda.time.DateTimeZone.forID("Europe/Rome");
+			boolean isAllDay = ICal4jUtils.isAllDay(ve);
+			if (isAllDay) {
+				start = ICal4jUtils.toJodaLocalDate(ve.getStartDate().getDate(), defaultTz).toDateTimeAtStartOfDay(defaultTz);
+				end = ICal4jUtils.toJodaLocalDate(ve.getEndDate().getDate(), defaultTz).minusDays(1).toDateTime(new org.joda.time.LocalTime(23, 59, 59, 0), defaultTz);
+
+			} else {
+				start = ICal4jUtils.toJodaDateTime((DateTime)ve.getStartDate().getDate(), defaultTz);
+				end = ICal4jUtils.toJodaDateTime((DateTime)ve.getEndDate().getDate(), defaultTz);
+			}
+			DateTimeZone eventTimezone = start.getZone();
+			*/
+			
+			//https://theeventscalendar.com/support/forums/topic/issue-with-timezones-and-all-day-events-cont/
+			//org.joda.time.DateTime xxx1 = ICal4jUtils.toJodaDateTime((DateTime)ve.getStartDate().getDate());
+			//org.joda.time.DateTime xxx2 = ICal4jUtils.toJodaDateTime((DateTime)ve.getEndDate().getDate());
+			//TZID=Europe/Rome:
+			//TZID=Europe/Rome:20180606T113000
+			//String a = xxx2.toString();
+			
+		} catch(Throwable t) {
+			System.out.println(t.getMessage());
+		}
+	}
 }
