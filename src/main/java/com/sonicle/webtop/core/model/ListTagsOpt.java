@@ -30,22 +30,16 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2020 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.bol;
+package com.sonicle.webtop.core.model;
 
-import com.sonicle.webtop.core.jooq.core.tables.pojos.Tags;
+import java.util.EnumSet;
 
 /**
  *
  * @author malbinola
  */
-public class OTag extends Tags {
-	public static final String OWNER_NONE = "*";
+public enum ListTagsOpt {
+	PUBLIC, PRIVATE;
 	
-	public boolean isPersonal() {
-		return !isOwnerNone(getUserId());
-	}
-	
-	public static boolean isOwnerNone(String ownerId) {
-		return OTag.OWNER_NONE.equals(ownerId);
-	}
+	public static final EnumSet<ListTagsOpt> ALL = EnumSet.allOf(ListTagsOpt.class);
 }

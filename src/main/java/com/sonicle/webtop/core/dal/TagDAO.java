@@ -37,6 +37,7 @@ import com.sonicle.webtop.core.bol.OTag;
 import static com.sonicle.webtop.core.jooq.core.Tables.TAGS;
 import com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord;
 import java.sql.Connection;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,6 +57,77 @@ public class TagDAO extends BaseDAO {
 		return IdentifierUtils.getTimeBasedShortID();
 	}
 	
+	public Set<String> selectIdsByDomainOwners(Connection con, String domainId, Collection<String> ownerIds) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				TAGS.TAG_ID
+			)
+			.from(TAGS)
+			.where(
+				TAGS.DOMAIN_ID.equal(domainId)
+				.and(TAGS.USER_ID.in(ownerIds))
+			)
+			.orderBy(
+				TAGS.USER_ID.desc(),
+				TAGS.BUILT_IN.desc(),
+				TAGS.NAME.asc()
+			)
+			.fetchSet(TAGS.TAG_ID);
+	}
+	
+	public Map<String, List<String>> groupIdsByDomainOwners(Connection con, String domainId, Collection<String> ownerIds) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				TAGS.NAME,
+				TAGS.TAG_ID
+			)
+			.from(TAGS)
+			.where(
+				TAGS.DOMAIN_ID.equal(domainId)
+				.and(TAGS.USER_ID.in(ownerIds))
+			)
+			.orderBy(
+				TAGS.TAG_ID
+			)
+			.fetchGroups(TAGS.NAME, TAGS.TAG_ID);
+	}
+	
+	public Map<String, OTag> selectByDomainOwners(Connection con, String domainId, Collection<String> ownerIds) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select()
+			.from(TAGS)
+			.where(
+				TAGS.DOMAIN_ID.equal(domainId)
+				.and(TAGS.USER_ID.in(ownerIds))
+			)
+			.orderBy(
+				TAGS.USER_ID.desc(),
+				TAGS.BUILT_IN.desc(),
+				TAGS.NAME.asc()
+			)
+			.fetchMap(TAGS.TAG_ID, OTag.class);
+	}
+	
+	public Map<String, OTag> selectByDomain(Connection con, String domainId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select()
+			.from(TAGS)
+			.where(
+				TAGS.DOMAIN_ID.equal(domainId)
+			)
+			.orderBy(
+				TAGS.USER_ID.desc(),
+				TAGS.BUILT_IN.desc(),
+				TAGS.NAME.asc()
+			)
+			.fetchMap(TAGS.TAG_ID, OTag.class);
+	}
+	
+	/*
 	public Set<String> selectIdsByDomain(Connection con, String domainId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -119,8 +191,21 @@ public class TagDAO extends BaseDAO {
 			)
 			.fetchMap(TAGS.TAG_ID, OTag.class);
 	}
+	*/
 	
-	public OTag selectByDomain(Connection con, String domainId, String tagId) throws DAOException {
+	public String selectOwnerByDomainTag(Connection con, String domainId, String tagId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select()
+			.from(TAGS)
+			.where(
+				TAGS.TAG_ID.equal(tagId)
+				.and(TAGS.DOMAIN_ID.equal(domainId))
+			)
+			.fetchOne(TAGS.USER_ID);
+	}
+	
+	public OTag selectByDomainTag(Connection con, String domainId, String tagId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select()
@@ -145,6 +230,7 @@ public class TagDAO extends BaseDAO {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.update(TAGS)
+			.set(TAGS.USER_ID, item.getUserId())
 			.set(TAGS.NAME, item.getName())
 			.set(TAGS.COLOR, item.getColor())
 			.where(

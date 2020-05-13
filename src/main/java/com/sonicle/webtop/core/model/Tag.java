@@ -41,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 public class Tag {
 	protected String tagId;
 	protected String domainId;
+	protected Boolean personal;
 	protected Boolean builtIn;
 	protected String name;
 	protected String color;
@@ -59,6 +60,14 @@ public class Tag {
 
 	public void setDomainId(String domainId) {
 		this.domainId = domainId;
+	}
+	
+	public Boolean getPersonal() {
+		return personal;
+	}
+
+	public void setPersonal(Boolean personal) {
+		this.personal = personal;
 	}
 	
 	public Boolean getBuiltIn() {
