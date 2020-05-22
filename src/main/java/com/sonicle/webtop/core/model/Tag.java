@@ -45,6 +45,7 @@ public class Tag {
 	protected Boolean builtIn;
 	protected String name;
 	protected String color;
+	protected String externalId;
 	
 	public String getTagId() {
 		return tagId;
@@ -96,5 +97,13 @@ public class Tag {
 	
 	public static String getHexColor(String color) {
 		return (StringUtils.indexOf(color, "#") == 0) ? StringUtils.substring(color, 1) : color;
+	}
+	
+	public String getExternalId() {
+		return externalId;
+	}
+
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
 	}
 }
