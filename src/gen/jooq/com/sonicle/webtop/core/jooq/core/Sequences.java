@@ -72,6 +72,11 @@ public class Sequences {
 	public static final org.jooq.Sequence<java.lang.Long> SEQ_SYSLOG = new org.jooq.impl.SequenceImpl<java.lang.Long>("seq_syslog", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
 	/**
+	 * The sequence <code>core.seq_test</code>
+	 */
+	public static final org.jooq.Sequence<java.lang.Long> SEQ_TEST = new org.jooq.impl.SequenceImpl<java.lang.Long>("seq_test", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+	/**
 	 * The sequence <code>core.seq_upgrade_statements</code>
 	 */
 	public static final org.jooq.Sequence<java.lang.Long> SEQ_UPGRADE_STATEMENTS = new org.jooq.impl.SequenceImpl<java.lang.Long>("seq_upgrade_statements", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

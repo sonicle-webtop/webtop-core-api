@@ -47,58 +47,58 @@ public class TagsRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicle.we
 	}
 
 	/**
-	 * Setter for <code>core.tags.user_id</code>.
-	 */
-	public void setUserId(java.lang.String value) {
-		setValue(2, value);
-	}
-
-	/**
-	 * Getter for <code>core.tags.user_id</code>.
-	 */
-	public java.lang.String getUserId() {
-		return (java.lang.String) getValue(2);
-	}
-
-	/**
 	 * Setter for <code>core.tags.built_in</code>.
 	 */
 	public void setBuiltIn(java.lang.Boolean value) {
-		setValue(3, value);
+		setValue(2, value);
 	}
 
 	/**
 	 * Getter for <code>core.tags.built_in</code>.
 	 */
 	public java.lang.Boolean getBuiltIn() {
-		return (java.lang.Boolean) getValue(3);
+		return (java.lang.Boolean) getValue(2);
 	}
 
 	/**
 	 * Setter for <code>core.tags.name</code>.
 	 */
 	public void setName(java.lang.String value) {
-		setValue(4, value);
+		setValue(3, value);
 	}
 
 	/**
 	 * Getter for <code>core.tags.name</code>.
 	 */
 	public java.lang.String getName() {
-		return (java.lang.String) getValue(4);
+		return (java.lang.String) getValue(3);
 	}
 
 	/**
 	 * Setter for <code>core.tags.color</code>.
 	 */
 	public void setColor(java.lang.String value) {
-		setValue(5, value);
+		setValue(4, value);
 	}
 
 	/**
 	 * Getter for <code>core.tags.color</code>.
 	 */
 	public java.lang.String getColor() {
+		return (java.lang.String) getValue(4);
+	}
+
+	/**
+	 * Setter for <code>core.tags.user_id</code>.
+	 */
+	public void setUserId(java.lang.String value) {
+		setValue(5, value);
+	}
+
+	/**
+	 * Getter for <code>core.tags.user_id</code>.
+	 */
+	public java.lang.String getUserId() {
 		return (java.lang.String) getValue(5);
 	}
 
@@ -168,15 +168,7 @@ public class TagsRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicle.we
 	 * {@inheritDoc}
 	 */
 	@Override
-	public org.jooq.Field<java.lang.String> field3() {
-		return com.sonicle.webtop.core.jooq.core.tables.Tags.TAGS.USER_ID;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public org.jooq.Field<java.lang.Boolean> field4() {
+	public org.jooq.Field<java.lang.Boolean> field3() {
 		return com.sonicle.webtop.core.jooq.core.tables.Tags.TAGS.BUILT_IN;
 	}
 
@@ -184,7 +176,7 @@ public class TagsRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicle.we
 	 * {@inheritDoc}
 	 */
 	@Override
-	public org.jooq.Field<java.lang.String> field5() {
+	public org.jooq.Field<java.lang.String> field4() {
 		return com.sonicle.webtop.core.jooq.core.tables.Tags.TAGS.NAME;
 	}
 
@@ -192,7 +184,7 @@ public class TagsRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicle.we
 	 * {@inheritDoc}
 	 */
 	@Override
-	public org.jooq.Field<java.lang.String> field6() {
+	public org.jooq.Field<java.lang.String> field5() {
 		return com.sonicle.webtop.core.jooq.core.tables.Tags.TAGS.COLOR;
 	}
 
@@ -224,15 +216,7 @@ public class TagsRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicle.we
 	 * {@inheritDoc}
 	 */
 	@Override
-	public java.lang.String value3() {
-		return getUserId();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public java.lang.Boolean value4() {
+	public java.lang.Boolean value3() {
 		return getBuiltIn();
 	}
 
@@ -240,7 +224,7 @@ public class TagsRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicle.we
 	 * {@inheritDoc}
 	 */
 	@Override
-	public java.lang.String value5() {
+	public java.lang.String value4() {
 		return getName();
 	}
 
@@ -248,7 +232,7 @@ public class TagsRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicle.we
 	 * {@inheritDoc}
 	 */
 	@Override
-	public java.lang.String value6() {
+	public java.lang.String value5() {
 		return getColor();
 	}
 
@@ -282,16 +266,7 @@ public class TagsRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicle.we
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TagsRecord value3(java.lang.String value) {
-		setUserId(value);
-		return this;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public TagsRecord value4(java.lang.Boolean value) {
+	public TagsRecord value3(java.lang.Boolean value) {
 		setBuiltIn(value);
 		return this;
 	}
@@ -300,7 +275,7 @@ public class TagsRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicle.we
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TagsRecord value5(java.lang.String value) {
+	public TagsRecord value4(java.lang.String value) {
 		setName(value);
 		return this;
 	}
@@ -309,7 +284,7 @@ public class TagsRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicle.we
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TagsRecord value6(java.lang.String value) {
+	public TagsRecord value5(java.lang.String value) {
 		setColor(value);
 		return this;
 	}

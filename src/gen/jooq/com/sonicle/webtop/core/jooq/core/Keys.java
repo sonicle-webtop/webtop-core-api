@@ -84,7 +84,7 @@ public class Keys {
 	public static final org.jooq.ForeignKey<com.sonicle.webtop.core.jooq.core.tables.records.CustomPanelsTagsRecord, com.sonicle.webtop.core.jooq.core.tables.records.CustomPanelsRecord> CUSTOM_PANELS_TAGS__CUSTOM_PANELS_TAGS_CUSTOM_PANEL_ID_FKEY = ForeignKeys0.CUSTOM_PANELS_TAGS__CUSTOM_PANELS_TAGS_CUSTOM_PANEL_ID_FKEY;
 	public static final org.jooq.ForeignKey<com.sonicle.webtop.core.jooq.core.tables.records.CustomPanelsTagsRecord, com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord> CUSTOM_PANELS_TAGS__CUSTOM_PANELS_TAGS_TAG_ID_FKEY = ForeignKeys0.CUSTOM_PANELS_TAGS__CUSTOM_PANELS_TAGS_TAG_ID_FKEY;
 	public static final org.jooq.ForeignKey<com.sonicle.webtop.core.jooq.core.tables.records.LicensesLeasesRecord, com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord> LICENSES_LEASES__LICENSES_LEASES_DOMAIN_ID_FKEY = ForeignKeys0.LICENSES_LEASES__LICENSES_LEASES_DOMAIN_ID_FKEY;
-	
+
 	// -------------------------------------------------------------------------
 	// [#1459] distribute members to avoid static initialisers > 64kb
 	// -------------------------------------------------------------------------

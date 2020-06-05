@@ -42,11 +42,6 @@ public class Tags extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.c
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord, java.lang.String> DOMAIN_ID = createField("domain_id", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "");
 
 	/**
-	 * The column <code>core.tags.user_id</code>.
-	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord, java.lang.String> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "");
-
-	/**
 	 * The column <code>core.tags.built_in</code>.
 	 */
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord, java.lang.Boolean> BUILT_IN = createField("built_in", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
