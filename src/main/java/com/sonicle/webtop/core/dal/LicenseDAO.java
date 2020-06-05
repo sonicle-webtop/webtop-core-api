@@ -34,11 +34,14 @@
 package com.sonicle.webtop.core.dal;
 
 import com.sonicle.webtop.core.bol.OLicense;
+import com.sonicle.webtop.core.bol.VLicense;
 import static com.sonicle.webtop.core.jooq.core.Tables.*;
 import com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord;
 import java.sql.Connection;
 import java.util.List;
 import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.impl.DSL;
 
 /**
  *
@@ -50,6 +53,110 @@ public class LicenseDAO extends BaseDAO {
 		return INSTANCE;
 	}
 	
+	public List<OLicense> selectByDomain(Connection con, String domainId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select()
+			.from(LICENSES)
+			.where(
+				LICENSES.DOMAIN_ID.equal(domainId)
+			)
+			.fetchInto(OLicense.class);
+	}
+	
+	public List<VLicense> viewByDomain(Connection con, String domainId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		
+		Field<String> userIds = DSL
+			.select(DSL.groupConcat(LICENSES_LEASES.USER_ID, "|"))
+			.from(LICENSES_LEASES)
+			.where(
+				LICENSES_LEASES.DOMAIN_ID.equal(LICENSES.DOMAIN_ID)
+				.and(LICENSES_LEASES.SERVICE_ID.equal(LICENSES.SERVICE_ID))
+				.and(LICENSES_LEASES.PRODUCT_CODE.equal(LICENSES.PRODUCT_CODE))
+			)
+			.asField("user_ids");
+		
+		return dsl
+			.select(
+				LICENSES.fields()
+			)
+			.select(
+				userIds
+			)
+			.from(LICENSES)
+			.where(
+				LICENSES.DOMAIN_ID.equal(domainId)
+			)
+			.orderBy(
+				LICENSES.SERVICE_ID.asc(),
+				LICENSES.PRODUCT_CODE.asc()
+			)
+			.fetchInto(VLicense.class);
+	}
+	
+	public OLicense select(Connection con, String domainId, String serviceId, String productCode) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select()
+			.from(LICENSES)
+			.where(
+				LICENSES.DOMAIN_ID.equal(domainId)
+				.and(LICENSES.SERVICE_ID.equal(serviceId))
+				.and(LICENSES.PRODUCT_CODE.equal(productCode))
+			)
+			.fetchOneInto(OLicense.class);
+	}
+	
+	public int insert(Connection con, OLicense item) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		LicensesRecord record = dsl.newRecord(LICENSES, item);
+		return dsl
+			.insertInto(LICENSES)
+			.set(record)
+			.execute();
+	}
+	
+	public int updateAutoLease(Connection con, String domainId, String serviceId, String productCode, boolean autoLease) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.update(LICENSES)
+			.set(LICENSES.AUTO_LEASE, autoLease)
+			.where(
+				LICENSES.DOMAIN_ID.equal(domainId)
+				.and(LICENSES.SERVICE_ID.equal(serviceId))
+				.and(LICENSES.PRODUCT_CODE.equal(productCode))
+			)
+			.execute();
+	}
+	
+	public int updateOnlineData(Connection con, String domainId, String serviceId, String productCode, int leaseAvail) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.update(LICENSES)
+			.set(LICENSES.LEASE_AVAIL, leaseAvail)
+			.where(
+				LICENSES.DOMAIN_ID.equal(domainId)
+				.and(LICENSES.SERVICE_ID.equal(serviceId))
+				.and(LICENSES.PRODUCT_CODE.equal(productCode))
+			)
+			.execute();
+	}
+	
+	public int delete(Connection con, String domainId, String serviceId, String productCode) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(LICENSES)
+			.where(
+				LICENSES.DOMAIN_ID.equal(domainId)
+				.and(LICENSES.SERVICE_ID.equal(serviceId))
+				.and(LICENSES.PRODUCT_CODE.equal(productCode))
+			)
+			.execute();
+	}
+	
+	
+	/*
 	public List<OLicense> selectByInternetName(Connection con, String internetName) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -119,4 +226,5 @@ public class LicenseDAO extends BaseDAO {
 			)
 			.execute();
 	}
+	*/
 }

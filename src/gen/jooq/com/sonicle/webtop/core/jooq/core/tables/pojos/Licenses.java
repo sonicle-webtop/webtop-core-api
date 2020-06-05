@@ -16,25 +16,42 @@ package com.sonicle.webtop.core.jooq.core.tables.pojos;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Licenses implements java.io.Serializable {
 
-	private static final long serialVersionUID = 856598848;
+	private static final long serialVersionUID = 851594362;
 
-	private java.lang.String serviceId;
-	private java.lang.String productId;
-	private java.lang.String internetName;
-	private java.lang.String license;
+	private java.lang.String        domainId;
+	private java.lang.String        serviceId;
+	private java.lang.String        productCode;
+	private java.lang.String        string;
+	private org.joda.time.LocalDate expirationDate;
+	private java.lang.Integer       leaseAvail;
+	private java.lang.Boolean       autoLease;
 
 	public Licenses() {}
 
 	public Licenses(
-		java.lang.String serviceId,
-		java.lang.String productId,
-		java.lang.String internetName,
-		java.lang.String license
+		java.lang.String        domainId,
+		java.lang.String        serviceId,
+		java.lang.String        productCode,
+		java.lang.String        string,
+		org.joda.time.LocalDate expirationDate,
+		java.lang.Integer       leaseAvail,
+		java.lang.Boolean       autoLease
 	) {
+		this.domainId = domainId;
 		this.serviceId = serviceId;
-		this.productId = productId;
-		this.internetName = internetName;
-		this.license = license;
+		this.productCode = productCode;
+		this.string = string;
+		this.expirationDate = expirationDate;
+		this.leaseAvail = leaseAvail;
+		this.autoLease = autoLease;
+	}
+
+	public java.lang.String getDomainId() {
+		return this.domainId;
+	}
+
+	public void setDomainId(java.lang.String domainId) {
+		this.domainId = domainId;
 	}
 
 	public java.lang.String getServiceId() {
@@ -45,27 +62,43 @@ public class Licenses implements java.io.Serializable {
 		this.serviceId = serviceId;
 	}
 
-	public java.lang.String getProductId() {
-		return this.productId;
+	public java.lang.String getProductCode() {
+		return this.productCode;
 	}
 
-	public void setProductId(java.lang.String productId) {
-		this.productId = productId;
+	public void setProductCode(java.lang.String productCode) {
+		this.productCode = productCode;
 	}
 
-	public java.lang.String getInternetName() {
-		return this.internetName;
+	public java.lang.String getString() {
+		return this.string;
 	}
 
-	public void setInternetName(java.lang.String internetName) {
-		this.internetName = internetName;
+	public void setString(java.lang.String string) {
+		this.string = string;
 	}
 
-	public java.lang.String getLicense() {
-		return this.license;
+	public org.joda.time.LocalDate getExpirationDate() {
+		return this.expirationDate;
 	}
 
-	public void setLicense(java.lang.String license) {
-		this.license = license;
+	public void setExpirationDate(org.joda.time.LocalDate expirationDate) {
+		this.expirationDate = expirationDate;
+	}
+
+	public java.lang.Integer getLeaseAvail() {
+		return this.leaseAvail;
+	}
+
+	public void setLeaseAvail(java.lang.Integer leaseAvail) {
+		this.leaseAvail = leaseAvail;
+	}
+
+	public java.lang.Boolean getAutoLease() {
+		return this.autoLease;
+	}
+
+	public void setAutoLease(java.lang.Boolean autoLease) {
+		this.autoLease = autoLease;
 	}
 }

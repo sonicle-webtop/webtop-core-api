@@ -102,6 +102,11 @@ public class Tables {
 	public static final com.sonicle.webtop.core.jooq.core.tables.Licenses LICENSES = com.sonicle.webtop.core.jooq.core.tables.Licenses.LICENSES;
 
 	/**
+	 * The table core.licenses_leases
+	 */
+	public static final com.sonicle.webtop.core.jooq.core.tables.LicensesLeases LICENSES_LEASES = com.sonicle.webtop.core.jooq.core.tables.LicensesLeases.LICENSES_LEASES;
+
+	/**
 	 * The table core.local_vault
 	 */
 	public static final com.sonicle.webtop.core.jooq.core.tables.LocalVault LOCAL_VAULT = com.sonicle.webtop.core.jooq.core.tables.LocalVault.LOCAL_VAULT;

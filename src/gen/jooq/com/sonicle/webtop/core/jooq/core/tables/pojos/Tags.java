@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables.pojos;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tags implements java.io.Serializable {
 
-	private static final long serialVersionUID = -921898371;
+	private static final long serialVersionUID = 30758417;
 
 	private java.lang.String  tagId;
 	private java.lang.String  domainId;
@@ -24,6 +24,7 @@ public class Tags implements java.io.Serializable {
 	private java.lang.Boolean builtIn;
 	private java.lang.String  name;
 	private java.lang.String  color;
+	private java.lang.String  externalId;
 
 	public Tags() {}
 
@@ -33,7 +34,8 @@ public class Tags implements java.io.Serializable {
 		java.lang.String  userId,
 		java.lang.Boolean builtIn,
 		java.lang.String  name,
-		java.lang.String  color
+		java.lang.String  color,
+		java.lang.String  externalId
 	) {
 		this.tagId = tagId;
 		this.domainId = domainId;
@@ -41,6 +43,7 @@ public class Tags implements java.io.Serializable {
 		this.builtIn = builtIn;
 		this.name = name;
 		this.color = color;
+		this.externalId = externalId;
 	}
 
 	public java.lang.String getTagId() {
@@ -89,5 +92,13 @@ public class Tags implements java.io.Serializable {
 
 	public void setColor(java.lang.String color) {
 		this.color = color;
+	}
+
+	public java.lang.String getExternalId() {
+		return this.externalId;
+	}
+
+	public void setExternalId(java.lang.String externalId) {
+		this.externalId = externalId;
 	}
 }

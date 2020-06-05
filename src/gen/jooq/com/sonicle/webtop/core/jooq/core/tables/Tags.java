@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tags extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord> {
 
-	private static final long serialVersionUID = 1500174224;
+	private static final long serialVersionUID = 1078590761;
 
 	/**
 	 * The reference instance of <code>core.tags</code>
@@ -60,6 +60,11 @@ public class Tags extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.c
 	 * The column <code>core.tags.color</code>.
 	 */
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord, java.lang.String> COLOR = createField("color", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "");
+
+	/**
+	 * The column <code>core.tags.external_id</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord, java.lang.String> EXTERNAL_ID = createField("external_id", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "");
 
 	/**
 	 * Create a <code>core.tags</code> table reference

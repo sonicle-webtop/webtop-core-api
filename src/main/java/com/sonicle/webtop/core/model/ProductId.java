@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Sonicle S.r.l.
+ * Copyright (C) 2020 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,44 +28,44 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2014 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2020 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.core.model;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-import org.joda.time.LocalDate;
+import com.sonicle.commons.web.json.CId;
 
 /**
  *
- * @author gbulfon
+ * @author malbinola
  */
-public class ServiceLicense extends License {
-	protected LocalDate expirationDate;
-	protected Integer leaseAvail;
-	protected Set<String> leasedUsers = new LinkedHashSet<>();
+public class ProductId extends CId {
 	
-	public LocalDate getExpirationDate() {
-		return expirationDate;
-	}
-
-	public void setExpirationDate(LocalDate expirationDate) {
-		this.expirationDate = expirationDate;
-	}
-
-	public Integer getLeaseAvail() {
-		return leaseAvail;
-	}
-
-	public void setLeaseAvail(Integer leaseAvail) {
-		this.leaseAvail = leaseAvail;
+	public ProductId(String s) {
+		super(s, 2);
 	}
 	
-	public Set<String> getLeasedUsers() {
-		return leasedUsers;
+	protected ProductId(CId.Builder builder) {
+		super(builder);
 	}
-
-	public void setLeasedUsers(Set<String> leasedUsers) {
-		this.leasedUsers = leasedUsers;
+	
+	public String getServiceId() {
+		return this.getToken(0);
+	}
+	
+	public String getProductCode() {
+		return this.getToken(1);
+	}
+	
+	public static ProductId build(String serviceId, String productCode) {
+		return new Builder()
+				.withTokens(serviceId, productCode)
+				.build();
+	}
+	
+	public static class Builder extends CId.Builder<Builder> {
+		@Override
+		public ProductId build() {
+			return new ProductId(this);
+		}
 	}
 }

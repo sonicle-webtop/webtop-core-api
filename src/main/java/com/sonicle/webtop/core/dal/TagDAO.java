@@ -251,6 +251,17 @@ public class TagDAO extends BaseDAO {
 			.execute();
 	}
 	
+	public int deleteByProfile(Connection con, String domainId, String userId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(TAGS)
+			.where(
+				TAGS.DOMAIN_ID.equal(domainId)
+				.and(TAGS.USER_ID.equal(userId))
+			)
+			.execute();
+	}
+	
 	public int deleteByDomain(Connection con, String domainId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl

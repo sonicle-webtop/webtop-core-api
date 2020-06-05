@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Sonicle S.r.l.
+ * Copyright (C) 2020 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,44 +28,22 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2014 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2020 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.model;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
-import org.joda.time.LocalDate;
+package com.sonicle.webtop.core.bol;
 
 /**
  *
- * @author gbulfon
+ * @author malbinola
  */
-public class ServiceLicense extends License {
-	protected LocalDate expirationDate;
-	protected Integer leaseAvail;
-	protected Set<String> leasedUsers = new LinkedHashSet<>();
-	
-	public LocalDate getExpirationDate() {
-		return expirationDate;
+public class VLicense extends OLicense {
+	protected String userIds;
+
+	public String getUserIds() {
+		return userIds;
 	}
 
-	public void setExpirationDate(LocalDate expirationDate) {
-		this.expirationDate = expirationDate;
-	}
-
-	public Integer getLeaseAvail() {
-		return leaseAvail;
-	}
-
-	public void setLeaseAvail(Integer leaseAvail) {
-		this.leaseAvail = leaseAvail;
-	}
-	
-	public Set<String> getLeasedUsers() {
-		return leasedUsers;
-	}
-
-	public void setLeasedUsers(Set<String> leasedUsers) {
-		this.leasedUsers = leasedUsers;
+	public void setUserIds(String userIds) {
+		this.userIds = userIds;
 	}
 }
