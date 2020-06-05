@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CustomFields extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.CustomFieldsRecord> {
 
-	private static final long serialVersionUID = 601537888;
+	private static final long serialVersionUID = 928770082;
 
 	/**
 	 * The reference instance of <code>core.custom_fields</code>
@@ -77,11 +77,6 @@ public class CustomFields extends org.jooq.impl.TableImpl<com.sonicle.webtop.cor
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.CustomFieldsRecord, java.lang.String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "");
 
 	/**
-	 * The column <code>core.custom_fields.searchable</code>.
-	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.CustomFieldsRecord, java.lang.Boolean> SEARCHABLE = createField("searchable", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaulted(true), this, "");
-
-	/**
 	 * The column <code>core.custom_fields.properties</code>.
 	 */
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.CustomFieldsRecord, java.lang.String> PROPERTIES = createField("properties", org.jooq.impl.SQLDataType.CLOB, this, "");
@@ -95,6 +90,11 @@ public class CustomFields extends org.jooq.impl.TableImpl<com.sonicle.webtop.cor
 	 * The column <code>core.custom_fields.label_i18n</code>.
 	 */
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.CustomFieldsRecord, java.lang.String> LABEL_I18N = createField("label_i18n", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+	/**
+	 * The column <code>core.custom_fields.searchable</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.CustomFieldsRecord, java.lang.Boolean> SEARCHABLE = createField("searchable", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaulted(true), this, "");
 
 	/**
 	 * The column <code>core.custom_fields.previewable</code>.
