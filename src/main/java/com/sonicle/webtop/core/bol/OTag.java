@@ -41,8 +41,8 @@ import com.sonicle.webtop.core.jooq.core.tables.pojos.Tags;
 public class OTag extends Tags {
 	public static final String OWNER_NONE = "*";
 	
-	public boolean isPersonal() {
-		return !isOwnerNone(getUserId());
+	public boolean isOwnerNone() {
+		return isOwnerNone(getUserId());
 	}
 	
 	public static boolean isOwnerNone(String ownerId) {

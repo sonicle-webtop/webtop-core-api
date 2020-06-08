@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.core.model;
 
+import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -41,7 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 public class Tag {
 	protected String tagId;
 	protected String domainId;
-	protected Boolean personal;
+	protected Visibility visibility;
 	protected Boolean builtIn;
 	protected String name;
 	protected String color;
@@ -63,12 +64,12 @@ public class Tag {
 		this.domainId = domainId;
 	}
 	
-	public Boolean getPersonal() {
-		return personal;
+	public Visibility getVisibility() {
+		return visibility;
 	}
 
-	public void setPersonal(Boolean personal) {
-		this.personal = personal;
+	public void setVisibility(Visibility visibility) {
+		this.visibility = visibility;
 	}
 	
 	public Boolean getBuiltIn() {
@@ -105,5 +106,10 @@ public class Tag {
 
 	public void setExternalId(String externalId) {
 		this.externalId = externalId;
+	}
+	
+	public static enum Visibility {
+		@SerializedName("private") PRIVATE,
+		@SerializedName("public") PUBLIC
 	}
 }
