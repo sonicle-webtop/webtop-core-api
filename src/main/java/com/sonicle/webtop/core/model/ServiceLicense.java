@@ -42,7 +42,7 @@ import org.joda.time.LocalDate;
  */
 public class ServiceLicense extends License {
 	protected LocalDate expirationDate;
-	protected Integer leaseAvail;
+	protected Integer usersNo;
 	protected Set<String> leasedUsers = new LinkedHashSet<>();
 	
 	public LocalDate getExpirationDate() {
@@ -53,12 +53,12 @@ public class ServiceLicense extends License {
 		this.expirationDate = expirationDate;
 	}
 
-	public Integer getLeaseAvail() {
-		return leaseAvail;
+	public Integer getUsersNo() {
+		return usersNo;
 	}
 
-	public void setLeaseAvail(Integer leaseAvail) {
-		this.leaseAvail = leaseAvail;
+	public void setUsersNo(Integer usersNo) {
+		this.usersNo = usersNo;
 	}
 	
 	public Set<String> getLeasedUsers() {

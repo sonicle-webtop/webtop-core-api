@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Licenses extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord> {
 
-	private static final long serialVersionUID = -1562670001;
+	private static final long serialVersionUID = 465970409;
 
 	/**
 	 * The reference instance of <code>core.licenses</code>
@@ -57,9 +57,9 @@ public class Licenses extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jo
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord, org.joda.time.LocalDate> EXPIRATION_DATE = createField("expiration_date", org.jooq.impl.SQLDataType.DATE, this, "", new com.sonicle.webtop.core.jooq.LocalDateConverter());
 
 	/**
-	 * The column <code>core.licenses.lease_avail</code>.
+	 * The column <code>core.licenses.users_no</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord, java.lang.Integer> LEASE_AVAIL = createField("lease_avail", org.jooq.impl.SQLDataType.INTEGER, this, "");
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord, java.lang.Integer> USERS_NO = createField("users_no", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
 	/**
 	 * The column <code>core.licenses.auto_lease</code>.

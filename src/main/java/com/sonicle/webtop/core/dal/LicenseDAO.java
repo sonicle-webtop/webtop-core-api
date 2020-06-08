@@ -130,11 +130,11 @@ public class LicenseDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int updateOnlineData(Connection con, String domainId, String serviceId, String productCode, int leaseAvail) throws DAOException {
+	public int updateOnlineData(Connection con, String domainId, String serviceId, String productCode, Integer usersNo) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.update(LICENSES)
-			.set(LICENSES.LEASE_AVAIL, leaseAvail)
+			.set(LICENSES.USERS_NO, usersNo)
 			.where(
 				LICENSES.DOMAIN_ID.equal(domainId)
 				.and(LICENSES.SERVICE_ID.equal(serviceId))

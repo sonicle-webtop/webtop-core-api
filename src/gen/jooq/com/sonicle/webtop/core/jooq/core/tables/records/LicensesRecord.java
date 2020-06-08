@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables.records;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LicensesRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord> implements org.jooq.Record7<java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.joda.time.LocalDate, java.lang.Integer, java.lang.Boolean> {
 
-	private static final long serialVersionUID = 1727090177;
+	private static final long serialVersionUID = 595738171;
 
 	/**
 	 * Setter for <code>core.licenses.domain_id</code>.
@@ -89,16 +89,16 @@ public class LicensesRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicl
 	}
 
 	/**
-	 * Setter for <code>core.licenses.lease_avail</code>.
+	 * Setter for <code>core.licenses.users_no</code>.
 	 */
-	public void setLeaseAvail(java.lang.Integer value) {
+	public void setUsersNo(java.lang.Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>core.licenses.lease_avail</code>.
+	 * Getter for <code>core.licenses.users_no</code>.
 	 */
-	public java.lang.Integer getLeaseAvail() {
+	public java.lang.Integer getUsersNo() {
 		return (java.lang.Integer) getValue(5);
 	}
 
@@ -193,7 +193,7 @@ public class LicensesRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicl
 	 */
 	@Override
 	public org.jooq.Field<java.lang.Integer> field6() {
-		return com.sonicle.webtop.core.jooq.core.tables.Licenses.LICENSES.LEASE_AVAIL;
+		return com.sonicle.webtop.core.jooq.core.tables.Licenses.LICENSES.USERS_NO;
 	}
 
 	/**
@@ -249,7 +249,7 @@ public class LicensesRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicl
 	 */
 	@Override
 	public java.lang.Integer value6() {
-		return getLeaseAvail();
+		return getUsersNo();
 	}
 
 	/**
@@ -310,7 +310,7 @@ public class LicensesRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicl
 	 */
 	@Override
 	public LicensesRecord value6(java.lang.Integer value) {
-		setLeaseAvail(value);
+		setUsersNo(value);
 		return this;
 	}
 
@@ -345,7 +345,7 @@ public class LicensesRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicl
 	/**
 	 * Create a detached, initialised LicensesRecord
 	 */
-	public LicensesRecord(java.lang.String domainId, java.lang.String serviceId, java.lang.String productCode, java.lang.String string, org.joda.time.LocalDate expirationDate, java.lang.Integer leaseAvail, java.lang.Boolean autoLease) {
+	public LicensesRecord(java.lang.String domainId, java.lang.String serviceId, java.lang.String productCode, java.lang.String string, org.joda.time.LocalDate expirationDate, java.lang.Integer usersNo, java.lang.Boolean autoLease) {
 		super(com.sonicle.webtop.core.jooq.core.tables.Licenses.LICENSES);
 
 		setValue(0, domainId);
@@ -353,7 +353,7 @@ public class LicensesRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicl
 		setValue(2, productCode);
 		setValue(3, string);
 		setValue(4, expirationDate);
-		setValue(5, leaseAvail);
+		setValue(5, usersNo);
 		setValue(6, autoLease);
 	}
 }

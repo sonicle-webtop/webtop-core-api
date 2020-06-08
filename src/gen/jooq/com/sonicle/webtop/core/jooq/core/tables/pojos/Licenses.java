@@ -16,14 +16,14 @@ package com.sonicle.webtop.core.jooq.core.tables.pojos;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Licenses implements java.io.Serializable {
 
-	private static final long serialVersionUID = 851594362;
+	private static final long serialVersionUID = -904370898;
 
 	private java.lang.String        domainId;
 	private java.lang.String        serviceId;
 	private java.lang.String        productCode;
 	private java.lang.String        string;
 	private org.joda.time.LocalDate expirationDate;
-	private java.lang.Integer       leaseAvail;
+	private java.lang.Integer       usersNo;
 	private java.lang.Boolean       autoLease;
 
 	public Licenses() {}
@@ -34,7 +34,7 @@ public class Licenses implements java.io.Serializable {
 		java.lang.String        productCode,
 		java.lang.String        string,
 		org.joda.time.LocalDate expirationDate,
-		java.lang.Integer       leaseAvail,
+		java.lang.Integer       usersNo,
 		java.lang.Boolean       autoLease
 	) {
 		this.domainId = domainId;
@@ -42,7 +42,7 @@ public class Licenses implements java.io.Serializable {
 		this.productCode = productCode;
 		this.string = string;
 		this.expirationDate = expirationDate;
-		this.leaseAvail = leaseAvail;
+		this.usersNo = usersNo;
 		this.autoLease = autoLease;
 	}
 
@@ -86,12 +86,12 @@ public class Licenses implements java.io.Serializable {
 		this.expirationDate = expirationDate;
 	}
 
-	public java.lang.Integer getLeaseAvail() {
-		return this.leaseAvail;
+	public java.lang.Integer getUsersNo() {
+		return this.usersNo;
 	}
 
-	public void setLeaseAvail(java.lang.Integer leaseAvail) {
-		this.leaseAvail = leaseAvail;
+	public void setUsersNo(java.lang.Integer usersNo) {
+		this.usersNo = usersNo;
 	}
 
 	public java.lang.Boolean getAutoLease() {
