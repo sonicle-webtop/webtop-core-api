@@ -39,8 +39,8 @@ package com.sonicle.webtop.core.model;
 public class License {
 	protected String domainId;
 	protected ProductId productId;
-	protected String string;
-	
+	protected String licenseString;
+	protected String activatedLicenseString;
 	protected Boolean autoLease;
 	
 	public String getDomainId() {
@@ -59,12 +59,20 @@ public class License {
 		this.productId = productId;
 	}
 
-	public String getString() {
-		return string;
+	public String getLicenseString() {
+		return licenseString;
 	}
 
-	public void setString(String string) {
-		this.string = string;
+	public void setLicenseString(String licenseString) {
+		this.licenseString = licenseString;
+	}
+	
+	public String getActivatedLicenseString() {
+		return activatedLicenseString;
+	}
+
+	public void setActivatedLicenseString(String activatedLicenseString) {
+		this.activatedLicenseString = activatedLicenseString;
 	}
 
 	public Boolean getAutoLease() {

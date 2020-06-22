@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LicensesLeases extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.LicensesLeasesRecord> {
 
-	private static final long serialVersionUID = -794074011;
+	private static final long serialVersionUID = -1262801606;
 
 	/**
 	 * The reference instance of <code>core.licenses_leases</code>
@@ -52,9 +52,14 @@ public class LicensesLeases extends org.jooq.impl.TableImpl<com.sonicle.webtop.c
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesLeasesRecord, java.lang.String> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "");
 
 	/**
-	 * The column <code>core.licenses_leases.activation_string</code>.
+	 * The column <code>core.licenses_leases.lease_timestamp</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesLeasesRecord, java.lang.String> ACTIVATION_STRING = createField("activation_string", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesLeasesRecord, org.joda.time.DateTime> LEASE_TIMESTAMP = createField("lease_timestamp", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "", new com.sonicle.webtop.core.jooq.DateTimeConverter());
+
+	/**
+	 * The column <code>core.licenses_leases.lease_origin</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesLeasesRecord, java.lang.String> LEASE_ORIGIN = createField("lease_origin", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false), this, "");
 
 	/**
 	 * Create a <code>core.licenses_leases</code> table reference

@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Licenses extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord> {
 
-	private static final long serialVersionUID = 465970409;
+	private static final long serialVersionUID = -994663264;
 
 	/**
 	 * The reference instance of <code>core.licenses</code>
@@ -52,14 +52,34 @@ public class Licenses extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jo
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord, java.lang.String> STRING = createField("string", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
 	/**
+	 * The column <code>core.licenses.revision_timestamp</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord, org.joda.time.DateTime> REVISION_TIMESTAMP = createField("revision_timestamp", org.jooq.impl.SQLDataType.TIMESTAMP, this, "", new com.sonicle.webtop.core.jooq.DateTimeConverter());
+
+	/**
+	 * The column <code>core.licenses.activated_string</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord, java.lang.String> ACTIVATED_STRING = createField("activated_string", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+	/**
+	 * The column <code>core.licenses.activation_timestamp</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord, org.joda.time.DateTime> ACTIVATION_TIMESTAMP = createField("activation_timestamp", org.jooq.impl.SQLDataType.TIMESTAMP, this, "", new com.sonicle.webtop.core.jooq.DateTimeConverter());
+
+	/**
+	 * The column <code>core.licenses.activation_hw_id</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord, java.lang.String> ACTIVATION_HW_ID = createField("activation_hw_id", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "");
+
+	/**
 	 * The column <code>core.licenses.expiration_date</code>.
 	 */
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord, org.joda.time.LocalDate> EXPIRATION_DATE = createField("expiration_date", org.jooq.impl.SQLDataType.DATE, this, "", new com.sonicle.webtop.core.jooq.LocalDateConverter());
 
 	/**
-	 * The column <code>core.licenses.users_no</code>.
+	 * The column <code>core.licenses.quantity</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord, java.lang.Integer> USERS_NO = createField("users_no", org.jooq.impl.SQLDataType.INTEGER, this, "");
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord, java.lang.Integer> QUANTITY = createField("quantity", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
 	/**
 	 * The column <code>core.licenses.auto_lease</code>.

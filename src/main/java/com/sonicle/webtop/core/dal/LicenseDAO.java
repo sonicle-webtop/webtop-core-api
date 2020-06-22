@@ -39,6 +39,9 @@ import static com.sonicle.webtop.core.jooq.core.Tables.*;
 import com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
@@ -51,6 +54,31 @@ public class LicenseDAO extends BaseDAO {
 	private final static LicenseDAO INSTANCE = new LicenseDAO();
 	public static LicenseDAO getInstance() {
 		return INSTANCE;
+	}
+	
+	public List<OLicense> selectAll(Connection con) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select()
+			.from(LICENSES)
+			.fetchInto(OLicense.class);
+	}
+	
+	public Map<String, List<String>> groupAllLicenses(Connection con) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		Field<String> PRODUCT_ID = DSL.concat(LICENSES.SERVICE_ID, DSL.val("|"), LICENSES.PRODUCT_CODE).as("product_id");
+		return dsl
+			.select(
+				LICENSES.DOMAIN_ID,
+				PRODUCT_ID
+			)
+			.from(LICENSES)
+			.orderBy(
+				LICENSES.DOMAIN_ID.asc(),
+				LICENSES.SERVICE_ID.asc(),
+				LICENSES.PRODUCT_CODE.asc()
+			)
+			.fetchGroups(LICENSES.DOMAIN_ID, PRODUCT_ID);
 	}
 	
 	public List<OLicense> selectByDomain(Connection con, String domainId) throws DAOException {
@@ -117,11 +145,17 @@ public class LicenseDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int updateAutoLease(Connection con, String domainId, String serviceId, String productCode, boolean autoLease) throws DAOException {
+	public int replaceLicense(Connection con, String domainId, String serviceId, String productCode, String string, LocalDate expirationDate, Integer quantity, String activatedString, DateTime revisionTimestamp, String activationHwId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.update(LICENSES)
-			.set(LICENSES.AUTO_LEASE, autoLease)
+			.set(LICENSES.STRING, string)
+			.set(LICENSES.REVISION_TIMESTAMP, revisionTimestamp)
+			.set(LICENSES.EXPIRATION_DATE, expirationDate)
+			.set(LICENSES.QUANTITY, quantity)
+			.set(LICENSES.ACTIVATED_STRING, activatedString)
+			.set(LICENSES.ACTIVATION_TIMESTAMP, revisionTimestamp)
+			.set(LICENSES.ACTIVATION_HW_ID, activationHwId)
 			.where(
 				LICENSES.DOMAIN_ID.equal(domainId)
 				.and(LICENSES.SERVICE_ID.equal(serviceId))
@@ -130,11 +164,26 @@ public class LicenseDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int updateOnlineData(Connection con, String domainId, String serviceId, String productCode, Integer usersNo) throws DAOException {
+	public int updateActivation(Connection con, String domainId, String serviceId, String productCode, String activatedString, DateTime activationTimestamp, String activationHwId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.update(LICENSES)
-			.set(LICENSES.USERS_NO, usersNo)
+			.set(LICENSES.ACTIVATED_STRING, activatedString)
+			.set(LICENSES.ACTIVATION_TIMESTAMP, activationTimestamp)
+			.set(LICENSES.ACTIVATION_HW_ID, activationHwId)
+			.where(
+				LICENSES.DOMAIN_ID.equal(domainId)
+				.and(LICENSES.SERVICE_ID.equal(serviceId))
+				.and(LICENSES.PRODUCT_CODE.equal(productCode))
+			)
+			.execute();
+	}
+	
+	public int updateAutoLease(Connection con, String domainId, String serviceId, String productCode, boolean autoLease) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.update(LICENSES)
+			.set(LICENSES.AUTO_LEASE, autoLease)
 			.where(
 				LICENSES.DOMAIN_ID.equal(domainId)
 				.and(LICENSES.SERVICE_ID.equal(serviceId))

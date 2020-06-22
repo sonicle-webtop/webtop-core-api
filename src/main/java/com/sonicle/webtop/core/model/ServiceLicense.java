@@ -32,8 +32,11 @@
  */
 package com.sonicle.webtop.core.model;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 /**
@@ -41,9 +44,36 @@ import org.joda.time.LocalDate;
  * @author gbulfon
  */
 public class ServiceLicense extends License {
+	protected DateTime revisionTimestamp;
+	protected DateTime activationTimestamp;
+	protected String activationHwId;
 	protected LocalDate expirationDate;
-	protected Integer usersNo;
-	protected Set<String> leasedUsers = new LinkedHashSet<>();
+	protected Integer quantity;
+	protected Map<String, ServiceLicenseLease> leases = new LinkedHashMap<>();
+	
+	public DateTime getRevisionTimestamp() {
+		return revisionTimestamp;
+	}
+
+	public void setRevisionTimestamp(DateTime revisionTimestamp) {
+		this.revisionTimestamp = revisionTimestamp;
+	}
+	
+	public DateTime getActivationTimestamp() {
+		return activationTimestamp;
+	}
+
+	public void setActivationTimestamp(DateTime activationTimestamp) {
+		this.activationTimestamp = activationTimestamp;
+	}
+
+	public String getActivationHwId() {
+		return activationHwId;
+	}
+
+	public void setActivationHwId(String activationHwId) {
+		this.activationHwId = activationHwId;
+	}
 	
 	public LocalDate getExpirationDate() {
 		return expirationDate;
@@ -53,19 +83,25 @@ public class ServiceLicense extends License {
 		this.expirationDate = expirationDate;
 	}
 
-	public Integer getUsersNo() {
-		return usersNo;
+	public Integer getQuantity() {
+		return quantity;
 	}
 
-	public void setUsersNo(Integer usersNo) {
-		this.usersNo = usersNo;
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
 	}
 	
-	public Set<String> getLeasedUsers() {
-		return leasedUsers;
+	public Map<String, ServiceLicenseLease> getLeases() {
+		return leases;
 	}
-
-	public void setLeasedUsers(Set<String> leasedUsers) {
-		this.leasedUsers = leasedUsers;
+	
+	public void setLeases(Map<String, ServiceLicenseLease> leases) {
+		this.leases = leases;
+	}
+	
+	public void setLeases(Collection<ServiceLicenseLease> leases) {
+		this.leases = leases.stream()
+				.filter(item -> item.getUserId()!= null)
+				.collect(Collectors.toMap(item -> item.getUserId(), item -> item, (ov, nv) -> nv, LinkedHashMap::new));
 	}
 }

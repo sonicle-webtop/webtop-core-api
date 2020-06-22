@@ -16,28 +16,31 @@ package com.sonicle.webtop.core.jooq.core.tables.pojos;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LicensesLeases implements java.io.Serializable {
 
-	private static final long serialVersionUID = -1202631873;
+	private static final long serialVersionUID = 918529847;
 
-	private java.lang.String domainId;
-	private java.lang.String serviceId;
-	private java.lang.String productCode;
-	private java.lang.String userId;
-	private java.lang.String activationString;
+	private java.lang.String       domainId;
+	private java.lang.String       serviceId;
+	private java.lang.String       productCode;
+	private java.lang.String       userId;
+	private org.joda.time.DateTime leaseTimestamp;
+	private java.lang.String       leaseOrigin;
 
 	public LicensesLeases() {}
 
 	public LicensesLeases(
-		java.lang.String domainId,
-		java.lang.String serviceId,
-		java.lang.String productCode,
-		java.lang.String userId,
-		java.lang.String activationString
+		java.lang.String       domainId,
+		java.lang.String       serviceId,
+		java.lang.String       productCode,
+		java.lang.String       userId,
+		org.joda.time.DateTime leaseTimestamp,
+		java.lang.String       leaseOrigin
 	) {
 		this.domainId = domainId;
 		this.serviceId = serviceId;
 		this.productCode = productCode;
 		this.userId = userId;
-		this.activationString = activationString;
+		this.leaseTimestamp = leaseTimestamp;
+		this.leaseOrigin = leaseOrigin;
 	}
 
 	public java.lang.String getDomainId() {
@@ -72,11 +75,19 @@ public class LicensesLeases implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	public java.lang.String getActivationString() {
-		return this.activationString;
+	public org.joda.time.DateTime getLeaseTimestamp() {
+		return this.leaseTimestamp;
 	}
 
-	public void setActivationString(java.lang.String activationString) {
-		this.activationString = activationString;
+	public void setLeaseTimestamp(org.joda.time.DateTime leaseTimestamp) {
+		this.leaseTimestamp = leaseTimestamp;
+	}
+
+	public java.lang.String getLeaseOrigin() {
+		return this.leaseOrigin;
+	}
+
+	public void setLeaseOrigin(java.lang.String leaseOrigin) {
+		this.leaseOrigin = leaseOrigin;
 	}
 }

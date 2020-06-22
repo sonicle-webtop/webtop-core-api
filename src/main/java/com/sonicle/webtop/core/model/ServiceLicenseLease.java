@@ -32,7 +32,8 @@
  */
 package com.sonicle.webtop.core.model;
 
-import java.util.LinkedHashMap;
+import com.google.gson.annotations.SerializedName;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -40,7 +41,8 @@ import java.util.LinkedHashMap;
  */
 public class ServiceLicenseLease {
 	protected String userId;
-	protected String activationString;
+	protected DateTime leaseTimestamp;
+	protected LeaseOrigin leaseOrigin;
 
 	public String getUserId() {
 		return userId;
@@ -50,25 +52,25 @@ public class ServiceLicenseLease {
 		this.userId = userId;
 	}
 
-	public String getActivationString() {
-		return activationString;
+	public DateTime getLeaseTimestamp() {
+		return leaseTimestamp;
 	}
 
-	public void setActivationString(String activationString) {
-		this.activationString = activationString;
+	public void setLeaseTimestamp(DateTime leaseTimestamp) {
+		this.leaseTimestamp = leaseTimestamp;
 	}
 	
-	public static class Map extends LinkedHashMap<String, ServiceLicenseLease> {
-		public Map() {
-			super();
-		}
-		
-		public Map(int i) {
-			super(i);
-		}
-		
-		public ServiceLicenseLease add(ServiceLicenseLease value) {
-			return this.put(value.getUserId(), value);
-		}
+	public LeaseOrigin getLeaseOrigin() {
+		return leaseOrigin;
+	}
+
+	public void setLeaseOrigin(LeaseOrigin leaseOrigin) {
+		this.leaseOrigin = leaseOrigin;
+	}
+	
+	public static enum LeaseOrigin {
+		@SerializedName("static") STATIC,
+		@SerializedName("auto") AUTO
+		;
 	}
 }

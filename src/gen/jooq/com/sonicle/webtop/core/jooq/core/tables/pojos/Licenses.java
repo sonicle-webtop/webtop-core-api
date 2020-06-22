@@ -16,14 +16,18 @@ package com.sonicle.webtop.core.jooq.core.tables.pojos;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Licenses implements java.io.Serializable {
 
-	private static final long serialVersionUID = -904370898;
+	private static final long serialVersionUID = 979953684;
 
 	private java.lang.String        domainId;
 	private java.lang.String        serviceId;
 	private java.lang.String        productCode;
 	private java.lang.String        string;
+	private org.joda.time.DateTime  revisionTimestamp;
+	private java.lang.String        activatedString;
+	private org.joda.time.DateTime  activationTimestamp;
+	private java.lang.String        activationHwId;
 	private org.joda.time.LocalDate expirationDate;
-	private java.lang.Integer       usersNo;
+	private java.lang.Integer       quantity;
 	private java.lang.Boolean       autoLease;
 
 	public Licenses() {}
@@ -33,16 +37,24 @@ public class Licenses implements java.io.Serializable {
 		java.lang.String        serviceId,
 		java.lang.String        productCode,
 		java.lang.String        string,
+		org.joda.time.DateTime  revisionTimestamp,
+		java.lang.String        activatedString,
+		org.joda.time.DateTime  activationTimestamp,
+		java.lang.String        activationHwId,
 		org.joda.time.LocalDate expirationDate,
-		java.lang.Integer       usersNo,
+		java.lang.Integer       quantity,
 		java.lang.Boolean       autoLease
 	) {
 		this.domainId = domainId;
 		this.serviceId = serviceId;
 		this.productCode = productCode;
 		this.string = string;
+		this.revisionTimestamp = revisionTimestamp;
+		this.activatedString = activatedString;
+		this.activationTimestamp = activationTimestamp;
+		this.activationHwId = activationHwId;
 		this.expirationDate = expirationDate;
-		this.usersNo = usersNo;
+		this.quantity = quantity;
 		this.autoLease = autoLease;
 	}
 
@@ -78,6 +90,38 @@ public class Licenses implements java.io.Serializable {
 		this.string = string;
 	}
 
+	public org.joda.time.DateTime getRevisionTimestamp() {
+		return this.revisionTimestamp;
+	}
+
+	public void setRevisionTimestamp(org.joda.time.DateTime revisionTimestamp) {
+		this.revisionTimestamp = revisionTimestamp;
+	}
+
+	public java.lang.String getActivatedString() {
+		return this.activatedString;
+	}
+
+	public void setActivatedString(java.lang.String activatedString) {
+		this.activatedString = activatedString;
+	}
+
+	public org.joda.time.DateTime getActivationTimestamp() {
+		return this.activationTimestamp;
+	}
+
+	public void setActivationTimestamp(org.joda.time.DateTime activationTimestamp) {
+		this.activationTimestamp = activationTimestamp;
+	}
+
+	public java.lang.String getActivationHwId() {
+		return this.activationHwId;
+	}
+
+	public void setActivationHwId(java.lang.String activationHwId) {
+		this.activationHwId = activationHwId;
+	}
+
 	public org.joda.time.LocalDate getExpirationDate() {
 		return this.expirationDate;
 	}
@@ -86,12 +130,12 @@ public class Licenses implements java.io.Serializable {
 		this.expirationDate = expirationDate;
 	}
 
-	public java.lang.Integer getUsersNo() {
-		return this.usersNo;
+	public java.lang.Integer getQuantity() {
+		return this.quantity;
 	}
 
-	public void setUsersNo(java.lang.Integer usersNo) {
-		this.usersNo = usersNo;
+	public void setQuantity(java.lang.Integer quantity) {
+		this.quantity = quantity;
 	}
 
 	public java.lang.Boolean getAutoLease() {
