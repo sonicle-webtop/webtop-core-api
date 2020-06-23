@@ -39,7 +39,7 @@ import java.util.EnumSet;
  * @author malbinola
  */
 public enum ListTagsOpt {
-	PUBLIC, PRIVATE;
+	SHARED, PRIVATE;
 	
 	public static final EnumSet<ListTagsOpt> ALL = EnumSet.allOf(ListTagsOpt.class);
 }

@@ -110,6 +110,6 @@ public class Tag {
 	
 	public static enum Visibility {
 		@SerializedName("private") PRIVATE,
-		@SerializedName("public") PUBLIC
+		@SerializedName("shared") SHARED
 	}
 }
