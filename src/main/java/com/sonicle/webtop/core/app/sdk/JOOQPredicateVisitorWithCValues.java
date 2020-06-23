@@ -34,7 +34,7 @@ package com.sonicle.webtop.core.app.sdk;
 
 import com.sonicle.commons.qbuilders.operators.ComparisonOperator;
 import com.sonicle.commons.EnumUtils;
-import com.sonicle.commons.web.json.CompId;
+import com.sonicle.commons.web.json.CId;
 import static com.sonicle.webtop.core.jooq.core.Tables.CUSTOM_FIELDS;
 import static com.sonicle.webtop.core.jooq.core.Tables.CUSTOM_PANELS_FIELDS;
 import static com.sonicle.webtop.core.jooq.core.Tables.CUSTOM_PANELS_TAGS;
@@ -68,7 +68,7 @@ public abstract class JOOQPredicateVisitorWithCValues extends JOOQPredicateVisit
 	abstract protected Condition getConditionCustomValuesForCurrentEntityAndField(final String fieldId);
 	abstract protected Condition getConditionCustomValuesForFieldValue(final QueryBuilderWithCValues.Type cvalueType, final ComparisonOperator operator, final Collection<?> values);
 	
-	protected Condition generateCValueCondition(final CompId fieldName, final ComparisonOperator operator, final Collection<?> values) {
+	protected Condition generateCValueCondition(final CId fieldName, final ComparisonOperator operator, final Collection<?> values) {
 		String tk0 = fieldName.getToken(0); // -> field type
 		String tk1 = fieldName.getToken(1); // -> field id
 		QueryBuilderWithCValues.Type cvalueType = EnumUtils.getEnum(QueryBuilderWithCValues.Type.class, tk0);

@@ -38,7 +38,7 @@ import com.sonicle.commons.qbuilders.properties.concrete.DoubleProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.InstantProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.StringProperty;
 import com.sonicle.commons.EnumUtils;
-import com.sonicle.commons.web.json.CompId;
+import com.sonicle.commons.web.json.CId;
 import com.sonicle.webtop.core.model.CustomField;
 import org.joda.time.DateTimeZone;
 
@@ -54,23 +54,23 @@ public abstract class QueryBuilderWithCValues<T extends QueryBuilder<T>> extends
 	}
 	
 	public StringProperty<T> customValueString(final String fieldId) {
-		return string(new CompId(EnumUtils.getName(Type.CVSTRING), fieldId).toString());
+		return string(CId.build(EnumUtils.getName(Type.CVSTRING), fieldId).toString());
 	}
 	
 	public DoubleProperty<T> customValueNumber(final String fieldId) {
-		return doubleNum(new CompId(EnumUtils.getName(Type.CVNUMBER), fieldId).toString());
+		return doubleNum(CId.build(EnumUtils.getName(Type.CVNUMBER), fieldId).toString());
 	}
 	
 	public BooleanProperty<T> customValueBoolean(final String fieldId) {
-		return bool(new CompId(EnumUtils.getName(Type.CVBOOL), fieldId).toString());
+		return bool(CId.build(EnumUtils.getName(Type.CVBOOL), fieldId).toString());
 	}
 	
 	public InstantProperty<T> customValueDate(final String fieldId) {
-		return instant(new CompId(EnumUtils.getName(Type.CVDATE), fieldId).toString());
+		return instant(CId.build(EnumUtils.getName(Type.CVDATE), fieldId).toString());
 	}
 	
 	public StringProperty<T> customValueText(final String fieldId) {
-		return string(new CompId(EnumUtils.getName(Type.CVTEXT), fieldId).toString());
+		return string(CId.build(EnumUtils.getName(Type.CVTEXT), fieldId).toString());
 	}
 	
 	protected Condition<T> customValueCondition(final String customFieldId, final CustomField.Type customFieldType, final String value, final boolean negated, final boolean smartStringComparison, final DateTimeZone timezone) {
