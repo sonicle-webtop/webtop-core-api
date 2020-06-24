@@ -148,6 +148,19 @@ public class LicenseLeaseDAO extends BaseDAO {
 		return batch.execute();
 	}
 	
+	public int insert(Connection con, String domainId, String serviceId, String productCode, String userId, DateTime leaseTimestamp, LeaseOrigin origin) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.insertInto(LICENSES_LEASES)
+			.set(LICENSES_LEASES.DOMAIN_ID, domainId)
+			.set(LICENSES_LEASES.SERVICE_ID, serviceId)
+			.set(LICENSES_LEASES.PRODUCT_CODE, productCode)
+			.set(LICENSES_LEASES.USER_ID, userId)
+			.set(LICENSES_LEASES.LEASE_TIMESTAMP, leaseTimestamp)
+			.set(LICENSES_LEASES.LEASE_ORIGIN, EnumUtils.toSerializedName(origin))
+			.execute();
+	}
+	
 	public int insert(Connection con, OLicenseLease item) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		LicensesLeasesRecord record = dsl.newRecord(LICENSES_LEASES, item);
