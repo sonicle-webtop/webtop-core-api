@@ -494,7 +494,12 @@ public class ICal4jUtils {
 		VEvent veDummy = new VEvent(toIC4jDateTime(veStart, eventTimezone), new Dur(veDays, 0, 0, 0), "DUMMY");
 		veDummy.getProperties().add(new RRule(recur));
 		if ((recurExcludedDates != null) && !recurExcludedDates.isEmpty()) {
-			veDummy.getProperties().add(toIC4jExDate(recurExcludedDates, eventAllDay, eventStart, eventTimezone, false));
+			// Seems that we have to use times also when dealing with AD events, 
+			// otherwise we get wrong dates (#WT-806) when calculating recurrence set.
+			// AD events have start time set to 00:00 so we are ok when extracting as time.
+			veDummy.getProperties().add(toIC4jExDate(recurExcludedDates, eventStart.withZone(eventTimezone).toLocalTime(), eventTimezone, false));
+			// Replaced by logic above!
+			//veDummy.getProperties().add(toIC4jExDate(recurExcludedDates, eventAllDay, eventStart, eventTimezone, false));
 		}
 		
 		PeriodList list = veDummy.calculateRecurrenceSet(createPeriod(peStart, peEnd, eventTimezone));
