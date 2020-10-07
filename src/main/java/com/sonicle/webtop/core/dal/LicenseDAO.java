@@ -56,6 +56,24 @@ public class LicenseDAO extends BaseDAO {
 		return INSTANCE;
 	}
 	
+	public OLicense lock(Connection con, String domainId, String serviceId, String productCode) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				LICENSES.DOMAIN_ID,
+				LICENSES.SERVICE_ID,
+				LICENSES.PRODUCT_CODE
+			)
+			.from(LICENSES)
+			.where(
+				LICENSES.DOMAIN_ID.equal(domainId)
+				.and(LICENSES.SERVICE_ID.equal(serviceId))
+				.and(LICENSES.PRODUCT_CODE.equal(productCode))
+			)
+			.forUpdate()
+			.fetchOneInto(OLicense.class);
+	}
+	
 	public List<OLicense> selectAll(Connection con) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl

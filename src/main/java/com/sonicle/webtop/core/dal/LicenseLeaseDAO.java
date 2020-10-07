@@ -35,6 +35,7 @@ package com.sonicle.webtop.core.dal;
 import com.sonicle.commons.EnumUtils;
 import com.sonicle.webtop.core.bol.OLicenseLease;
 import static com.sonicle.webtop.core.jooq.core.Tables.LICENSES_LEASES;
+import com.sonicle.webtop.core.jooq.core.tables.LicensesLeases;
 import com.sonicle.webtop.core.jooq.core.tables.records.LicensesLeasesRecord;
 import com.sonicle.webtop.core.model.ServiceLicenseLease.LeaseOrigin;
 import java.sql.Connection;
@@ -45,6 +46,7 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.jooq.BatchBindStep;
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 /**
  *
@@ -54,6 +56,33 @@ public class LicenseLeaseDAO extends BaseDAO {
 	private final static LicenseLeaseDAO INSTANCE = new LicenseLeaseDAO();
 	public static LicenseLeaseDAO getInstance() {
 		return INSTANCE;
+	}
+	
+	public boolean existsByDomainServiceProductUser(Connection con, String domainId, String serviceId, String productCode, String userId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.selectCount()
+			.from(LICENSES_LEASES)
+			.where(
+				LICENSES_LEASES.DOMAIN_ID.equal(domainId)
+				.and(LICENSES_LEASES.SERVICE_ID.equal(serviceId))
+				.and(LICENSES_LEASES.PRODUCT_CODE.equal(productCode))
+				.and(LICENSES_LEASES.USER_ID.equal(userId))
+			)
+			.fetchOne(0, int.class) == 1;
+	}
+	
+	public int countByDomainServiceProduct(Connection con, String domainId, String serviceId, String productCode) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.selectCount()
+			.from(LICENSES_LEASES)
+			.where(
+				LICENSES_LEASES.DOMAIN_ID.equal(domainId)
+				.and(LICENSES_LEASES.SERVICE_ID.equal(serviceId))
+				.and(LICENSES_LEASES.PRODUCT_CODE.equal(productCode))
+			)
+			.fetchOne(0, int.class);
 	}
 	
 	public List<OLicenseLease> selectByDomainUser(Connection con, String domainId, String userId) throws DAOException {
@@ -191,6 +220,34 @@ public class LicenseLeaseDAO extends BaseDAO {
 				LICENSES_LEASES.DOMAIN_ID.equal(domainId)
 				.and(LICENSES_LEASES.SERVICE_ID.equal(serviceId))
 				.and(LICENSES_LEASES.PRODUCT_CODE.equal(productCode))
+			)
+			.execute();
+	}
+	
+	public int deleteExeedingByDomainServiceProduct(Connection con, String domainId, String serviceId, String productCode, int maxLimit) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		LicensesLeases LL_2 = LICENSES_LEASES.as("ll2");
+		return dsl
+			.delete(LICENSES_LEASES)
+			.where(
+				LICENSES_LEASES.DOMAIN_ID.equal(domainId)
+				.and(LICENSES_LEASES.SERVICE_ID.equal(serviceId))
+				.and(LICENSES_LEASES.PRODUCT_CODE.equal(productCode))
+				.and(LICENSES_LEASES.USER_ID.notIn(
+					DSL.select(
+						LL_2.USER_ID
+					)
+					.from(LL_2)
+					.where(
+						LL_2.DOMAIN_ID.equal(domainId)
+						.and(LL_2.SERVICE_ID.equal(serviceId))
+						.and(LL_2.PRODUCT_CODE.equal(productCode))
+					)
+					.orderBy(
+						LL_2.LEASE_TIMESTAMP.asc()
+					)
+					.limit(maxLimit)
+				))
 			)
 			.execute();
 	}
