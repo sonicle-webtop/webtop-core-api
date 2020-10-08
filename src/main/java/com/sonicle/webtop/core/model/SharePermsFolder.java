@@ -32,7 +32,7 @@
  */
 package com.sonicle.webtop.core.model;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
