@@ -32,13 +32,17 @@
  */
 package com.sonicle.webtop.core.dal;
 
+import com.sonicle.commons.EnumUtils;
 import com.sonicle.commons.IdentifierUtils;
 import com.sonicle.webtop.core.bol.OCustomPanel;
 import com.sonicle.webtop.core.bol.VCustomPanel;
+import static com.sonicle.webtop.core.jooq.core.Tables.CUSTOM_FIELDS;
 import static com.sonicle.webtop.core.jooq.core.Tables.CUSTOM_PANELS;
 import static com.sonicle.webtop.core.jooq.core.Tables.CUSTOM_PANELS_FIELDS;
 import static com.sonicle.webtop.core.jooq.core.Tables.CUSTOM_PANELS_TAGS;
 import com.sonicle.webtop.core.jooq.core.tables.CustomPanels;
+import com.sonicle.webtop.core.jooq.core.tables.CustomPanelsFields;
+import com.sonicle.webtop.core.model.CustomField;
 import java.sql.Connection;
 import java.util.Collection;
 import java.util.Map;
@@ -81,22 +85,61 @@ public class CustomPanelDAO extends BaseDAO {
 	}
 	*/
 	
-	public Map<String, VCustomPanel> viewUsedByDomainServiceTags(Connection con, String domainId, String serviceId, Collection<String> usedByTagIds, int fieldsLimit) throws DAOException {
+	public Map<String, VCustomPanel> viewUsedByDomainServiceTags(Connection con, String domainId, String serviceId, Collection<String> usedByTagIds, Boolean searchableFields, Boolean previewableFields, int fieldsLimit) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		
+		CustomPanelsFields CPF1 = CUSTOM_PANELS_FIELDS.as("cpf1");
+		
+		Condition cpfinnerSearchableCndt = DSL.trueCondition();
+		if (searchableFields != null) {
+			cpfinnerSearchableCndt = (searchableFields == true) ? CUSTOM_FIELDS.SEARCHABLE.isTrue() : CUSTOM_FIELDS.SEARCHABLE.isFalse();
+		}
+		Condition cpfinnerPreviewableCndt = DSL.trueCondition();
+		if (previewableFields != null) {
+			cpfinnerPreviewableCndt = (previewableFields == true) ? CUSTOM_FIELDS.PREVIEWABLE.isTrue() : CUSTOM_FIELDS.PREVIEWABLE.isFalse();
+		}
+		
+		// Here we need to use same discovery logic of CustomFieldsDAO.viewOnlineIdsByDomainServiceSearchablePreviewable
+		// that limits the number of returned fields starting from a list ordered 
+		// by field's name, of course according revisionStatus value. This is 
+		// required otherwise limited set may be wrong; so do NOT use limit directly
+		// in cpfinner table.
+		Condition cpfinnerLimitCndt = DSL.trueCondition();
+		if (fieldsLimit > -1) {
+			cpfinnerLimitCndt = CPF1.CUSTOM_FIELD_ID.in(
+				DSL.select(
+					CUSTOM_FIELDS.CUSTOM_FIELD_ID
+				)
+				.from(CUSTOM_FIELDS)
+				.where(
+					CUSTOM_FIELDS.DOMAIN_ID.equal(domainId)
+					.and(CUSTOM_FIELDS.SERVICE_ID.equal(serviceId))
+					.and(
+						CUSTOM_FIELDS.REVISION_STATUS.equal(EnumUtils.toSerializedName(CustomField.RevisionStatus.NEW))
+						.or(CUSTOM_FIELDS.REVISION_STATUS.equal(EnumUtils.toSerializedName(CustomField.RevisionStatus.MODIFIED)))
+					)
+					.and(cpfinnerSearchableCndt)
+					.and(cpfinnerPreviewableCndt)
+				)
+				.orderBy(
+					CUSTOM_FIELDS.NAME.asc()
+				)
+				.limit(fieldsLimit == -1 ? (Param)null : DSL.inline(fieldsLimit, Integer.class))
+			);
+		}
 		Table<?> cpfinner = DSL
 			.select(
 			//.selectDistinct(
-				CUSTOM_PANELS_FIELDS.CUSTOM_FIELD_ID
+				CPF1.CUSTOM_FIELD_ID
 			)
-			.from(CUSTOM_PANELS_FIELDS)
+			.from(CPF1)
 			.where(
-				CUSTOM_PANELS_FIELDS.CUSTOM_PANEL_ID.equal(CUSTOM_PANELS.CUSTOM_PANEL_ID)
+				CPF1.CUSTOM_PANEL_ID.equal(CUSTOM_PANELS.CUSTOM_PANEL_ID)
+				.and(cpfinnerLimitCndt)
 			)
 			.orderBy(
-				CUSTOM_PANELS_FIELDS.ORDER.asc()
+				CPF1.ORDER.asc()
 			)
-			.limit(fieldsLimit == -1 ? (Param)null : DSL.inline(fieldsLimit, Integer.class))
 			.asTable("cpfinner");
 		
 		Field<String> customFieldIds = DSL
