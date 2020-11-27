@@ -44,12 +44,21 @@ import org.joda.time.LocalDate;
  * @author gbulfon
  */
 public class ServiceLicense extends License {
+	protected Boolean builtIn;
 	protected DateTime revisionTimestamp;
 	protected DateTime activationTimestamp;
 	protected String activationHwId;
 	protected LocalDate expirationDate;
 	protected Integer quantity;
 	protected Map<String, ServiceLicenseLease> leases = new LinkedHashMap<>();
+	
+	public Boolean getBuiltIn() {
+		return builtIn;
+	}
+
+	public void setBuiltIn(Boolean builtIn) {
+		this.builtIn = builtIn;
+	}
 	
 	public DateTime getRevisionTimestamp() {
 		return revisionTimestamp;
