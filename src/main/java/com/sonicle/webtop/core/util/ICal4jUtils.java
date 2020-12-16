@@ -542,7 +542,7 @@ public class ICal4jUtils {
 	 * @return The last date within recurrence
 	 */
 	public static org.joda.time.DateTime calculateRecurrenceEnd(Recur recur, org.joda.time.DateTime recurStart, org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTimeZone eventTimezone) {
-		DateTime seed = toIC4jDateTime(eventStart, eventTimezone);
+		DateTime seed = toIC4jDateTime(recurStart, eventTimezone);
 		//DateTime periodStart = toIC4jDateTime(recurStart, eventTimezone);
 		DateTime periodEnd = toIC4jDateTime(ifiniteDate(eventTimezone), eventTimezone);
 		return toJodaDateTime(getRecurLastDate(recur, seed, periodEnd), eventTimezone);
