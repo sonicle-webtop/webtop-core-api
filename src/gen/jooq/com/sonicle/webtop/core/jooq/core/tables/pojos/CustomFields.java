@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables.pojos;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CustomFields implements java.io.Serializable {
 
-	private static final long serialVersionUID = 1218235244;
+	private static final long serialVersionUID = 300153982;
 
 	private java.lang.String       customFieldId;
 	private java.lang.String       domainId;
@@ -27,11 +27,11 @@ public class CustomFields implements java.io.Serializable {
 	private java.lang.String       name;
 	private java.lang.String       description;
 	private java.lang.String       type;
+	private java.lang.Boolean      searchable;
+	private java.lang.Boolean      previewable;
 	private java.lang.String       properties;
 	private java.lang.String       values;
 	private java.lang.String       labelI18n;
-	private java.lang.Boolean      searchable;
-	private java.lang.Boolean      previewable;
 
 	public CustomFields() {}
 
@@ -45,11 +45,11 @@ public class CustomFields implements java.io.Serializable {
 		java.lang.String       name,
 		java.lang.String       description,
 		java.lang.String       type,
+		java.lang.Boolean      searchable,
+		java.lang.Boolean      previewable,
 		java.lang.String       properties,
 		java.lang.String       values,
-		java.lang.String       labelI18n,
-		java.lang.Boolean      searchable,
-		java.lang.Boolean      previewable
+		java.lang.String       labelI18n
 	) {
 		this.customFieldId = customFieldId;
 		this.domainId = domainId;
@@ -60,11 +60,11 @@ public class CustomFields implements java.io.Serializable {
 		this.name = name;
 		this.description = description;
 		this.type = type;
+		this.searchable = searchable;
+		this.previewable = previewable;
 		this.properties = properties;
 		this.values = values;
 		this.labelI18n = labelI18n;
-		this.searchable = searchable;
-		this.previewable = previewable;
 	}
 
 	public java.lang.String getCustomFieldId() {
@@ -139,6 +139,22 @@ public class CustomFields implements java.io.Serializable {
 		this.type = type;
 	}
 
+	public java.lang.Boolean getSearchable() {
+		return this.searchable;
+	}
+
+	public void setSearchable(java.lang.Boolean searchable) {
+		this.searchable = searchable;
+	}
+
+	public java.lang.Boolean getPreviewable() {
+		return this.previewable;
+	}
+
+	public void setPreviewable(java.lang.Boolean previewable) {
+		this.previewable = previewable;
+	}
+
 	public java.lang.String getProperties() {
 		return this.properties;
 	}
@@ -161,21 +177,5 @@ public class CustomFields implements java.io.Serializable {
 
 	public void setLabelI18n(java.lang.String labelI18n) {
 		this.labelI18n = labelI18n;
-	}
-
-	public java.lang.Boolean getSearchable() {
-		return this.searchable;
-	}
-
-	public void setSearchable(java.lang.Boolean searchable) {
-		this.searchable = searchable;
-	}
-
-	public java.lang.Boolean getPreviewable() {
-		return this.previewable;
-	}
-
-	public void setPreviewable(java.lang.Boolean previewable) {
-		this.previewable = previewable;
 	}
 }

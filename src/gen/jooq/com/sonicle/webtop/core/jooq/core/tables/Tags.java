@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tags extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord> {
 
-	private static final long serialVersionUID = 1078590761;
+	private static final long serialVersionUID = 911496036;
 
 	/**
 	 * The reference instance of <code>core.tags</code>
@@ -49,7 +49,7 @@ public class Tags extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.c
 	/**
 	 * The column <code>core.tags.built_in</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord, java.lang.Boolean> BUILT_IN = createField("built_in", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord, java.lang.Boolean> BUILT_IN = createField("built_in", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaulted(true), this, "");
 
 	/**
 	 * The column <code>core.tags.name</code>.

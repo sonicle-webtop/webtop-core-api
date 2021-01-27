@@ -21,21 +21,15 @@ public class Keys {
 	// IDENTITY definitions
 	// -------------------------------------------------------------------------
 
-	public static final org.jooq.Identity<com.sonicle.webtop.core.jooq.config.tables.records.FetchmailPollsRecord, java.lang.Integer> IDENTITY_FETCHMAIL_POLLS = Identities0.IDENTITY_FETCHMAIL_POLLS;
 	public static final org.jooq.Identity<com.sonicle.webtop.core.jooq.config.tables.records.PecbridgeFetchersRecord, java.lang.Integer> IDENTITY_PECBRIDGE_FETCHERS = Identities0.IDENTITY_PECBRIDGE_FETCHERS;
 	public static final org.jooq.Identity<com.sonicle.webtop.core.jooq.config.tables.records.PecbridgeRelaysRecord, java.lang.Integer> IDENTITY_PECBRIDGE_RELAYS = Identities0.IDENTITY_PECBRIDGE_RELAYS;
-	public static final org.jooq.Identity<com.sonicle.webtop.core.jooq.config.tables.records.VirtualAliasesRecord, java.lang.Integer> IDENTITY_VIRTUAL_ALIASES = Identities0.IDENTITY_VIRTUAL_ALIASES;
-	public static final org.jooq.Identity<com.sonicle.webtop.core.jooq.config.tables.records.VirtualDomainNamesRecord, java.lang.Integer> IDENTITY_VIRTUAL_DOMAIN_NAMES = Identities0.IDENTITY_VIRTUAL_DOMAIN_NAMES;
 
 	// -------------------------------------------------------------------------
 	// UNIQUE and PRIMARY KEY definitions
 	// -------------------------------------------------------------------------
 
-	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.config.tables.records.FetchmailPollsRecord> FETCHMAIL_POLLS_PKEY = UniqueKeys0.FETCHMAIL_POLLS_PKEY;
 	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.config.tables.records.PecbridgeFetchersRecord> PECBRIDGE_FETCHERS_PKEY = UniqueKeys0.PECBRIDGE_FETCHERS_PKEY;
 	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.config.tables.records.PecbridgeRelaysRecord> PECBRIDGE_RELAYS_PKEY = UniqueKeys0.PECBRIDGE_RELAYS_PKEY;
-	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.config.tables.records.VirtualAliasesRecord> VIRTUAL_ALIASES_PKEY = UniqueKeys0.VIRTUAL_ALIASES_PKEY;
-	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.config.tables.records.VirtualDomainNamesRecord> VIRTUAL_DOMAIN_NAMES_PKEY = UniqueKeys0.VIRTUAL_DOMAIN_NAMES_PKEY;
 
 	// -------------------------------------------------------------------------
 	// FOREIGN KEY definitions
@@ -47,18 +41,12 @@ public class Keys {
 	// -------------------------------------------------------------------------
 
 	private static class Identities0 extends org.jooq.impl.AbstractKeys {
-		public static org.jooq.Identity<com.sonicle.webtop.core.jooq.config.tables.records.FetchmailPollsRecord, java.lang.Integer> IDENTITY_FETCHMAIL_POLLS = createIdentity(com.sonicle.webtop.core.jooq.config.tables.FetchmailPolls.FETCHMAIL_POLLS, com.sonicle.webtop.core.jooq.config.tables.FetchmailPolls.FETCHMAIL_POLLS.POLL_ID);
 		public static org.jooq.Identity<com.sonicle.webtop.core.jooq.config.tables.records.PecbridgeFetchersRecord, java.lang.Integer> IDENTITY_PECBRIDGE_FETCHERS = createIdentity(com.sonicle.webtop.core.jooq.config.tables.PecbridgeFetchers.PECBRIDGE_FETCHERS, com.sonicle.webtop.core.jooq.config.tables.PecbridgeFetchers.PECBRIDGE_FETCHERS.FETCHER_ID);
 		public static org.jooq.Identity<com.sonicle.webtop.core.jooq.config.tables.records.PecbridgeRelaysRecord, java.lang.Integer> IDENTITY_PECBRIDGE_RELAYS = createIdentity(com.sonicle.webtop.core.jooq.config.tables.PecbridgeRelays.PECBRIDGE_RELAYS, com.sonicle.webtop.core.jooq.config.tables.PecbridgeRelays.PECBRIDGE_RELAYS.RELAY_ID);
-		public static org.jooq.Identity<com.sonicle.webtop.core.jooq.config.tables.records.VirtualAliasesRecord, java.lang.Integer> IDENTITY_VIRTUAL_ALIASES = createIdentity(com.sonicle.webtop.core.jooq.config.tables.VirtualAliases.VIRTUAL_ALIASES, com.sonicle.webtop.core.jooq.config.tables.VirtualAliases.VIRTUAL_ALIASES.VIRTUAL_ALIAS_ID);
-		public static org.jooq.Identity<com.sonicle.webtop.core.jooq.config.tables.records.VirtualDomainNamesRecord, java.lang.Integer> IDENTITY_VIRTUAL_DOMAIN_NAMES = createIdentity(com.sonicle.webtop.core.jooq.config.tables.VirtualDomainNames.VIRTUAL_DOMAIN_NAMES, com.sonicle.webtop.core.jooq.config.tables.VirtualDomainNames.VIRTUAL_DOMAIN_NAMES.VIRTUAL_DOMAIN_NAME_ID);
 	}
 
 	private static class UniqueKeys0 extends org.jooq.impl.AbstractKeys {
-		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.config.tables.records.FetchmailPollsRecord> FETCHMAIL_POLLS_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.config.tables.FetchmailPolls.FETCHMAIL_POLLS, com.sonicle.webtop.core.jooq.config.tables.FetchmailPolls.FETCHMAIL_POLLS.POLL_ID);
 		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.config.tables.records.PecbridgeFetchersRecord> PECBRIDGE_FETCHERS_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.config.tables.PecbridgeFetchers.PECBRIDGE_FETCHERS, com.sonicle.webtop.core.jooq.config.tables.PecbridgeFetchers.PECBRIDGE_FETCHERS.FETCHER_ID);
 		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.config.tables.records.PecbridgeRelaysRecord> PECBRIDGE_RELAYS_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.config.tables.PecbridgeRelays.PECBRIDGE_RELAYS, com.sonicle.webtop.core.jooq.config.tables.PecbridgeRelays.PECBRIDGE_RELAYS.RELAY_ID);
-		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.config.tables.records.VirtualAliasesRecord> VIRTUAL_ALIASES_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.config.tables.VirtualAliases.VIRTUAL_ALIASES, com.sonicle.webtop.core.jooq.config.tables.VirtualAliases.VIRTUAL_ALIASES.VIRTUAL_ALIAS_ID);
-		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.config.tables.records.VirtualDomainNamesRecord> VIRTUAL_DOMAIN_NAMES_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.config.tables.VirtualDomainNames.VIRTUAL_DOMAIN_NAMES, com.sonicle.webtop.core.jooq.config.tables.VirtualDomainNames.VIRTUAL_DOMAIN_NAMES.VIRTUAL_DOMAIN_NAME_ID);
 	}
 }

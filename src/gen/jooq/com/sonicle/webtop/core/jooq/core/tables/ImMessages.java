@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImMessages extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord> {
 
-	private static final long serialVersionUID = -1914898799;
+	private static final long serialVersionUID = -1195446317;
 
 	/**
 	 * The reference instance of <code>core.im_messages</code>
@@ -82,6 +82,11 @@ public class ImMessages extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord, java.lang.String> TEXT = createField("text", org.jooq.impl.SQLDataType.CLOB, this, "");
 
 	/**
+	 * The column <code>core.im_messages.data</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord, java.lang.String> DATA = createField("data", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+	/**
 	 * The column <code>core.im_messages.message_uid</code>.
 	 */
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord, java.lang.String> MESSAGE_UID = createField("message_uid", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "");
@@ -90,11 +95,6 @@ public class ImMessages extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.
 	 * The column <code>core.im_messages.stanza_id</code>.
 	 */
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord, java.lang.String> STANZA_ID = createField("stanza_id", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "");
-
-	/**
-	 * The column <code>core.im_messages.data</code>.
-	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord, java.lang.String> DATA = createField("data", org.jooq.impl.SQLDataType.CLOB, this, "");
 
 	/**
 	 * Create a <code>core.im_messages</code> table reference
@@ -131,7 +131,7 @@ public class ImMessages extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.
 	 */
 	@Override
 	public org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord> getPrimaryKey() {
-		return com.sonicle.webtop.core.jooq.core.Keys.IM_HISTORY_MESSAGES_PKEY;
+		return com.sonicle.webtop.core.jooq.core.Keys.IM_MESSAGES_PKEY;
 	}
 
 	/**
@@ -139,7 +139,7 @@ public class ImMessages extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.
 	 */
 	@Override
 	public java.util.List<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord>> getKeys() {
-		return java.util.Arrays.<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord>>asList(com.sonicle.webtop.core.jooq.core.Keys.IM_HISTORY_MESSAGES_PKEY);
+		return java.util.Arrays.<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord>>asList(com.sonicle.webtop.core.jooq.core.Keys.IM_MESSAGES_PKEY);
 	}
 
 	/**

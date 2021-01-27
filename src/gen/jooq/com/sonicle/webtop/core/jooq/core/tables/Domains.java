@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Domains extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord> {
 
-	private static final long serialVersionUID = -145166956;
+	private static final long serialVersionUID = 534078008;
 
 	/**
 	 * The reference instance of <code>core.domains</code>
@@ -69,7 +69,7 @@ public class Domains extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.joo
 	/**
 	 * The column <code>core.domains.dir_password</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord, java.lang.String> DIR_PASSWORD = createField("dir_password", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "");
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord, java.lang.String> DIR_PASSWORD = createField("dir_password", org.jooq.impl.SQLDataType.CLOB, this, "");
 
 	/**
 	 * The column <code>core.domains.dir_connection_security</code>.

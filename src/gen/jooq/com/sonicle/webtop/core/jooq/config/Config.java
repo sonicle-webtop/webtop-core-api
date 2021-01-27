@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.config;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Config extends org.jooq.impl.SchemaImpl {
 
-	private static final long serialVersionUID = -696033321;
+	private static final long serialVersionUID = 208579757;
 
 	/**
 	 * The reference instance of <code>config</code>
@@ -39,11 +39,8 @@ public class Config extends org.jooq.impl.SchemaImpl {
 
 	private final java.util.List<org.jooq.Sequence<?>> getSequences0() {
 		return java.util.Arrays.<org.jooq.Sequence<?>>asList(
-			com.sonicle.webtop.core.jooq.config.Sequences.SEQ_FETCHMAIL_POLLS,
 			com.sonicle.webtop.core.jooq.config.Sequences.SEQ_PECBRIDGE_FETCHERS,
-			com.sonicle.webtop.core.jooq.config.Sequences.SEQ_PECBRIDGE_RELAYS,
-			com.sonicle.webtop.core.jooq.config.Sequences.SEQ_VIRTUAL_ALIASES,
-			com.sonicle.webtop.core.jooq.config.Sequences.SEQ_VIRTUAL_DOMAIN_NAMES);
+			com.sonicle.webtop.core.jooq.config.Sequences.SEQ_PECBRIDGE_RELAYS);
 	}
 
 	@Override
@@ -55,10 +52,7 @@ public class Config extends org.jooq.impl.SchemaImpl {
 
 	private final java.util.List<org.jooq.Table<?>> getTables0() {
 		return java.util.Arrays.<org.jooq.Table<?>>asList(
-			com.sonicle.webtop.core.jooq.config.tables.FetchmailPolls.FETCHMAIL_POLLS,
 			com.sonicle.webtop.core.jooq.config.tables.PecbridgeFetchers.PECBRIDGE_FETCHERS,
-			com.sonicle.webtop.core.jooq.config.tables.PecbridgeRelays.PECBRIDGE_RELAYS,
-			com.sonicle.webtop.core.jooq.config.tables.VirtualAliases.VIRTUAL_ALIASES,
-			com.sonicle.webtop.core.jooq.config.tables.VirtualDomainNames.VIRTUAL_DOMAIN_NAMES);
+			com.sonicle.webtop.core.jooq.config.tables.PecbridgeRelays.PECBRIDGE_RELAYS);
 	}
 }

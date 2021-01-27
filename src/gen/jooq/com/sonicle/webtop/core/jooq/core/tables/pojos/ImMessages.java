@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables.pojos;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImMessages implements java.io.Serializable {
 
-	private static final long serialVersionUID = 183166574;
+	private static final long serialVersionUID = 1694592000;
 
 	private java.lang.Integer      id;
 	private java.lang.String       domainId;
@@ -28,9 +28,9 @@ public class ImMessages implements java.io.Serializable {
 	private org.joda.time.DateTime deliveryTimestamp;
 	private java.lang.String       action;
 	private java.lang.String       text;
+	private java.lang.String       data;
 	private java.lang.String       messageUid;
 	private java.lang.String       stanzaId;
-	private java.lang.String       data;
 
 	public ImMessages() {}
 
@@ -45,9 +45,9 @@ public class ImMessages implements java.io.Serializable {
 		org.joda.time.DateTime deliveryTimestamp,
 		java.lang.String       action,
 		java.lang.String       text,
+		java.lang.String       data,
 		java.lang.String       messageUid,
-		java.lang.String       stanzaId,
-		java.lang.String       data
+		java.lang.String       stanzaId
 	) {
 		this.id = id;
 		this.domainId = domainId;
@@ -59,9 +59,9 @@ public class ImMessages implements java.io.Serializable {
 		this.deliveryTimestamp = deliveryTimestamp;
 		this.action = action;
 		this.text = text;
+		this.data = data;
 		this.messageUid = messageUid;
 		this.stanzaId = stanzaId;
-		this.data = data;
 	}
 
 	public java.lang.Integer getId() {
@@ -144,6 +144,14 @@ public class ImMessages implements java.io.Serializable {
 		this.text = text;
 	}
 
+	public java.lang.String getData() {
+		return this.data;
+	}
+
+	public void setData(java.lang.String data) {
+		this.data = data;
+	}
+
 	public java.lang.String getMessageUid() {
 		return this.messageUid;
 	}
@@ -158,13 +166,5 @@ public class ImMessages implements java.io.Serializable {
 
 	public void setStanzaId(java.lang.String stanzaId) {
 		this.stanzaId = stanzaId;
-	}
-
-	public java.lang.String getData() {
-		return this.data;
-	}
-
-	public void setData(java.lang.String data) {
-		this.data = data;
 	}
 }

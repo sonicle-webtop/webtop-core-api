@@ -17,11 +17,6 @@ package com.sonicle.webtop.core.jooq.core;
 public class Tables {
 
 	/**
-	 * The table core.____customers
-	 */
-	public static final com.sonicle.webtop.core.jooq.core.tables.____Customers ____CUSTOMERS = com.sonicle.webtop.core.jooq.core.tables.____Customers.____CUSTOMERS;
-
-	/**
 	 * The table core.activities
 	 */
 	public static final com.sonicle.webtop.core.jooq.core.tables.Activities ACTIVITIES = com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES;
@@ -60,11 +55,6 @@ public class Tables {
 	 * The table core.custom_panels_tags
 	 */
 	public static final com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags CUSTOM_PANELS_TAGS = com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags.CUSTOM_PANELS_TAGS;
-
-	/**
-	 * The table core.customers_deprecated
-	 */
-	public static final com.sonicle.webtop.core.jooq.core.tables.CustomersDeprecated CUSTOMERS_DEPRECATED = com.sonicle.webtop.core.jooq.core.tables.CustomersDeprecated.CUSTOMERS_DEPRECATED;
 
 	/**
 	 * The table core.domain_settings
@@ -205,4 +195,14 @@ public class Tables {
 	 * The table core.users_info
 	 */
 	public static final com.sonicle.webtop.core.jooq.core.tables.UsersInfo USERS_INFO = com.sonicle.webtop.core.jooq.core.tables.UsersInfo.USERS_INFO;
+
+	/**
+	 * The table core.vw_access_log
+	 */
+	public static final com.sonicle.webtop.core.jooq.core.tables.VwAccessLog VW_ACCESS_LOG = com.sonicle.webtop.core.jooq.core.tables.VwAccessLog.VW_ACCESS_LOG;
+
+	/**
+	 * The table core.vw_auth_details
+	 */
+	public static final com.sonicle.webtop.core.jooq.core.tables.VwAuthDetails VW_AUTH_DETAILS = com.sonicle.webtop.core.jooq.core.tables.VwAuthDetails.VW_AUTH_DETAILS;
 }

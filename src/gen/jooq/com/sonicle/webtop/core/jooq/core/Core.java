@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Core extends org.jooq.impl.SchemaImpl {
 
-	private static final long serialVersionUID = 1182866758;
+	private static final long serialVersionUID = -867040409;
 
 	/**
 	 * The reference instance of <code>core</code>
@@ -63,7 +63,6 @@ public class Core extends org.jooq.impl.SchemaImpl {
 
 	private final java.util.List<org.jooq.Table<?>> getTables0() {
 		return java.util.Arrays.<org.jooq.Table<?>>asList(
-			com.sonicle.webtop.core.jooq.core.tables.____Customers.____CUSTOMERS,
 			com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES,
 			com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG,
 			com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE,
@@ -72,7 +71,6 @@ public class Core extends org.jooq.impl.SchemaImpl {
 			com.sonicle.webtop.core.jooq.core.tables.CustomPanels.CUSTOM_PANELS,
 			com.sonicle.webtop.core.jooq.core.tables.CustomPanelsFields.CUSTOM_PANELS_FIELDS,
 			com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags.CUSTOM_PANELS_TAGS,
-			com.sonicle.webtop.core.jooq.core.tables.CustomersDeprecated.CUSTOMERS_DEPRECATED,
 			com.sonicle.webtop.core.jooq.core.tables.DomainSettings.DOMAIN_SETTINGS,
 			com.sonicle.webtop.core.jooq.core.tables.Domains.DOMAINS,
 			com.sonicle.webtop.core.jooq.core.tables.FileTypes.FILE_TYPES,
@@ -100,6 +98,8 @@ public class Core extends org.jooq.impl.SchemaImpl {
 			com.sonicle.webtop.core.jooq.core.tables.UserSettings.USER_SETTINGS,
 			com.sonicle.webtop.core.jooq.core.tables.Users.USERS,
 			com.sonicle.webtop.core.jooq.core.tables.UsersAssociations.USERS_ASSOCIATIONS,
-			com.sonicle.webtop.core.jooq.core.tables.UsersInfo.USERS_INFO);
+			com.sonicle.webtop.core.jooq.core.tables.UsersInfo.USERS_INFO,
+			com.sonicle.webtop.core.jooq.core.tables.VwAccessLog.VW_ACCESS_LOG,
+			com.sonicle.webtop.core.jooq.core.tables.VwAuthDetails.VW_AUTH_DETAILS);
 	}
 }

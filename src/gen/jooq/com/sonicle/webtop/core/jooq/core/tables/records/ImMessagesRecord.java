@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables.records;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord> implements org.jooq.Record13<java.lang.Integer, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String> {
 
-	private static final long serialVersionUID = -948284482;
+	private static final long serialVersionUID = 1306766470;
 
 	/**
 	 * Setter for <code>core.im_messages.id</code>.
@@ -159,44 +159,44 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<com.soni
 	}
 
 	/**
-	 * Setter for <code>core.im_messages.message_uid</code>.
-	 */
-	public void setMessageUid(java.lang.String value) {
-		setValue(10, value);
-	}
-
-	/**
-	 * Getter for <code>core.im_messages.message_uid</code>.
-	 */
-	public java.lang.String getMessageUid() {
-		return (java.lang.String) getValue(10);
-	}
-
-	/**
-	 * Setter for <code>core.im_messages.stanza_id</code>.
-	 */
-	public void setStanzaId(java.lang.String value) {
-		setValue(11, value);
-	}
-
-	/**
-	 * Getter for <code>core.im_messages.stanza_id</code>.
-	 */
-	public java.lang.String getStanzaId() {
-		return (java.lang.String) getValue(11);
-	}
-
-	/**
 	 * Setter for <code>core.im_messages.data</code>.
 	 */
 	public void setData(java.lang.String value) {
-		setValue(12, value);
+		setValue(10, value);
 	}
 
 	/**
 	 * Getter for <code>core.im_messages.data</code>.
 	 */
 	public java.lang.String getData() {
+		return (java.lang.String) getValue(10);
+	}
+
+	/**
+	 * Setter for <code>core.im_messages.message_uid</code>.
+	 */
+	public void setMessageUid(java.lang.String value) {
+		setValue(11, value);
+	}
+
+	/**
+	 * Getter for <code>core.im_messages.message_uid</code>.
+	 */
+	public java.lang.String getMessageUid() {
+		return (java.lang.String) getValue(11);
+	}
+
+	/**
+	 * Setter for <code>core.im_messages.stanza_id</code>.
+	 */
+	public void setStanzaId(java.lang.String value) {
+		setValue(12, value);
+	}
+
+	/**
+	 * Getter for <code>core.im_messages.stanza_id</code>.
+	 */
+	public java.lang.String getStanzaId() {
 		return (java.lang.String) getValue(12);
 	}
 
@@ -317,7 +317,7 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<com.soni
 	 */
 	@Override
 	public org.jooq.Field<java.lang.String> field11() {
-		return com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES.MESSAGE_UID;
+		return com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES.DATA;
 	}
 
 	/**
@@ -325,7 +325,7 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<com.soni
 	 */
 	@Override
 	public org.jooq.Field<java.lang.String> field12() {
-		return com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES.STANZA_ID;
+		return com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES.MESSAGE_UID;
 	}
 
 	/**
@@ -333,7 +333,7 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<com.soni
 	 */
 	@Override
 	public org.jooq.Field<java.lang.String> field13() {
-		return com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES.DATA;
+		return com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES.STANZA_ID;
 	}
 
 	/**
@@ -421,7 +421,7 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<com.soni
 	 */
 	@Override
 	public java.lang.String value11() {
-		return getMessageUid();
+		return getData();
 	}
 
 	/**
@@ -429,7 +429,7 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<com.soni
 	 */
 	@Override
 	public java.lang.String value12() {
-		return getStanzaId();
+		return getMessageUid();
 	}
 
 	/**
@@ -437,7 +437,7 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<com.soni
 	 */
 	@Override
 	public java.lang.String value13() {
-		return getData();
+		return getStanzaId();
 	}
 
 	/**
@@ -535,7 +535,7 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<com.soni
 	 */
 	@Override
 	public ImMessagesRecord value11(java.lang.String value) {
-		setMessageUid(value);
+		setData(value);
 		return this;
 	}
 
@@ -544,7 +544,7 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<com.soni
 	 */
 	@Override
 	public ImMessagesRecord value12(java.lang.String value) {
-		setStanzaId(value);
+		setMessageUid(value);
 		return this;
 	}
 
@@ -553,7 +553,7 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<com.soni
 	 */
 	@Override
 	public ImMessagesRecord value13(java.lang.String value) {
-		setData(value);
+		setStanzaId(value);
 		return this;
 	}
 
@@ -579,7 +579,7 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<com.soni
 	/**
 	 * Create a detached, initialised ImMessagesRecord
 	 */
-	public ImMessagesRecord(java.lang.Integer id, java.lang.String domainId, java.lang.String userId, java.lang.String chatJid, java.lang.String senderJid, java.lang.String senderResource, org.joda.time.DateTime timestamp, org.joda.time.DateTime deliveryTimestamp, java.lang.String action, java.lang.String text, java.lang.String messageUid, java.lang.String stanzaId, java.lang.String data) {
+	public ImMessagesRecord(java.lang.Integer id, java.lang.String domainId, java.lang.String userId, java.lang.String chatJid, java.lang.String senderJid, java.lang.String senderResource, org.joda.time.DateTime timestamp, org.joda.time.DateTime deliveryTimestamp, java.lang.String action, java.lang.String text, java.lang.String data, java.lang.String messageUid, java.lang.String stanzaId) {
 		super(com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES);
 
 		setValue(0, id);
@@ -592,8 +592,8 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<com.soni
 		setValue(7, deliveryTimestamp);
 		setValue(8, action);
 		setValue(9, text);
-		setValue(10, messageUid);
-		setValue(11, stanzaId);
-		setValue(12, data);
+		setValue(10, data);
+		setValue(11, messageUid);
+		setValue(12, stanzaId);
 	}
 }

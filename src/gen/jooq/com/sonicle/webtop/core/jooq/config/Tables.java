@@ -17,11 +17,6 @@ package com.sonicle.webtop.core.jooq.config;
 public class Tables {
 
 	/**
-	 * The table config.fetchmail_polls
-	 */
-	public static final com.sonicle.webtop.core.jooq.config.tables.FetchmailPolls FETCHMAIL_POLLS = com.sonicle.webtop.core.jooq.config.tables.FetchmailPolls.FETCHMAIL_POLLS;
-
-	/**
 	 * The table config.pecbridge_fetchers
 	 */
 	public static final com.sonicle.webtop.core.jooq.config.tables.PecbridgeFetchers PECBRIDGE_FETCHERS = com.sonicle.webtop.core.jooq.config.tables.PecbridgeFetchers.PECBRIDGE_FETCHERS;
@@ -30,14 +25,4 @@ public class Tables {
 	 * The table config.pecbridge_relays
 	 */
 	public static final com.sonicle.webtop.core.jooq.config.tables.PecbridgeRelays PECBRIDGE_RELAYS = com.sonicle.webtop.core.jooq.config.tables.PecbridgeRelays.PECBRIDGE_RELAYS;
-
-	/**
-	 * The table config.virtual_aliases
-	 */
-	public static final com.sonicle.webtop.core.jooq.config.tables.VirtualAliases VIRTUAL_ALIASES = com.sonicle.webtop.core.jooq.config.tables.VirtualAliases.VIRTUAL_ALIASES;
-
-	/**
-	 * The table config.virtual_domain_names
-	 */
-	public static final com.sonicle.webtop.core.jooq.config.tables.VirtualDomainNames VIRTUAL_DOMAIN_NAMES = com.sonicle.webtop.core.jooq.config.tables.VirtualDomainNames.VIRTUAL_DOMAIN_NAMES;
 }

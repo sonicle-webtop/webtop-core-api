@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImChats extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.ImChatsRecord> {
 
-	private static final long serialVersionUID = 709193998;
+	private static final long serialVersionUID = 1606869902;
 
 	/**
 	 * The reference instance of <code>core.im_chats</code>
@@ -121,7 +121,7 @@ public class ImChats extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.joo
 	 */
 	@Override
 	public org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImChatsRecord> getPrimaryKey() {
-		return com.sonicle.webtop.core.jooq.core.Keys.IM_HISTORY_CHATS_2_PKEY;
+		return com.sonicle.webtop.core.jooq.core.Keys.IM_CHATS_PKEY;
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class ImChats extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.joo
 	 */
 	@Override
 	public java.util.List<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImChatsRecord>> getKeys() {
-		return java.util.Arrays.<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImChatsRecord>>asList(com.sonicle.webtop.core.jooq.core.Keys.IM_HISTORY_CHATS_2_PKEY);
+		return java.util.Arrays.<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImChatsRecord>>asList(com.sonicle.webtop.core.jooq.core.Keys.IM_CHATS_PKEY);
 	}
 
 	/**
