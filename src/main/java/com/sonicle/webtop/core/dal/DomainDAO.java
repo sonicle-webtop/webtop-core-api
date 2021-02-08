@@ -45,7 +45,6 @@ import java.util.List;
  * @author malbinola
  */
 public class DomainDAO extends BaseDAO {
-	
 	private final static DomainDAO INSTANCE = new DomainDAO();
 	public static DomainDAO getInstance() {
 		return INSTANCE;
@@ -65,10 +64,10 @@ public class DomainDAO extends BaseDAO {
 			.select()
 			.from(DOMAINS)
 			.where(
-					DOMAINS.ENABLED.isTrue()
+				DOMAINS.ENABLED.isTrue()
 			)
 			.orderBy(
-					DOMAINS.DOMAIN_ID.asc()
+				DOMAINS.DOMAIN_ID.asc()
 			)
 			.fetchInto(ODomain.class);
 	}
@@ -79,11 +78,11 @@ public class DomainDAO extends BaseDAO {
 			.select()
 			.from(DOMAINS)
 			.where(
-					DOMAINS.INTERNET_NAME.equal(internetName)
-					.and(DOMAINS.ENABLED.isTrue())
+				DOMAINS.INTERNET_NAME.equal(internetName)
+				.and(DOMAINS.ENABLED.isTrue())
 			)
 			.orderBy(
-					DOMAINS.DOMAIN_ID.asc()
+				DOMAINS.DOMAIN_ID.asc()
 			)
 			.fetchInto(ODomain.class);
 	}
@@ -94,33 +93,39 @@ public class DomainDAO extends BaseDAO {
 			.select()
 			.from(DOMAINS)
 			.where(
-					DOMAINS.DOMAIN_ID.equal(domainId)
+				DOMAINS.DOMAIN_ID.equal(domainId)
 			)
 			.fetchOneInto(ODomain.class);
 	}
 	
-	public Boolean selectDirPasswordPolicyById(Connection con, String domainId) throws DAOException {
+	public ODomain selectPasswordPoliciesById(Connection con, String domainId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
-				DOMAINS.DIR_PASSWORD_POLICY
+				DOMAINS.DIR_PWD_POLICY_COMPLEXITY,
+				DOMAINS.DIR_PWD_POLICY_MIN_LENGTH,
+				DOMAINS.DIR_PWD_POLICY_AVOID_CONSECUTIVE_CHARS,
+				DOMAINS.DIR_PWD_POLICY_AVOID_OLD_SIMILARITY,
+				DOMAINS.DIR_PWD_POLICY_AVOID_USERNAME_SIMILARITY,
+				DOMAINS.DIR_PWD_POLICY_EXPIRATION,
+				DOMAINS.DIR_PWD_POLICY_VERIFY_AT_LOGIN
 			)
 			.from(DOMAINS)
 			.where(
-					DOMAINS.DOMAIN_ID.equal(domainId)
+				DOMAINS.DOMAIN_ID.equal(domainId)
 			)
-			.fetchOneInto(Boolean.class);
+			.fetchOneInto(ODomain.class);
 	}
 	
 	public String selectDirParametersById(Connection con, String domainId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
-					DOMAINS.DIR_PARAMETERS
+				DOMAINS.DIR_PARAMETERS
 			)
 			.from(DOMAINS)
 			.where(
-					DOMAINS.DOMAIN_ID.equal(domainId)
+				DOMAINS.DOMAIN_ID.equal(domainId)
 			)
 			.fetchOneInto(String.class);
 	}
@@ -136,11 +141,28 @@ public class DomainDAO extends BaseDAO {
 	
 	public int update(Connection con, ODomain item) throws DAOException {
 		DSLContext dsl = getDSL(con);
-		DomainsRecord record = dsl.newRecord(DOMAINS, item);
 		return dsl
 			.update(DOMAINS)
-			.set(record)
-			.where(DOMAINS.DOMAIN_ID.equal(item.getDomainId()))
+			.set(DOMAINS.INTERNET_NAME, item.getInternetName())
+			.set(DOMAINS.ENABLED, item.getEnabled())
+			.set(DOMAINS.DESCRIPTION, item.getDescription())
+			.set(DOMAINS.USER_AUTO_CREATION, item.getUserAutoCreation())
+			.set(DOMAINS.DIR_URI, item.getDirUri())
+			.set(DOMAINS.DIR_ADMIN, item.getDirAdmin())
+			.set(DOMAINS.DIR_PASSWORD, item.getDirPassword())
+			.set(DOMAINS.DIR_CONNECTION_SECURITY, item.getDirConnectionSecurity())
+			.set(DOMAINS.DIR_CASE_SENSITIVE, item.getDirCaseSensitive())
+			.set(DOMAINS.DIR_PARAMETERS, item.getDirParameters())
+			.set(DOMAINS.DIR_PWD_POLICY_COMPLEXITY, item.getDirPwdPolicyComplexity())
+			.set(DOMAINS.DIR_PWD_POLICY_MIN_LENGTH, item.getDirPwdPolicyMinLength())
+			.set(DOMAINS.DIR_PWD_POLICY_AVOID_CONSECUTIVE_CHARS, item.getDirPwdPolicyAvoidConsecutiveChars())
+			.set(DOMAINS.DIR_PWD_POLICY_AVOID_OLD_SIMILARITY, item.getDirPwdPolicyAvoidOldSimilarity())
+			.set(DOMAINS.DIR_PWD_POLICY_AVOID_USERNAME_SIMILARITY, item.getDirPwdPolicyAvoidUsernameSimilarity())
+			.set(DOMAINS.DIR_PWD_POLICY_EXPIRATION, item.getDirPwdPolicyExpiration())
+			.set(DOMAINS.DIR_PWD_POLICY_VERIFY_AT_LOGIN, item.getDirPwdPolicyVerifyAtLogin())
+			.where(
+				DOMAINS.DOMAIN_ID.equal(item.getDomainId())
+			)
 			.execute();
 	}
 	
@@ -148,7 +170,9 @@ public class DomainDAO extends BaseDAO {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(DOMAINS)
-			.where(DOMAINS.DOMAIN_ID.equal(domainId))
+			.where(
+				DOMAINS.DOMAIN_ID.equal(domainId)
+			)
 			.execute();
 	}
 }

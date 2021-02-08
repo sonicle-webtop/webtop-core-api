@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables.pojos;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Domains implements java.io.Serializable {
 
-	private static final long serialVersionUID = 293361251;
+	private static final long serialVersionUID = 568122571;
 
 	private java.lang.String  domainId;
 	private java.lang.String  internetName;
@@ -30,6 +30,13 @@ public class Domains implements java.io.Serializable {
 	private java.lang.Boolean dirCaseSensitive;
 	private java.lang.Boolean dirPasswordPolicy;
 	private java.lang.String  dirParameters;
+	private java.lang.Boolean dirPwdPolicyComplexity;
+	private java.lang.Short   dirPwdPolicyMinLength;
+	private java.lang.Boolean dirPwdPolicyAvoidConsecutiveChars;
+	private java.lang.Boolean dirPwdPolicyAvoidOldSimilarity;
+	private java.lang.Boolean dirPwdPolicyAvoidUsernameSimilarity;
+	private java.lang.Short   dirPwdPolicyExpiration;
+	private java.lang.Boolean dirPwdPolicyVerifyAtLogin;
 
 	public Domains() {}
 
@@ -45,7 +52,14 @@ public class Domains implements java.io.Serializable {
 		java.lang.String  dirConnectionSecurity,
 		java.lang.Boolean dirCaseSensitive,
 		java.lang.Boolean dirPasswordPolicy,
-		java.lang.String  dirParameters
+		java.lang.String  dirParameters,
+		java.lang.Boolean dirPwdPolicyComplexity,
+		java.lang.Short   dirPwdPolicyMinLength,
+		java.lang.Boolean dirPwdPolicyAvoidConsecutiveChars,
+		java.lang.Boolean dirPwdPolicyAvoidOldSimilarity,
+		java.lang.Boolean dirPwdPolicyAvoidUsernameSimilarity,
+		java.lang.Short   dirPwdPolicyExpiration,
+		java.lang.Boolean dirPwdPolicyVerifyAtLogin
 	) {
 		this.domainId = domainId;
 		this.internetName = internetName;
@@ -59,6 +73,13 @@ public class Domains implements java.io.Serializable {
 		this.dirCaseSensitive = dirCaseSensitive;
 		this.dirPasswordPolicy = dirPasswordPolicy;
 		this.dirParameters = dirParameters;
+		this.dirPwdPolicyComplexity = dirPwdPolicyComplexity;
+		this.dirPwdPolicyMinLength = dirPwdPolicyMinLength;
+		this.dirPwdPolicyAvoidConsecutiveChars = dirPwdPolicyAvoidConsecutiveChars;
+		this.dirPwdPolicyAvoidOldSimilarity = dirPwdPolicyAvoidOldSimilarity;
+		this.dirPwdPolicyAvoidUsernameSimilarity = dirPwdPolicyAvoidUsernameSimilarity;
+		this.dirPwdPolicyExpiration = dirPwdPolicyExpiration;
+		this.dirPwdPolicyVerifyAtLogin = dirPwdPolicyVerifyAtLogin;
 	}
 
 	public java.lang.String getDomainId() {
@@ -155,5 +176,61 @@ public class Domains implements java.io.Serializable {
 
 	public void setDirParameters(java.lang.String dirParameters) {
 		this.dirParameters = dirParameters;
+	}
+
+	public java.lang.Boolean getDirPwdPolicyComplexity() {
+		return this.dirPwdPolicyComplexity;
+	}
+
+	public void setDirPwdPolicyComplexity(java.lang.Boolean dirPwdPolicyComplexity) {
+		this.dirPwdPolicyComplexity = dirPwdPolicyComplexity;
+	}
+
+	public java.lang.Short getDirPwdPolicyMinLength() {
+		return this.dirPwdPolicyMinLength;
+	}
+
+	public void setDirPwdPolicyMinLength(java.lang.Short dirPwdPolicyMinLength) {
+		this.dirPwdPolicyMinLength = dirPwdPolicyMinLength;
+	}
+
+	public java.lang.Boolean getDirPwdPolicyAvoidConsecutiveChars() {
+		return this.dirPwdPolicyAvoidConsecutiveChars;
+	}
+
+	public void setDirPwdPolicyAvoidConsecutiveChars(java.lang.Boolean dirPwdPolicyAvoidConsecutiveChars) {
+		this.dirPwdPolicyAvoidConsecutiveChars = dirPwdPolicyAvoidConsecutiveChars;
+	}
+
+	public java.lang.Boolean getDirPwdPolicyAvoidOldSimilarity() {
+		return this.dirPwdPolicyAvoidOldSimilarity;
+	}
+
+	public void setDirPwdPolicyAvoidOldSimilarity(java.lang.Boolean dirPwdPolicyAvoidOldSimilarity) {
+		this.dirPwdPolicyAvoidOldSimilarity = dirPwdPolicyAvoidOldSimilarity;
+	}
+
+	public java.lang.Boolean getDirPwdPolicyAvoidUsernameSimilarity() {
+		return this.dirPwdPolicyAvoidUsernameSimilarity;
+	}
+
+	public void setDirPwdPolicyAvoidUsernameSimilarity(java.lang.Boolean dirPwdPolicyAvoidUsernameSimilarity) {
+		this.dirPwdPolicyAvoidUsernameSimilarity = dirPwdPolicyAvoidUsernameSimilarity;
+	}
+
+	public java.lang.Short getDirPwdPolicyExpiration() {
+		return this.dirPwdPolicyExpiration;
+	}
+
+	public void setDirPwdPolicyExpiration(java.lang.Short dirPwdPolicyExpiration) {
+		this.dirPwdPolicyExpiration = dirPwdPolicyExpiration;
+	}
+
+	public java.lang.Boolean getDirPwdPolicyVerifyAtLogin() {
+		return this.dirPwdPolicyVerifyAtLogin;
+	}
+
+	public void setDirPwdPolicyVerifyAtLogin(java.lang.Boolean dirPwdPolicyVerifyAtLogin) {
+		this.dirPwdPolicyVerifyAtLogin = dirPwdPolicyVerifyAtLogin;
 	}
 }

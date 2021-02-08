@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Domains extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord> {
 
-	private static final long serialVersionUID = 534078008;
+	private static final long serialVersionUID = -2134340554;
 
 	/**
 	 * The reference instance of <code>core.domains</code>
@@ -90,6 +90,41 @@ public class Domains extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.joo
 	 * The column <code>core.domains.dir_parameters</code>.
 	 */
 	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord, java.lang.String> DIR_PARAMETERS = createField("dir_parameters", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+	/**
+	 * The column <code>core.domains.dir_pwd_policy_complexity</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord, java.lang.Boolean> DIR_PWD_POLICY_COMPLEXITY = createField("dir_pwd_policy_complexity", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaulted(true), this, "");
+
+	/**
+	 * The column <code>core.domains.dir_pwd_policy_min_length</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord, java.lang.Short> DIR_PWD_POLICY_MIN_LENGTH = createField("dir_pwd_policy_min_length", org.jooq.impl.SQLDataType.SMALLINT, this, "");
+
+	/**
+	 * The column <code>core.domains.dir_pwd_policy_avoid_consecutive_chars</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord, java.lang.Boolean> DIR_PWD_POLICY_AVOID_CONSECUTIVE_CHARS = createField("dir_pwd_policy_avoid_consecutive_chars", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaulted(true), this, "");
+
+	/**
+	 * The column <code>core.domains.dir_pwd_policy_avoid_old_similarity</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord, java.lang.Boolean> DIR_PWD_POLICY_AVOID_OLD_SIMILARITY = createField("dir_pwd_policy_avoid_old_similarity", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaulted(true), this, "");
+
+	/**
+	 * The column <code>core.domains.dir_pwd_policy_avoid_username_similarity</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord, java.lang.Boolean> DIR_PWD_POLICY_AVOID_USERNAME_SIMILARITY = createField("dir_pwd_policy_avoid_username_similarity", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaulted(true), this, "");
+
+	/**
+	 * The column <code>core.domains.dir_pwd_policy_expiration</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord, java.lang.Short> DIR_PWD_POLICY_EXPIRATION = createField("dir_pwd_policy_expiration", org.jooq.impl.SQLDataType.SMALLINT, this, "");
+
+	/**
+	 * The column <code>core.domains.dir_pwd_policy_verify_at_login</code>.
+	 */
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord, java.lang.Boolean> DIR_PWD_POLICY_VERIFY_AT_LOGIN = createField("dir_pwd_policy_verify_at_login", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaulted(true), this, "");
 
 	/**
 	 * Create a <code>core.domains</code> table reference
