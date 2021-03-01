@@ -22,6 +22,11 @@ public class Tables {
 	public static final com.sonicle.webtop.core.jooq.core.tables.Activities ACTIVITIES = com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES;
 
 	/**
+	 * The table core.audit_known_devices
+	 */
+	public static final com.sonicle.webtop.core.jooq.core.tables.AuditKnownDevices AUDIT_KNOWN_DEVICES = com.sonicle.webtop.core.jooq.core.tables.AuditKnownDevices.AUDIT_KNOWN_DEVICES;
+
+	/**
 	 * The table core.audit_log
 	 */
 	public static final com.sonicle.webtop.core.jooq.core.tables.AuditLog AUDIT_LOG = com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG;
@@ -80,6 +85,11 @@ public class Tables {
 	 * The table core.im_messages
 	 */
 	public static final com.sonicle.webtop.core.jooq.core.tables.ImMessages IM_MESSAGES = com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES;
+
+	/**
+	 * The table core.ip_geo_cache
+	 */
+	public static final com.sonicle.webtop.core.jooq.core.tables.IpGeoCache IP_GEO_CACHE = com.sonicle.webtop.core.jooq.core.tables.IpGeoCache.IP_GEO_CACHE;
 
 	/**
 	 * The table core.languages

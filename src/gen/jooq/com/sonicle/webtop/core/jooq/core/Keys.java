@@ -22,6 +22,7 @@ public class Keys {
 	// -------------------------------------------------------------------------
 
 	public static final org.jooq.Identity<com.sonicle.webtop.core.jooq.core.tables.records.ActivitiesRecord, java.lang.Integer> IDENTITY_ACTIVITIES = Identities0.IDENTITY_ACTIVITIES;
+	public static final org.jooq.Identity<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.Long> IDENTITY_AUDIT_KNOWN_DEVICES = Identities0.IDENTITY_AUDIT_KNOWN_DEVICES;
 	public static final org.jooq.Identity<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.Long> IDENTITY_AUDIT_LOG = Identities0.IDENTITY_AUDIT_LOG;
 	public static final org.jooq.Identity<com.sonicle.webtop.core.jooq.core.tables.records.CausalsRecord, java.lang.Integer> IDENTITY_CAUSALS = Identities0.IDENTITY_CAUSALS;
 	public static final org.jooq.Identity<com.sonicle.webtop.core.jooq.core.tables.records.ImChatsRecord, java.lang.Integer> IDENTITY_IM_CHATS = Identities0.IDENTITY_IM_CHATS;
@@ -40,6 +41,7 @@ public class Keys {
 	// -------------------------------------------------------------------------
 
 	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ActivitiesRecord> ACTIVITIES_PKEY = UniqueKeys0.ACTIVITIES_PKEY;
+	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord> AUDIT_KNOWN_DEVICES_PKEY = UniqueKeys0.AUDIT_KNOWN_DEVICES_PKEY;
 	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord> AUDIT_LOG_PKEY = UniqueKeys0.AUDIT_LOG_PKEY;
 	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.AutosaveRecord> AUTOSAVE_PKEY = UniqueKeys0.AUTOSAVE_PKEY;
 	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.CausalsRecord> CAUSALS_PKEY = UniqueKeys0.CAUSALS_PKEY;
@@ -52,6 +54,7 @@ public class Keys {
 	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.FileTypesRecord> FILE_TYPES_PKEY = UniqueKeys0.FILE_TYPES_PKEY;
 	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImChatsRecord> IM_CHATS_PKEY = UniqueKeys0.IM_CHATS_PKEY;
 	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord> IM_MESSAGES_PKEY = UniqueKeys0.IM_MESSAGES_PKEY;
+	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.IpGeoCacheRecord> IP_GEO_CACHE_PKEY = UniqueKeys0.IP_GEO_CACHE_PKEY;
 	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.LanguagesRecord> LANGUAGES_PKEY = UniqueKeys0.LANGUAGES_PKEY;
 	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord> LICENSES_PKEY = UniqueKeys0.LICENSES_PKEY;
 	public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.LicensesLeasesRecord> LICENSES_LEASES_PKEY = UniqueKeys0.LICENSES_LEASES_PKEY;
@@ -90,6 +93,7 @@ public class Keys {
 
 	private static class Identities0 extends org.jooq.impl.AbstractKeys {
 		public static org.jooq.Identity<com.sonicle.webtop.core.jooq.core.tables.records.ActivitiesRecord, java.lang.Integer> IDENTITY_ACTIVITIES = createIdentity(com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES, com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES.ACTIVITY_ID);
+		public static org.jooq.Identity<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.Long> IDENTITY_AUDIT_KNOWN_DEVICES = createIdentity(com.sonicle.webtop.core.jooq.core.tables.AuditKnownDevices.AUDIT_KNOWN_DEVICES, com.sonicle.webtop.core.jooq.core.tables.AuditKnownDevices.AUDIT_KNOWN_DEVICES.AUDIT_KNOWN_DEVICE_ID);
 		public static org.jooq.Identity<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.Long> IDENTITY_AUDIT_LOG = createIdentity(com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG, com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG.AUDIT_LOG_ID);
 		public static org.jooq.Identity<com.sonicle.webtop.core.jooq.core.tables.records.CausalsRecord, java.lang.Integer> IDENTITY_CAUSALS = createIdentity(com.sonicle.webtop.core.jooq.core.tables.Causals.CAUSALS, com.sonicle.webtop.core.jooq.core.tables.Causals.CAUSALS.CAUSAL_ID);
 		public static org.jooq.Identity<com.sonicle.webtop.core.jooq.core.tables.records.ImChatsRecord, java.lang.Integer> IDENTITY_IM_CHATS = createIdentity(com.sonicle.webtop.core.jooq.core.tables.ImChats.IM_CHATS, com.sonicle.webtop.core.jooq.core.tables.ImChats.IM_CHATS.ID);
@@ -106,6 +110,7 @@ public class Keys {
 
 	private static class UniqueKeys0 extends org.jooq.impl.AbstractKeys {
 		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ActivitiesRecord> ACTIVITIES_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES, com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES.ACTIVITY_ID);
+		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord> AUDIT_KNOWN_DEVICES_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.core.tables.AuditKnownDevices.AUDIT_KNOWN_DEVICES, com.sonicle.webtop.core.jooq.core.tables.AuditKnownDevices.AUDIT_KNOWN_DEVICES.AUDIT_KNOWN_DEVICE_ID);
 		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord> AUDIT_LOG_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG, com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG.AUDIT_LOG_ID);
 		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.AutosaveRecord> AUTOSAVE_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE, com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE.DOMAIN_ID, com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE.USER_ID, com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE.WEBTOP_CLIENT_ID, com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE.SERVICE_ID, com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE.CONTEXT, com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE.KEY);
 		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.CausalsRecord> CAUSALS_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.core.tables.Causals.CAUSALS, com.sonicle.webtop.core.jooq.core.tables.Causals.CAUSALS.CAUSAL_ID);
@@ -118,6 +123,7 @@ public class Keys {
 		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.FileTypesRecord> FILE_TYPES_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.core.tables.FileTypes.FILE_TYPES, com.sonicle.webtop.core.jooq.core.tables.FileTypes.FILE_TYPES.EXTENSION, com.sonicle.webtop.core.jooq.core.tables.FileTypes.FILE_TYPES.TYPE, com.sonicle.webtop.core.jooq.core.tables.FileTypes.FILE_TYPES.SUBTYPE);
 		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImChatsRecord> IM_CHATS_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.core.tables.ImChats.IM_CHATS, com.sonicle.webtop.core.jooq.core.tables.ImChats.IM_CHATS.ID);
 		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord> IM_MESSAGES_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES, com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES.ID);
+		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.IpGeoCacheRecord> IP_GEO_CACHE_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.core.tables.IpGeoCache.IP_GEO_CACHE, com.sonicle.webtop.core.jooq.core.tables.IpGeoCache.IP_GEO_CACHE.IP_ADDRESS, com.sonicle.webtop.core.jooq.core.tables.IpGeoCache.IP_GEO_CACHE.TIMESTAMP);
 		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.LanguagesRecord> LANGUAGES_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.core.tables.Languages.LANGUAGES, com.sonicle.webtop.core.jooq.core.tables.Languages.LANGUAGES.LANGUAGE_TAG);
 		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.LicensesRecord> LICENSES_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.core.tables.Licenses.LICENSES, com.sonicle.webtop.core.jooq.core.tables.Licenses.LICENSES.DOMAIN_ID, com.sonicle.webtop.core.jooq.core.tables.Licenses.LICENSES.SERVICE_ID, com.sonicle.webtop.core.jooq.core.tables.Licenses.LICENSES.PRODUCT_CODE);
 		public static final org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.LicensesLeasesRecord> LICENSES_LEASES_PKEY = createUniqueKey(com.sonicle.webtop.core.jooq.core.tables.LicensesLeases.LICENSES_LEASES, com.sonicle.webtop.core.jooq.core.tables.LicensesLeases.LICENSES_LEASES.DOMAIN_ID, com.sonicle.webtop.core.jooq.core.tables.LicensesLeases.LICENSES_LEASES.SERVICE_ID, com.sonicle.webtop.core.jooq.core.tables.LicensesLeases.LICENSES_LEASES.PRODUCT_CODE, com.sonicle.webtop.core.jooq.core.tables.LicensesLeases.LICENSES_LEASES.USER_ID);

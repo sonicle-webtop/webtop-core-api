@@ -16,7 +16,7 @@ package com.sonicle.webtop.core.jooq.core.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Domains extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord> {
 
-	private static final long serialVersionUID = -2134340554;
+	private static final long serialVersionUID = -1060454057;
 
 	/**
 	 * The reference instance of <code>core.domains</code>
@@ -69,7 +69,7 @@ public class Domains extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.joo
 	/**
 	 * The column <code>core.domains.dir_password</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord, java.lang.String> DIR_PASSWORD = createField("dir_password", org.jooq.impl.SQLDataType.CLOB, this, "");
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord, java.lang.String> DIR_PASSWORD = createField("dir_password", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "");
 
 	/**
 	 * The column <code>core.domains.dir_connection_security</code>.
@@ -84,7 +84,7 @@ public class Domains extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.joo
 	/**
 	 * The column <code>core.domains.dir_password_policy</code>.
 	 */
-	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord, java.lang.Boolean> DIR_PASSWORD_POLICY = createField("dir_password_policy", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
+	public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DomainsRecord, java.lang.Boolean> DIR_PASSWORD_POLICY = createField("dir_password_policy", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
 	/**
 	 * The column <code>core.domains.dir_parameters</code>.

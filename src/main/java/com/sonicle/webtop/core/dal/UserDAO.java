@@ -158,6 +158,20 @@ public class UserDAO extends BaseDAO {
 			.fetchInto(OUser.class);
 	}
 	
+	public OUser selectSecretByProfile(Connection con, String domainId, String userId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				USERS.SECRET
+			).from(USERS)
+			.where(
+				USERS.DOMAIN_ID.equal(domainId)
+				.and(USERS.USER_ID.equal(userId))
+				.and(USERS.TYPE.equal(OUser.TYPE_USER))
+			)
+			.fetchOneInto(OUser.class);
+	}
+	
 	public OUser selectByDomainUser(Connection con, String domainId, String userId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -247,7 +261,7 @@ public class UserDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int updateSecretByDomainUser(Connection con, String domainId, String userId, String secret) throws DAOException {
+	public int updateSecretByProfile(Connection con, String domainId, String userId, String secret) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.update(USERS)
