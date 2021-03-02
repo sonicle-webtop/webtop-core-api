@@ -64,6 +64,10 @@ public class DomainAccessLogPredicateVisitor extends JOOQPredicateVisitor {
 			String singleAsString = valueToLikePattern(singleAsString(values));
 			return VW_AUTH_DETAILS.USER_ID.likeIgnoreCase(singleAsString);
 			
+		} else if ("ip".equals(fieldName)) {
+			String singleAsString = valueToLikePattern(singleAsString(values));
+			return VW_AUTH_DETAILS.DATA.like(singleAsString);
+			
 		} else if ("dateFrom".equals(fieldName)) {
 			fromRange = (DateTime)single(values);
 			return VW_AUTH_DETAILS.DATE.greaterOrEqual(fromRange);

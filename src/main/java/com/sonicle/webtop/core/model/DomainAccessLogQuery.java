@@ -84,6 +84,10 @@ public class DomainAccessLogQuery extends QueryBuilderWithCValues<DomainAccessLo
 		return bool("failure");
 	}
 	
+	public StringProperty<DomainAccessLogQuery> ip() {
+		return string("ip");
+	}
+	
 	public StringProperty<DomainAccessLogQuery> any() {
 		return string("any");
 	}
@@ -127,6 +131,9 @@ public class DomainAccessLogQuery extends QueryBuilderWithCValues<DomainAccessLo
 					
 				} else if ("maxDuration".equals(queryCondition.keyword)) {
 					last = q.maxDuration().eq(Double.parseDouble(queryCondition.value));
+					
+				} else if ("ip".equals(queryCondition.keyword)) {
+					last = q.ip().eq(asStringValue(queryCondition.value, smartStringComparison));
 					
 				} else if ("is".equals(queryCondition.keyword)) {
 					switch (queryCondition.value) {
