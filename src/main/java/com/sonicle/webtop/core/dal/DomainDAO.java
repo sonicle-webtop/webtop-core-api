@@ -39,6 +39,7 @@ import java.sql.Connection;
 import org.jooq.DSLContext;
 import com.sonicle.webtop.core.jooq.core.tables.records.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -70,6 +71,23 @@ public class DomainDAO extends BaseDAO {
 				DOMAINS.DOMAIN_ID.asc()
 			)
 			.fetchInto(ODomain.class);
+	}
+	
+	public Map<String, String> selectEnabledInternetNames(Connection con) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				DOMAINS.DOMAIN_ID,
+				DOMAINS.INTERNET_NAME
+			)
+			.from(DOMAINS)
+			.where(
+				DOMAINS.ENABLED.isTrue()
+			)
+			.orderBy(
+				DOMAINS.DOMAIN_ID.asc()
+			)
+			.fetchMap(DOMAINS.DOMAIN_ID, DOMAINS.INTERNET_NAME);
 	}
 	
 	public List<ODomain> selectEnabledByInternetName(Connection con, String internetName) throws DAOException {
