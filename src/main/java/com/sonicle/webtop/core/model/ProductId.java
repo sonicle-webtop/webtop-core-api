@@ -44,7 +44,7 @@ public class ProductId extends CId {
 		super(s, 2);
 	}
 	
-	protected ProductId(CId.Builder builder) {
+	protected ProductId(AbstractBuilder builder) {
 		super(builder);
 	}
 	
@@ -62,7 +62,7 @@ public class ProductId extends CId {
 				.build();
 	}
 	
-	public static class Builder extends CId.Builder<Builder> {
+	public static class Builder extends CId.AbstractBuilder<Builder, ProductId> {
 		@Override
 		public ProductId build() {
 			return new ProductId(this);

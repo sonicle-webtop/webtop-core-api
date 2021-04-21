@@ -434,7 +434,7 @@ public class ICal4jUtils {
 		if (StringUtils.isBlank(rrule)) return null;
 		try {
 			return new Recur(rrule);
-		} catch(ParseException ex) {
+		} catch(ParseException | IllegalArgumentException ex) {
 			return null;
 		}
 	}
