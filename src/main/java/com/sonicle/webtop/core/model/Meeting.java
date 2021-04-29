@@ -42,12 +42,14 @@ import java.net.URI;
 public class Meeting {
 	protected final Provider provider;
 	protected final String id;
+	protected final String roomName;
 	protected final URI link;
 	protected final ShareEmbedTexts embedTexts;
 	
-	public Meeting(Provider provider, String id, URI link, ShareEmbedTexts embedTexts) {
+	public Meeting(Provider provider, String id, String roomName, URI link, ShareEmbedTexts embedTexts) {
 		this.provider = provider;
 		this.id = id;
+		this.roomName = roomName;
 		this.link = link;
 		this.embedTexts = embedTexts;
 	}
@@ -58,6 +60,10 @@ public class Meeting {
 
 	public String getId() {
 		return id;
+	}
+	
+	public String getRoomName() {
+		return roomName;
 	}
 
 	public URI getLink() {
@@ -89,6 +95,7 @@ public class Meeting {
 	public static class Builder<B extends Builder> {
 		protected Provider provider;
 		protected String id;
+		protected String roomName;
 		protected URI link;
 		protected ShareEmbedTexts embedTexts;
 		
@@ -104,6 +111,11 @@ public class Meeting {
 			return (B)this;
 		}
 		
+		public B withRoomName(String roomName) {
+			this.roomName = roomName;
+			return (B)this;
+		}
+		
 		public B withLink(URI link) {
 			this.link = link;
 			return (B)this;
@@ -115,7 +127,7 @@ public class Meeting {
 		}
 		
 		public Meeting build() {
-			return new Meeting(provider, id, link, embedTexts);
+			return new Meeting(provider, id, roomName, link, embedTexts);
 		}
 	}
 }
