@@ -71,8 +71,22 @@ public class ICal4jUtils {
 	//public final static TimeZoneRegistry tzRegistry = new TimeZoneRegistryImpl();
 	public final static TimeZoneRegistry tzRegistry = TimeZoneRegistryFactory.getInstance().createRegistry();
 	
-	public static Date getDate(DateProperty dateProperty) {
-		return (dateProperty != null) ? dateProperty.getDate() : null;
+	/**
+	 * Returns the value of passed Property, if provided, or null otherwise.
+	 * @param prop Property object
+	 * @return The corresponding String value
+	 */
+	public static String getPropertyValue(Property prop) {
+		return (prop != null) ? prop.getValue() : null;
+	}
+	
+	/**
+	 * Returns the value of passed DateProperty, if provided, or null otherwise.
+	 * @param prop Property object
+	 * @return The corresponding Date value
+	 */
+	public static Date getDatePropertyValue(DateProperty prop) {
+		return (prop != null) ? prop.getDate(): null;
 	}
 	
 	public static void addProperty(Component component, Property property) {
@@ -81,7 +95,7 @@ public class ICal4jUtils {
 	
 	public static void addOrReplaceProperty(Component component, Property property) {
 		Property oldProp = component.getProperties().getProperty(property.getName());
-		if(oldProp != null) component.getProperties().remove(oldProp);
+		if (oldProp != null) component.getProperties().remove(oldProp);
 		addProperty(component, property);
 	}
 	
@@ -128,6 +142,10 @@ public class ICal4jUtils {
 		return new Period(toIC4jDateTime(start, timezone), toIC4jDateTime(end, timezone));
 	}
 	
+	/**
+	 * @deprecated use toIC4jDateTimeUTC instead
+	 */
+	@Deprecated
 	public static DateTime createDateTime(org.joda.time.DateTime dateTime) {
 		DateTime dt1 = new DateTime(dateTime.toDate());
 		if (dateTime.getZone().equals(org.joda.time.DateTimeZone.UTC)) {
