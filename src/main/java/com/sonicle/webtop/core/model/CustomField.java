@@ -205,12 +205,12 @@ public class CustomField {
 
 		public static Props fromJson(String value) {
 			if (value == null) return null;
-			return JsonResult.gson.fromJson(value, Props.class);
+			return JsonResult.gson().fromJson(value, Props.class);
 		}
 
 		public static String toJson(Props value) {
 			if (value == null) return null;
-			return JsonResult.gson.toJson(value, Props.class);
+			return JsonResult.gson().toJson(value, Props.class);
 		}
 	}
 	
@@ -230,12 +230,12 @@ public class CustomField {
 
 		public static Values fromJson(String value) {
 			if (value == null) return null;
-			return JsonResult.gson.fromJson(value, Values.class);
+			return JsonResult.gson().fromJson(value, Values.class);
 		}
 
 		public static String toJson(Values value) {
 			if (value == null) return null;
-			return JsonResult.gson.toJson(value, Values.class);
+			return JsonResult.gson().toJson(value, Values.class);
 		}
 	}
 	
@@ -255,12 +255,12 @@ public class CustomField {
 
 		public static LabelI18n fromJson(String value) {
 			if (value == null) return null;
-			return JsonResult.gson.fromJson(value, LabelI18n.class);
+			return JsonResult.gson().fromJson(value, LabelI18n.class);
 		}
 
 		public static String toJson(LabelI18n value) {
 			if (value == null) return null;
-			return JsonResult.gson.toJson(value, LabelI18n.class);
+			return JsonResult.gson().toJson(value, LabelI18n.class);
 		}
 	}
 	

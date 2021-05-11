@@ -53,11 +53,11 @@ public class ParamsLdapDirectory {
 	
 	public static ParamsLdapDirectory fromJson(String value) {
 		if(value == null) return null;
-		return JsonResult.gson.fromJson(value, ParamsLdapDirectory.class);
+		return JsonResult.gson().fromJson(value, ParamsLdapDirectory.class);
 	}
 	
 	public static String toJson(ParamsLdapDirectory value) {
 		if(value == null) return null;
-		return JsonResult.gson.toJson(value, ParamsLdapDirectory.class);
+		return JsonResult.gson().toJson(value, ParamsLdapDirectory.class);
 	}
 }
