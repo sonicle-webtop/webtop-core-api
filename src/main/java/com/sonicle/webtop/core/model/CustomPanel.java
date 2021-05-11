@@ -132,12 +132,12 @@ public class CustomPanel {
 
 		public static TitleI18n fromJson(String value) {
 			if (value == null) return null;
-			return JsonResult.gson.fromJson(value, TitleI18n.class);
+			return JsonResult.gson().fromJson(value, TitleI18n.class);
 		}
 
 		public static String toJson(TitleI18n value) {
 			if (value == null) return null;
-			return JsonResult.gson.toJson(value, TitleI18n.class);
+			return JsonResult.gson().toJson(value, TitleI18n.class);
 		}
 	}
 }
