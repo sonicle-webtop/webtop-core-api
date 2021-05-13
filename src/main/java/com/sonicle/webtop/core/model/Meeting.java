@@ -33,7 +33,11 @@
 package com.sonicle.webtop.core.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.sonicle.commons.RegexUtils;
 import java.net.URI;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -72,6 +76,23 @@ public class Meeting {
 	
 	public ShareEmbedTexts getEmbedTexts() {
 		return embedTexts;
+	}
+	
+	public static String extractMeetingUrl(Pattern meetingUrlPattern, String... texts) {
+		if (meetingUrlPattern != null) {
+			Pattern urlPattern = Pattern.compile(RegexUtils.MATCH_SIMPLE_URL, Pattern.CASE_INSENSITIVE);
+			for (String text : texts) {
+				if (StringUtils.isBlank(text)) continue;
+				Matcher matcher = urlPattern.matcher(text);
+				while (matcher.find()) {
+					String url = matcher.group();
+					if (meetingUrlPattern.matcher(url).lookingAt()) {
+						return url;
+					}
+				}	
+			}
+		}
+		return null;
 	}
 	
 	public static enum Provider {
