@@ -94,6 +94,24 @@ public class TagDAO extends BaseDAO {
 			.fetchGroups(TAGS.NAME, TAGS.TAG_ID);
 	}
 	
+	public Map<String, String> mapNamesByDomainOwners(Connection con, String domainId, Collection<String> ownerIds) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				TAGS.TAG_ID,
+				TAGS.NAME
+			)
+			.from(TAGS)
+			.where(
+				TAGS.DOMAIN_ID.equal(domainId)
+				.and(TAGS.USER_ID.in(ownerIds))
+			)
+			.orderBy(
+				TAGS.TAG_ID
+			)
+			.fetchMap(TAGS.TAG_ID, TAGS.NAME);
+	}
+	
 	public Map<String, OTag> selectByDomainOwners(Connection con, String domainId, Collection<String> ownerIds) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
