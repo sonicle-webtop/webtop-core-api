@@ -20,6 +20,28 @@
 	</properties>
 	
 	<dependencies>
+		<!-- 3rd party libraries -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>${commons-collections4.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mnode.ical4j</groupId>
+			<artifactId>ical4j</artifactId>
+			<version>${ical4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq</artifactId>
+			<version>${jooq.version}</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.sonicle.libraries</groupId>
 			<artifactId>sonicle-commons</artifactId>
@@ -44,17 +66,6 @@
 			<groupId>com.sonicle.libraries</groupId>
 			<artifactId>sonicle-vfs2</artifactId>
 			<version>LATEST</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mnode.ical4j</groupId>
-			<artifactId>ical4j</artifactId>
-			<version>${ical4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jooq</groupId>
-			<artifactId>jooq</artifactId>
-			<version>${jooq.version}</version>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	
@@ -101,11 +112,13 @@
 				<groupId>org.jooq</groupId>
 				<artifactId>jooq-codegen-maven</artifactId>
 				<version>${jooq-codegen-maven.version}</version>
+				<!--<version>3.12.4</version>-->
 				<dependencies>
 					<dependency>
 						<groupId>org.postgresql</groupId>
 						<artifactId>postgresql</artifactId>
-						<version>9.3-1102-jdbc4</version>
+						<!--<version>9.3-1102-jdbc4</version>-->
+						<version>42.2.19</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -135,6 +148,7 @@
 						<groupId>org.jooq</groupId>
 						<artifactId>jooq-codegen-maven</artifactId>
 						<version>${jooq-codegen-maven.version}</version>
+						<!--<version>3.12.4</version>-->
 						<executions>
 							<execution>
 								<id>generate-db-classes</id>
@@ -152,6 +166,7 @@
 									<generator>
 										<database>
 											<name>org.jooq.util.postgres.PostgresDatabase</name>
+											<!--<name>org.jooq.meta.postgres.PostgresDatabase</name>-->
 											<includes>.*</includes>
 											<excludes></excludes>
 											<schemata>
@@ -193,6 +208,98 @@
 										</generate>
 										<target>
 											<packageName>${webtop.service.package}.jooq</packageName>
+											<directory>src/gen/jooq</directory>
+										</target>
+									</generator>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>generate-db-classes-public</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>properties-maven-plugin</artifactId>
+						<version>${properties-maven-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>read-artifact-properties</id>
+								<phase>validate</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.jooq</groupId>
+						<artifactId>jooq-codegen-maven</artifactId>
+						<version>${jooq-codegen-maven.version}</version>
+						<!--<version>3.12.4</version>-->
+						<executions>
+							<execution>
+								<id>generate-db-classes-public</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+								<configuration>
+									<jdbc>
+										<driver>${webtop.service.db.jdbc.driver}</driver>
+										<url>${webtop.service.db.jdbc.url}</url>
+										<user>${webtop.service.db.jdbc.user}</user>
+										<password>${webtop.service.db.jdbc.password}</password>
+									</jdbc>
+									<generator>
+										<database>
+											<name>org.jooq.util.postgres.PostgresDatabase</name>
+											<!--<name>org.jooq.meta.postgres.PostgresDatabase</name>-->
+											<includes>rrule_event_overlaps</includes>
+											<excludes></excludes>
+											<schemata>
+												<schema>
+													<inputSchema>public</inputSchema>
+												</schema>
+											</schemata>
+											<customTypes>
+												<customType>
+													<name>JodaLocalDate</name>
+													<type>org.joda.time.LocalDate</type>
+													<converter>com.sonicle.webtop.core.jooq.LocalDateConverter</converter>
+												</customType>
+												<customType>
+													<name>JodaDateTime</name>
+													<type>org.joda.time.DateTime</type>
+													<converter>com.sonicle.webtop.core.jooq.DateTimeConverter</converter>
+												</customType>
+											</customTypes>
+											<forcedTypes>
+												<forcedType>
+													<name>JodaLocalDate</name>
+													<expression>.*</expression>
+													<types>date.*</types>
+												</forcedType>
+												<forcedType>
+													<name>JodaDateTime</name>
+													<expression>.*</expression>
+													<types>timestamp.*</types>
+												</forcedType>
+											</forcedTypes>
+										</database>
+										<generate>
+											<relations>false</relations>
+											<records>false</records>
+											<!--<pojos>false</pojos>-->
+											<!--<immutablePojos>false</immutablePojos>-->
+										</generate>
+										<target>
+											<packageName>${webtop.service.package}.jooq.public_</packageName>
 											<directory>src/gen/jooq</directory>
 										</target>
 									</generator>
