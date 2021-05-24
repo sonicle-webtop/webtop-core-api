@@ -50,6 +50,8 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMultipart;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.data.CalendarParser;
@@ -58,23 +60,35 @@ import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.ParameterFactoryRegistry;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyFactoryRegistry;
 import net.fortuna.ical4j.model.PropertyList;
+import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
+import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.Categories;
+import net.fortuna.ical4j.model.property.DateProperty;
+import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Transp;
+import net.fortuna.ical4j.model.property.RRule;
+import net.fortuna.ical4j.model.property.RecurrenceId;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.validate.ValidationException;
+import net.sf.qualitycheck.Check;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
@@ -105,12 +119,93 @@ public class ICalendarUtils {
 		properties.setProperty("ical4j.compatibility.notes", String.valueOf(value));
 	}
 	
+	public static String buildUid(String id, String internetName) {
+		return id + "@" + internetName;
+	}
+	
+	public static String buildProdId(String product) {
+		return "-//Sonicle//" + product + "//EN";
+	}
+	
+	public static String buildProdId(String company, String product) {
+		return "-//" + company + "//" + product + "//EN";
+	}
+	
+	/**
+	 * Parses a String into Calendar object.
+	 * @param s Source string.
+	 * @return Resulting Calendar object
+	 * @throws IOException
+	 * @throws ParserException 
+	 */
 	public static Calendar parse(String s) throws IOException, ParserException {
 		return createCalendarBuilder().build(new StringReader(s));
 	}
 	
+	/**
+	 * Parses provides stream into Calendar object.
+	 * @param is Source InputStream.
+	 * @return Resulting Calendar object
+	 * @throws ParserException
+	 * @throws IOException 
+	 */
 	public static Calendar parse(InputStream is) throws ParserException, IOException {
 		return createCalendarBuilder().build(is);
+	}
+	
+	/**
+	 * @deprecated use print instead
+	 */
+	@Deprecated
+	public static String calendarToString(Calendar ical) throws IOException {
+		return print(ical);
+	}
+	
+	/**
+	 * Prints passed Calendar object into a String.
+	 * @param iCalendar Source Calendar object
+	 * @return iCalendar's string value
+	 * @throws IOException 
+	 */
+	public static String print(Calendar iCalendar) throws IOException {
+		ByteArrayOutputStream baos = null;
+		try {
+			baos = new ByteArrayOutputStream();
+			CalendarOutputter outputter = new CalendarOutputter();
+			outputter.output(iCalendar, baos);
+			return baos.toString("UTF8");
+		} catch (ValidationException ex) {
+			throw new IOException(ex);
+		} finally {
+			IOUtils.closeQuietly(baos);
+		}
+	}
+	
+	/**
+	 * Prints passed component into a String.
+	 * @param comp Component to be serialized.
+	 * @return Component's string value
+	 * @throws IOException 
+	 */
+	public static String print(CalendarComponent comp) throws IOException {
+		Calendar ical = new Calendar();
+		ical.getComponents().add(comp);
+		return print(ical);
+	}
+	
+	/**
+	 * Creates new Calendar object configured with passed product and method.
+	 * @param prodId The product name.
+	 * @param method The involved method.
+	 * @return Calendar object
+	 */
+	public static Calendar newCalendar(String prodId, Method method) {
+		Calendar ical = new Calendar();
+		ical.getProperties().add(new ProdId(prodId));
+		ical.getProperties().add(Version.VERSION_2_0);
+		ical.getProperties().add(CalScale.GREGORIAN);
+		if (method != null) ical.getProperties().add(method);
+		return ical;
 	}
 	
 	public static CalendarBuilder createCalendarBuilder() {
@@ -137,19 +232,6 @@ public class ICalendarUtils {
 	}
 	
 	/**
-	 * Extract VEvent's uid from a calendar object.
-	 * Only the first VEvent element will be taken into account.
-	 * This method should be used only on an invitation object (that 
-	 * brings with it only a single VEvent).
-	 * @param ical The Calendar object
-	 * @return The VEvent's Uid or null if not found
-	 */
-	public static String getVEventUid(Calendar ical) {
-		VEvent ve = getVEvent(ical);
-		return (ve == null) ? null : getUidValue(ve);
-	}
-	
-	/**
 	 * Returns the first attendee in the VEvent object.
 	 * @param ve The VEvent object
 	 * @return The first attendee or null if not present
@@ -163,12 +245,11 @@ public class ICalendarUtils {
 	}
 	
 	/**
-	 * Returns the Uid value of a VEvent component, if provided, or null otherwise.
-	 * @param ve The VEvent
-	 * @return Uid value
+	 * @deprecated use ICal4jUtils.getPropertyValue instead passing Uid prop
 	 */
-	public static String getUidValue(VEvent ve) {
-		Uid uid = ve.getUid();
+	@Deprecated
+	public static String getUidValue(VEvent vevent) {
+		Uid uid = vevent.getUid();
 		return (uid != null) ? uid.getValue() : null;
 	}
 	
@@ -184,9 +265,230 @@ public class ICalendarUtils {
 		return LangUtils.joinStrings(", ", uid, summ);
 	}
 	
-	public static boolean isBusy(Transp transparency) {
-		return !StringUtils.equals(transparency.getValue(), "TRANSPARENT");
+	/**
+	 * Returns the value of passed Property as DateTime, if provided, or null otherwise.
+	 * @param prop Property object
+	 * @param defaultTimezone The default timezone
+	 * @return The corresponding DateTime value
+	 */
+	public static org.joda.time.DateTime getPropertyValueAsDateTime(DateProperty prop, org.joda.time.DateTimeZone defaultTimezone) {
+		if (prop != null) {
+			Date date = prop.getDate();
+			if (date instanceof DateTime) {
+				return ICal4jUtils.toJodaDateTime((DateTime)date, defaultTimezone);
+			}
+		}
+		return null;
 	}
+	
+	/**
+	 * Converts set of category names into Category property.
+	 * @param names Names set.
+	 * @return Category property
+	 */
+	public static Categories toCategories(Set<String> names) {
+		if (names == null || names.isEmpty()) return null;
+		Categories categories = new Categories();
+		for (String name : names) {
+			categories.getCategories().add(name);
+		}
+		return categories;
+	}
+	
+	/**
+	 * Converts Categories property into a suitable set of category names.
+	 * @param prop The property.
+	 * @return Categories set
+	 */
+	public static Set<String> toCategoriesSet(Categories prop) {
+		if (prop == null) return null;
+		LinkedHashSet<String> categories = new LinkedHashSet<>();
+		Iterator it = prop.getCategories().iterator();
+		while (it.hasNext()) {
+			String category = (String)it.next();
+			categories.add(category);
+		}
+		return categories;
+	}
+	
+	/**
+	 * Converts ExDate property into a suitable set of Dates.
+	 * @param prop The property.
+	 * @return Dates set
+	 */
+	public static Set<org.joda.time.LocalDate> toJodaExDates(ExDate prop) {
+		LinkedHashSet<org.joda.time.LocalDate> dates = new LinkedHashSet<>();
+		Iterator it = prop.getDates().iterator();
+		while (it.hasNext()) {
+			Date date = (Date)it.next();
+			if (date instanceof DateTime) {
+				// 1 - Firstly the date-time is read using its own timezone; 
+				//     if omitted the event timezone will be used instead
+				// 2 - Then the resulting date-time will be moved to target 
+				//     timezone
+				// 3 - Finally a local date can be extracted!
+				dates.add(ICal4jUtils.toJodaDateTime((DateTime)date, DateTimeZone.UTC)
+					.withZone(DateTimeZone.UTC)
+					.toLocalDate()
+				);
+			} else {
+				dates.add(ICal4jUtils.toJodaLocalDate(date, DateTimeZone.UTC));
+			}
+		}
+		return dates;
+	}
+	
+	/**
+	 * Extracts recurrence info from passed Calendar component: rrule and exception dates.
+	 * @param comp The Calendar component.
+	 * @return An object holding data
+	 */
+	public static RecurInfo extractRecurInfo(CalendarComponent comp) {
+		Recur recur = null;
+		Set<org.joda.time.LocalDate> excludedDates = null;
+		
+		// Extract recurrence rule
+		RRule rr = (RRule)comp.getProperty(Property.RRULE);
+		if (rr != null) {
+			recur = rr.getRecur();
+			PropertyList exDates = comp.getProperties(Property.EXDATE); // We can have multiple ExDate occurrence!
+			if (!exDates.isEmpty()) {
+				excludedDates = new LinkedHashSet<>();
+				for (Object o : exDates) {
+					excludedDates.addAll(toJodaExDates((ExDate)o));
+				}
+			}
+		}
+		return new RecurInfo(recur, excludedDates);
+	}
+	
+	/**
+	 * Extracts recurring references from passed Calendar component.
+	 * @param comp The Calendar component.
+	 * @return An object holding data
+	 */
+	public static RecurringRefs extractRecurringRefs(CalendarComponent comp) {
+		String exRefersToMasterUid = null;
+		org.joda.time.LocalDate exRefersToDate = null;
+		
+		// Extracts recurrence-id: it indicates the date referred to the 
+		// master-entity on which operate the exception described by this component
+		RecurrenceId recurrenceId = (RecurrenceId)comp.getProperty(Property.RECURRENCE_ID);
+		if (recurrenceId != null) {
+			exRefersToMasterUid = ICal4jUtils.getPropertyValue(comp.getProperty(Property.UID));
+			exRefersToDate = ICal4jUtils.toJodaLocalDate(recurrenceId.getDate(), DateTimeZone.UTC);
+		}
+		
+		return new RecurringRefs(exRefersToMasterUid, exRefersToDate);
+	}
+	
+	/**
+	 * Copies specified properties from source Component into the target.
+	 * @param sourceComp Source calendar component.
+	 * @param targetComp Target calendar component.
+	 * @param includeNames Set of property names to include.
+	 * @param excludeNames Set of property names to ignore.
+	 * @param includeExperimental Set to `true` to include experimental (X prefixed) properties.
+	 */
+	public static void copyProperties(CalendarComponent sourceComp, CalendarComponent targetComp, Set<String> includeNames, boolean includeExperimental, Set<String> excludeNames) {
+		for (Property property : sourceComp.getProperties()) {
+			String name = property.getName().toUpperCase();
+			if ((excludeNames != null) && excludeNames.contains(name)) continue;
+			if (includeNames == null) {
+				if (!includeExperimental && name.startsWith(Property.EXPERIMENTAL_PREFIX)) continue;
+				targetComp.getProperties().add(property);
+			} else {
+				if ((includeExperimental && name.startsWith(Property.EXPERIMENTAL_PREFIX)) || includeNames.contains(name)) {
+					targetComp.getProperties().add(property);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Extracts from the passed Component all properties matching configuration parameters.
+	 * @param comp The source Component.
+	 * @param includeNames Property names to be included.
+	 * @param includeExperimental Set to `true` to include all experimental properties (X_ prefixed).
+	 * @param excludeNames Property names to be excluded.
+	 * @return List of desired properties
+	 */
+	public static PropertyList extractProperties(CalendarComponent comp, Set<String> includeNames, boolean includeExperimental, Set<String> excludeNames) {
+		if (comp == null) return null;
+		PropertyList pl = new PropertyList();
+		for (Property property : comp.getProperties()) {
+			String name = property.getName().toUpperCase();
+			if ((excludeNames != null) && excludeNames.contains(name)) continue;
+			if (includeNames == null) {
+				if (!includeExperimental && name.startsWith(Property.EXPERIMENTAL_PREFIX)) continue;
+				pl.add(property);
+			} else {
+				if ((includeExperimental && name.startsWith(Property.EXPERIMENTAL_PREFIX)) || includeNames.contains(name)) {
+					pl.add(property);
+				}
+			}
+		}
+		return pl;
+	}
+	
+	/**
+	 * Extracts all properties (also experimental) from the specified Component.
+	 * @param iCalendar The Calendar object.
+	 * @param componentType The source component from which extract properties.
+	 * @return List of properties
+	 */
+	public static PropertyList extractProperties(Calendar iCalendar, Class<? extends CalendarComponent> componentType) {
+		if (iCalendar == null) return null;
+		Check.notNull(componentType, "componentType");
+		for (Iterator it = iCalendar.getComponents().iterator(); it.hasNext();) {
+			final Component component = (Component)it.next();
+			if (componentType.isInstance(component)) {
+				return extractProperties((CalendarComponent)component, null, true, null);
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns a map with multiple values for each key (the property name).
+	 * Value is the full raw String value of the property implied by the key 
+	 * (property name included).
+	 * @param comp The calendar component.
+	 * @param includeNames Set of property names to include.
+	 * @param includeExp Set to `true` to include experimental (X prefixed) properties.
+	 * @return Multi-value map
+	 */
+	/*
+	public static MultiValuedMap<String, String> mapExtraProperties(CalendarComponent comp, Set<String> includeNames, boolean includeExp) {
+		MultiValuedMap<String, String> map = new ArrayListValuedHashMap<>();
+		
+		for (Property property : comp.getProperties()) {
+			String name = property.getName().toUpperCase();
+			if ((includeExp && name.startsWith(Property.EXPERIMENTAL_PREFIX)) || includeNames.contains(name)) {
+				map.put(name, property.toString());
+			}
+		}
+		
+		return map;
+	}
+	*/
+	
+	/**
+	 * Creates an Organizer property from passed data.
+	 * @param address Organizer's email address.
+	 * @param commonName Organizer's display-name, it can be null.
+	 * @return Organizer property, or null if address is empty
+	 */
+	public static Organizer toOrganizerProp(String address, String commonName) {
+		if (StringUtils.isBlank(address)) return null;
+		String mailto = "mailto:" + address;
+		Organizer organizer = new Organizer(URI.create(mailto));
+		if (!StringUtils.isBlank(commonName)) {
+			organizer.getParameters().add(new Cn(commonName));
+		}
+		return organizer;
+	}
+	
 	
 	public static TimeZone guessTimeZone(TimeZone tz, DateTimeZone defaultTz) {
 		if (tz == null) return ICal4jUtils.toIC4jTimezone(defaultTz.getID());
@@ -199,39 +501,6 @@ public class ICalendarUtils {
 		// we get back "Europe/Rome"; thats we are looking for.
 		TimeZone guessedTz = ICal4jUtils.toIC4jTimezone(tz.getID());
 		return (guessedTz != null) ? guessedTz : ICal4jUtils.toIC4jTimezone(defaultTz.getID());
-	}
-	
-	public static String buildUid(String id, String internetName) {
-		return id + "@" + internetName;
-	}
-	
-	public static String buildProdId(String product) {
-		return "-//Sonicle//" + product + "//EN";
-	}
-	
-	public static String buildProdId(String company, String product) {
-		return "-//" + company + "//" + product + "//EN";
-	}
-	
-	public static String calendarToString(Calendar ical) throws IOException {
-		ByteArrayOutputStream baos = null;
-		try {
-			baos = new ByteArrayOutputStream();
-			CalendarOutputter outputter = new CalendarOutputter();
-			outputter.output(ical, baos);
-			return baos.toString("UTF8");
-		} finally {
-			IOUtils.closeQuietly(baos);
-		}
-	}
-	
-	public static Calendar newCalendar(String prodId, Method method) {
-		Calendar ical = new Calendar();
-		ical.getProperties().add(new ProdId(prodId));
-		ical.getProperties().add(Version.VERSION_2_0);
-		ical.getProperties().add(CalScale.GREGORIAN);
-		if (method != null) ical.getProperties().add(method);
-		return ical;
 	}
 	
 	public static MimeMultipart createInvitationPart(String htmlText, MimeBodyPart calendarPart, MimeBodyPart attachmentPart) throws MessagingException {
@@ -316,6 +585,26 @@ public class ICalendarUtils {
 		} else {
 			props.add(matchingAtt);
 			return nical;
+		}
+	}
+	
+	public static class RecurInfo {
+		public final Recur recur;
+		public final Set<org.joda.time.LocalDate> exDates;
+		
+		public RecurInfo(Recur recur, Set<org.joda.time.LocalDate> exDates) {
+			this.recur = recur;
+			this.exDates = exDates;
+		}
+	}
+	
+	public static class RecurringRefs {
+		public final String exRefersToMasterUid;
+		public final org.joda.time.LocalDate exRefersToDate;
+		
+		public RecurringRefs(String exRefersToMasterUid, org.joda.time.LocalDate exRefersToDate) {
+			this.exRefersToMasterUid = exRefersToMasterUid;
+			this.exRefersToDate = exRefersToDate;
 		}
 	}
 }
