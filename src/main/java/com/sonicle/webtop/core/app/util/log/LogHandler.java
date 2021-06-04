@@ -1,6 +1,5 @@
 /*
- * WebTop Services is a Web Application framework developed by Sonicle S.r.l.
- * Copyright (C) 2014 Sonicle S.r.l.
+ * Copyright (C) 2021 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -11,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
  * details.
  *
  * You should have received a copy of the GNU Affero General Public License
@@ -19,7 +18,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301 USA.
  *
- * You can contact Sonicle S.r.l. at email address sonicle@sonicle.com
+ * You can contact Sonicle S.r.l. at email address sonicle[at]sonicle[dot]com
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -29,52 +28,22 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2014 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.util;
+package com.sonicle.webtop.core.app.util.log;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  *
  * @author malbinola
- * @deprecated 
  */
-@Deprecated
-public class LogEntries extends ArrayList<LogEntry> {
+public abstract class LogHandler {
 	
-	public LogEntries() {
-		super();
-	}
+	public abstract void handle(Collection<LogEntry> entries);
 	
-	public boolean addMaster(LogEntry e) {
-		return add(e.asMaster());
-	}
-	
-	public String print() {
-		StringBuilder sb = new StringBuilder();
-		for(LogEntry entry : this) {
-			if (entry instanceof MessageLogEntry) {
-				MessageLogEntry mle = ((MessageLogEntry)entry);
-				if (!mle.isMaster()) sb.append("\t");
-				sb.append(MessageFormat.format("[{0}] {1}", levelToString(mle.getLevel()), mle.getMessage()));
-				sb.append("\n");
-			} else {
-				//TODO: completare instanceof
-			}
-		}
-		return sb.toString();
-	}
-	
-	private String levelToString(LogEntry.Level level) {
-		switch(level) {
-			case INFO:
-				return "INFO";
-			case WARN:
-				return "WARN";
-			default:
-				return "ERROR";
-		}
+	public void handle(LogEntry entry) {
+		handle(Arrays.asList(entry));
 	}
 }

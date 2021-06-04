@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Sonicle S.r.l.
+ * Copyright (C) 2021 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,45 +28,44 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2014 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.util;
+package com.sonicle.webtop.core.app.util.log;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
  * @author malbinola
  */
-public class LogReport {
-	private final ArrayList<SLogEntry> entries = new ArrayList<>();
+public abstract class LogEntry {
+	protected int depth;
+	protected final Level level; 
 	
-	public boolean isEmpty() {
-		return this.entries.isEmpty();
+	public LogEntry(int depth, Level level) {
+		this.depth = depth;
+		this.level = level;
 	}
 	
-	public LogReport insert(SLogEntry entry) {
-		this.entries.add(0, entry);
+	public int getDepth() {
+		return depth;
+	}
+	
+	public Level getLevel() {
+		return level;
+	}
+	
+	public LogEntry pushDown() {
+		this.depth++;
 		return this;
 	}
 	
-	public LogReport append(SLogEntry entry) {
-		this.entries.add(entry);
-		return this;
+	public static enum Level {
+		INFO, WARN, ERROR;
 	}
 	
-	public LogReport appendAll(Collection<SLogEntry> entries) {
-		this.entries.addAll(entries);
-		return this;
-	}
-	
-	public String print() {
-		StringBuilder sb = new StringBuilder();
-		for (SLogEntry entry : entries) {
-			sb.append(entry.toString());
-			sb.append("\n");
-		}
-		return sb.toString();
+	@Override
+	public String toString() {
+		return StringUtils.repeat("\t", depth) + "[" + level.toString() + "]";
 	}
 }

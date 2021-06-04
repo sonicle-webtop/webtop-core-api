@@ -39,7 +39,9 @@ import java.text.MessageFormat;
 /**
  *
  * @author malbinola
+ * @deprecated 
  */
+@Deprecated
 public class MessageLogEntry extends LogEntry {
 	protected String message;
 	

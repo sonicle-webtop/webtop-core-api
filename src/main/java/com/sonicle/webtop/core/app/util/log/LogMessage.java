@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Sonicle S.r.l.
+ * Copyright (C) 2021 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,39 +28,26 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2014 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.util;
+package com.sonicle.webtop.core.app.util.log;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  *
  * @author malbinola
  */
-public abstract class SLogEntry {
-	protected final int depth;
-	protected final Level level;
+public class LogMessage extends LogEntry {
+	protected final String message;
 	
-	public SLogEntry(int depth, Level level) {
-		this.depth = depth;
-		this.level = level;
-	}
-	
-	public int getDepth() {
-		return depth;
-	}
-	
-	public Level getLevel() {
-		return level;
-	}
-	
-	public static enum Level {
-		INFO, WARN, ERROR;
+	public LogMessage(int depth, Level level, String message, Object... arguments) {
+		super(depth, level);
+		this.message = MessageFormatter.arrayFormat(message, arguments).getMessage();
 	}
 	
 	@Override
 	public String toString() {
-		return StringUtils.repeat("\t", depth) + "[" + level.toString() + "]";
+		return super.toString() + " " + message;
 	}
 }

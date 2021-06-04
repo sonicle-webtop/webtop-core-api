@@ -36,7 +36,9 @@ package com.sonicle.webtop.core.util;
 /**
  *
  * @author malbinola
+ * @deprecated 
  */
+@Deprecated
 public class LogEntry {
 	protected boolean master;
 	protected Level level;

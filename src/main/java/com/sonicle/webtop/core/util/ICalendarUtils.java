@@ -72,6 +72,7 @@ import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.property.Attendee;
@@ -184,11 +185,47 @@ public class ICalendarUtils {
 	/**
 	 * Prints passed component into a String.
 	 * @param comp Component to be serialized.
+	 * @param prodId The product name.
 	 * @return Component's string value
 	 * @throws IOException 
 	 */
-	public static String print(CalendarComponent comp) throws IOException {
-		Calendar ical = new Calendar();
+	public static String print(CalendarComponent comp, String prodId) throws IOException {
+		Calendar ical = newCalendar(prodId, null);
+		ical.getComponents().add(comp);
+		return print(ical);
+	}
+	
+	/**
+	 * Prints passed properties into a String.
+	 * @param props Properties to be serialized.
+	 * @param componentName The component in which add properties: VEVENT, VTODO.
+	 * @return Properties's string value
+	 * @throws IOException 
+	 */
+	public static String printProperties(PropertyList props, String componentName) throws IOException {
+		return printProperties(props, componentName, null);
+	}
+	
+	/**
+	 * Prints passed properties into a String.
+	 * Properties will be wrapped into a dummy Calendar component.
+	 * @param props Properties to be serialized.
+	 * @param componentName The component in which add properties: VEVENT, VTODO.
+	 * @param prodId The product name.
+	 * @return Properties's string value
+	 * @throws IOException 
+	 */
+	public static String printProperties(PropertyList props, String componentName, String prodId) throws IOException {
+		CalendarComponent comp = null;
+		if (Component.VEVENT.equals(componentName)) {
+			comp = new VEvent();
+		} else if (Component.VTODO.equals(componentName)) {
+			comp = new VToDo();
+		} else {
+			return null;
+		}
+		comp.getProperties().addAll(props);
+		Calendar ical = newCalendar(StringUtils.defaultIfBlank(prodId, "dummy"), null);
 		ical.getComponents().add(comp);
 		return print(ical);
 	}
@@ -254,15 +291,11 @@ public class ICalendarUtils {
 	}
 	
 	/**
-	 * Prints some reference data of the passed VEvent component.
-	 * @param ve The component.
-	 * @return The string dump
+	 * @deprecated Use ICal4jUtils.printDump instead
 	 */
+	@Deprecated
 	public static String print(VEvent ve) {
-		if (ve == null) return null;
-		String uid = (ve.getUid() != null) ? ve.getUid().getValue() : null;
-		String summ = (ve.getSummary() != null) ? ve.getSummary().getValue() : null;
-		return LangUtils.joinStrings(", ", uid, summ);
+		return ICal4jUtils.printDump(ve);
 	}
 	
 	/**

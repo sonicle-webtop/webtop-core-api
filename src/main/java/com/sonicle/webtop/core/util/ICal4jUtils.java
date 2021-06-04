@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.core.util;
 
+import com.sonicle.commons.LangUtils;
 import java.net.SocketException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.DateProperty;
 import net.fortuna.ical4j.model.property.DtStamp;
@@ -70,6 +72,30 @@ import org.joda.time.DateTimeZone;
 public class ICal4jUtils {
 	//public final static TimeZoneRegistry tzRegistry = new TimeZoneRegistryImpl();
 	public final static TimeZoneRegistry tzRegistry = TimeZoneRegistryFactory.getInstance().createRegistry();
+	
+	/**
+	 * Prints a short dump of the passed VEvent component.
+	 * @param vevent The component.
+	 * @return The dump string
+	 */
+	public static String printDump(VEvent vevent) {
+		if (vevent == null) return null;
+		String uid = (vevent.getUid() != null) ? vevent.getUid().getValue() : null;
+		String summ = (vevent.getSummary() != null) ? vevent.getSummary().getValue() : null;
+		return LangUtils.joinStrings(", ", uid, summ);
+	}
+	
+	/**
+	 * Prints a short dump of the passed VEvent component.
+	 * @param vtodo The component.
+	 * @return The dump string
+	 */
+	public static String printDump(VToDo vtodo) {
+		if (vtodo == null) return null;
+		String uid = (vtodo.getUid() != null) ? vtodo.getUid().getValue() : null;
+		String summ = (vtodo.getSummary() != null) ? vtodo.getSummary().getValue() : null;
+		return LangUtils.joinStrings(", ", uid, summ);
+	}
 	
 	/**
 	 * Returns the value of passed Property, if provided, or null otherwise.

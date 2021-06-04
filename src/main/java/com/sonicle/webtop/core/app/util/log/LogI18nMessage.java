@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Sonicle S.r.l.
+ * Copyright (C) 2021 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,27 +28,37 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2014 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.util;
+package com.sonicle.webtop.core.app.util.log;
 
-import com.sonicle.commons.LangUtils;
-import java.text.MessageFormat;
+import net.sf.qualitycheck.Check;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  *
  * @author malbinola
  */
-public class MsgSLogEntry extends SLogEntry {
-	protected final String message;
+public class LogI18nMessage extends LogEntry {
+	protected final String resourceKey;
+	protected final Object[] arguments;
 	
-	public MsgSLogEntry(int depth, Level level, String message, Object... arguments) {
+	public LogI18nMessage(int depth, Level level, String resourceKey, Object... arguments) {
 		super(depth, level);
-		this.message = LangUtils.escapeSingleQuote(MessageFormat.format(LangUtils.escapeMessageFormat(message), arguments));
+		this.resourceKey = Check.notNull(resourceKey, "resourceKey");
+		this.arguments = arguments;
+	}
+	
+	public String getResourceKey() {
+		return resourceKey;
 	}
 	
 	@Override
 	public String toString() {
-		return super.toString() + " " + message;
+		return super.toString() + " " + resourceKey;
+	}
+	
+	public String toLocalizedString(String localizedMessage) {
+		return super.toString() + " " + MessageFormatter.arrayFormat(localizedMessage, arguments).getMessage();
 	}
 }
