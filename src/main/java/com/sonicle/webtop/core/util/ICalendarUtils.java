@@ -224,6 +224,11 @@ public class ICalendarUtils {
 		} else {
 			return null;
 		}
+		
+		// Remove DTSTAMP property, added automatically when CalendarComponent is created!
+		Property dtStamp = comp.getProperties().getProperty(Property.DTSTAMP);
+		if (dtStamp != null) comp.getProperties().remove(dtStamp);
+		
 		comp.getProperties().addAll(props);
 		Calendar ical = newCalendar(StringUtils.defaultIfBlank(prodId, "dummy"), null);
 		ical.getComponents().add(comp);
