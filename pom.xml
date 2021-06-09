@@ -10,7 +10,7 @@
 		<!-- WARN: Do not use superpom-service-api as parent here, otherwise circulare refs issues will occur! -->
 		<groupId>com.sonicle.webtop</groupId>
 		<artifactId>webtop-superpom</artifactId>
-		<version>3</version>
+		<version>4</version>
 	</parent>
 	
 	<properties>
