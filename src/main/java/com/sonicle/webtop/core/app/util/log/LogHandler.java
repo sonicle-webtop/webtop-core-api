@@ -44,6 +44,6 @@ public abstract class LogHandler {
 	public abstract void handle(Collection<LogEntry> entries);
 	
 	public void handle(LogEntry entry) {
-		handle(Arrays.asList(entry));
+		handle(entry != null ? Arrays.asList(entry) : null);
 	}
 }

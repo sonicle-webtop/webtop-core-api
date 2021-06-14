@@ -58,7 +58,7 @@ public class BufferingLogHandler extends LogHandler {
 		return null;
 	}
 
-	public List<LogEntry> flush() {
+	public final List<LogEntry> flush() {
 		synchronized (lock) {
 			if (buffer != null) {
 				if (!buffer.isEmpty()) {
@@ -72,7 +72,7 @@ public class BufferingLogHandler extends LogHandler {
 	}
 
 	@Override
-	public void handle(Collection<LogEntry> entries) {
+	public final void handle(Collection<LogEntry> entries) {
 		synchronized (lock) {
 			if (buffer != null) {
 				if (buffer.isEmpty()) {
