@@ -41,7 +41,9 @@ import com.sonicle.commons.time.DateTimeUtils;
 import com.sonicle.commons.web.json.bean.QueryObj;
 import com.sonicle.webtop.core.app.sdk.QueryBuilderWithCValues;
 import com.sonicle.webtop.core.app.sdk.WTUnsupportedOperationException;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
@@ -92,71 +94,63 @@ public class DomainAccessLogQuery extends QueryBuilderWithCValues<DomainAccessLo
 		return string("any");
 	}
 	
-	public static Condition<DomainAccessLogQuery> toCondition(String pattern) {
-		if (!StringUtils.isBlank(pattern)) {
-			return new DomainAccessLogQuery().any().eq(StringUtils.replace(pattern, "%", "*"));
-		} else {
-			return null;
-		}
-	}
-	
-	public static Condition<DomainAccessLogQuery> toCondition(QueryObj query, DateTimeZone timezone) {
+	public static Condition<DomainAccessLogQuery> createCondition(QueryObj query, DateTimeZone timezone) {
 		boolean smartStringComparison = true;
-		DomainAccessLogQuery q = new DomainAccessLogQuery();
 		
-		Condition<DomainAccessLogQuery> last = q.trueCondition();
-		for (Map.Entry<String, Collection<QueryObj.Condition>> entry : query.getConditionsMap().entrySet()) {
-			q = last.and();
-			int pos = 0;
-			for (QueryObj.Condition queryCondition : entry.getValue()) {
-				pos++;
-				if (pos > 1) q = last.or();
-				
-				if ("session".equals(queryCondition.keyword)) {
-					last = q.session().eq(asStringValue(queryCondition.value, smartStringComparison));
-					
-				} else if ("user".equals(queryCondition.keyword)) {
-					last = q.user().eq(asStringValue(queryCondition.value, smartStringComparison));
-					
-				} else if ("dateFrom".equals(queryCondition.keyword)) {
-					String dateFrom = StringUtils.replace(queryCondition.value, "/", "-");
-					last = q.dateFrom().eq(DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(dateFrom), DateTimeUtils.toZoneId(timezone)));
-					
-				} else if ("dateTo".equals(queryCondition.keyword)) {
-					String dateTo = StringUtils.replace(queryCondition.value, "/", "-");
-					last = q.dateTo().eq(DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(dateTo), DateTimeUtils.toZoneId(timezone)));
-					
-				} else if ("minDuration".equals(queryCondition.keyword)) {
-					last = q.minDuration().eq(Double.parseDouble(queryCondition.value));
-					
-				} else if ("maxDuration".equals(queryCondition.keyword)) {
-					last = q.maxDuration().eq(Double.parseDouble(queryCondition.value));
-					
-				} else if ("ip".equals(queryCondition.keyword)) {
-					last = q.ip().eq(asStringValue(queryCondition.value, smartStringComparison));
-					
-				} else if ("is".equals(queryCondition.keyword)) {
-					switch (queryCondition.value) {
-						case "authenticated":
-							last = q.isAuthenticated().isTrue();
-							break;
-						case "failure":
-							last = q.isFailure().isTrue();
-							break;
-						default:
-							throw new UnsupportedOperationException(queryCondition.keyword + ":" + queryCondition.value);
-					}
-					
-				} else {
-					throw new WTUnsupportedOperationException("Unsupported keyword '{}'", queryCondition.keyword);
+		Condition<DomainAccessLogQuery> last = new DomainAccessLogQuery().trueCondition();
+		for (Map.Entry<QueryObj.Condition, List<String>> entry : query.groupConditions(Arrays.asList("is")).entrySet()) {
+			final QueryObj.Condition key = entry.getKey();
+			final List<String> values = entry.getValue();
+			
+			if (values.isEmpty() || values.size() == 1) {
+				last = new DomainAccessLogQuery().and(last, createCondition(key, values.isEmpty() ? null : values.get(0), timezone, smartStringComparison));
+			} else {
+				List<Condition<DomainAccessLogQuery>> conds = new ArrayList<>();
+				for (String value : entry.getValue()) {
+					conds.add(createCondition(key, value, timezone, smartStringComparison));
 				}
+				last = new DomainAccessLogQuery().and(last, new DomainAccessLogQuery().or(conds));
 			}
 		}
 		
-		if (!StringUtils.isBlank(query.allText)) {
-			return last.and().any().eq(asStringValue(query.allText, smartStringComparison));
+		if (!StringUtils.isBlank(query.getAllText())) {
+			return new DomainAccessLogQuery().and(last, new DomainAccessLogQuery().any().eq(asStringValue(query.getAllText(), smartStringComparison)));
 		} else {
 			return last;
 		}
+	}
+	
+	private static Condition<DomainAccessLogQuery> createCondition(QueryObj.Condition condition, String value, DateTimeZone timezone, boolean smartStringComparison) {
+		if ("session".equals(condition.keyword)) {
+			return new DomainAccessLogQuery().session().eq(asStringValue(value, smartStringComparison));
+
+		} else if ("user".equals(condition.keyword)) {
+			return new DomainAccessLogQuery().user().eq(asStringValue(value, smartStringComparison));
+
+		} else if ("dateFrom".equals(condition.keyword)) {
+			String dateFrom = StringUtils.replace(value, "/", "-");
+			return new DomainAccessLogQuery().dateFrom().eq(DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(dateFrom), DateTimeUtils.toZoneId(timezone)));
+
+		} else if ("dateTo".equals(condition.keyword)) {
+			String dateTo = StringUtils.replace(value, "/", "-");
+			return new DomainAccessLogQuery().dateTo().eq(DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(dateTo), DateTimeUtils.toZoneId(timezone)));
+
+		} else if ("minDuration".equals(condition.keyword)) {
+			return new DomainAccessLogQuery().minDuration().eq(Double.parseDouble(value));
+
+		} else if ("maxDuration".equals(condition.keyword)) {
+			return new DomainAccessLogQuery().maxDuration().eq(Double.parseDouble(value));
+
+		} else if ("ip".equals(condition.keyword)) {
+			return new DomainAccessLogQuery().ip().eq(asStringValue(value, smartStringComparison));
+
+		} else if ("authenticated".equals(condition.keyword)) {
+			return condition.negated ? new DomainAccessLogQuery().isAuthenticated().isFalse() : new DomainAccessLogQuery().isAuthenticated().isTrue();
+
+		} else if ("failure".equals(condition.keyword)) {
+			return condition.negated ? new DomainAccessLogQuery().isFailure().isFalse() : new DomainAccessLogQuery().isFailure().isTrue();
+		}
+		
+		throw new WTUnsupportedOperationException("Unsupported keyword '{}'", condition.keyword);
 	}
 }
