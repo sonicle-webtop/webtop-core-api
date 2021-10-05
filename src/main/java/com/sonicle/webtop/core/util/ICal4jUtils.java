@@ -364,6 +364,27 @@ public class ICal4jUtils {
 	}
 	
 	/**
+	 * Creates an iCal4j Period with UTC time.
+	 * @param start Period's start instant.
+	 * @param end Period's start instant.
+	 * @return Period object
+	 */
+	public static Period toIC4jPeriodUTC(org.joda.time.DateTime start, org.joda.time.DateTime end) {
+		return new Period(toIC4jDateTimeUTC(start), toIC4jDateTimeUTC(end));
+	}
+	
+	/**
+	 * Creates an iCal4j Period with secified Zone.
+	 * @param start Period's start instant.
+	 * @param end Period's end instant.
+	 * @param timezone Zone reference.
+	 * @return Period object
+	 */
+	public static Period toIC4jPeriod(org.joda.time.DateTime start, org.joda.time.DateTime end, org.joda.time.DateTimeZone timezone) {
+		return new Period(toIC4jDateTime(start, timezone), toIC4jDateTime(end, timezone));
+	}
+	
+	/**
 	 * Converts an iCal4j DateTime into a JodaTime DateTime.
 	 * @param dateTime Source DateTime object.
 	 * @return A DateTime object
@@ -497,6 +518,66 @@ public class ICal4jUtils {
 	
 	/**
 	 * Computes date instances substained by the passed recurrence rule.
+	 * NB: returned dates are obtained by instant in target timezone.
+	 * @param recur Recurrence object instance.
+	 * @param recurStart Recurrence start instant.
+	 * @param recurExcludedDates List of dates to exclude from the final result.
+	 * @param start Event's start instant.
+	 * @param end Event's end instant.
+	 * @param timezone Event's zone info.
+	 * @param rangeFrom Desired starting range to evaluate.
+	 * @param rangeTo Desired ending range to evaluate.
+	 * @param limit Max number of elements to return, -1 means unlimited.
+	 * @return List of date instances.
+	 */
+	public static List<org.joda.time.LocalDate> calculateRecurrenceSet(Recur recur, org.joda.time.DateTime recurStart, Set<org.joda.time.LocalDate> recurExcludedDates, org.joda.time.DateTime start, org.joda.time.DateTime end, org.joda.time.DateTimeZone timezone, org.joda.time.DateTime rangeFrom, org.joda.time.DateTime rangeTo, int limit) {
+		// Dates computation needs to pass through VEvent otherwise recur may 
+		// not take into account some aspects relates to recurrence start and 
+		// so wrong dates are returned (eg. WEEKLY with missing BYDAY).
+		
+		int max = (limit == -1) ? Integer.MAX_VALUE : limit;
+		org.joda.time.DateTime realRecurStart = calculateRecurrenceStart(recur, recurStart, start, timezone);
+		
+		org.joda.time.DateTime peStart = recurStart;
+		if (start.isBefore(peStart)) peStart = start;
+		if (rangeFrom != null && rangeFrom.isAfter(peStart)) peStart = rangeFrom;
+		org.joda.time.DateTime peEnd = ifiniteDate(timezone);
+		if ((rangeTo != null) && rangeTo.isBefore(peEnd)) peEnd = rangeTo;
+		
+		// We need to use recurStart date (at event startDate time) as start 
+		// because otherwise we may lose instances on the end if the recur start
+		// date does not match event start. We need also to set a duration 
+		// according to the real event length in days, this is useful to have 
+		// right instances in case of multi-day events that starts before 
+		// specified view range.
+		org.joda.time.DateTime veStart = start.withDate(recurStart.toLocalDate());
+		int veDays = Math.abs(org.joda.time.Days.daysBetween(start.toLocalDate(), end.toLocalDate()).getDays()); // Calendar days length
+		VEvent veDummy = new VEvent(toIC4jDateTime(veStart, timezone), new Dur(veDays, 0, 0, 0), "DUMMY");
+		veDummy.getProperties().add(new RRule(recur));
+		if ((recurExcludedDates != null) && !recurExcludedDates.isEmpty()) {
+			// Seems that we have to use times also when dealing with AD events, 
+			// otherwise we get wrong dates (#WT-806) when calculating recurrence set.
+			// AD events have start time set to 00:00 so we are ok when extracting as time.
+			veDummy.getProperties().add(toIC4jExDate(recurExcludedDates, veStart.withZone(timezone).toLocalTime(), timezone, false));
+		}
+		
+		PeriodList list = veDummy.calculateRecurrenceSet(toIC4jPeriod(peStart, peEnd, timezone));
+		ArrayList<org.joda.time.LocalDate> date = new ArrayList<>(list.size() < max ? list.size() : max);
+		Iterator<Period> it = list.iterator();
+		while (it.hasNext()) {
+			Period period = it.next();
+			org.joda.time.DateTime instant = toJodaDateTime(period.getStart(), timezone);
+			if (instant.compareTo(realRecurStart) >= 0) {
+				date.add(instant.toLocalDate());
+				if (date.size() == max) break;
+			}
+		}
+		return date;
+	}
+	
+	/**
+	 * @deprecated use the above instead
+	 * Computes date instances substained by the passed recurrence rule.
 	 * @param recur Recurrence object instance.
 	 * @param recurStart Recurrence start instant.
 	 * @param recurExcludedDates List of dates to exclude from the final result.
@@ -509,6 +590,7 @@ public class ICal4jUtils {
 	 * @param limit Max number of elements to return, -1 means unlimited.
 	 * @return List of date instances.
 	 */
+	@Deprecated
 	public static List<org.joda.time.LocalDate> calculateRecurrenceSet(Recur recur, org.joda.time.DateTime recurStart, Set<org.joda.time.LocalDate> recurExcludedDates, boolean eventAllDay, org.joda.time.DateTime eventStart, org.joda.time.DateTime eventEnd, org.joda.time.DateTimeZone eventTimezone, org.joda.time.DateTime rangeFrom, org.joda.time.DateTime rangeTo, int limit) {
 		// Dates computation needs to pass through VEvent otherwise recur may 
 		// not take into account some aspects relates to recurrence start and 
@@ -516,7 +598,7 @@ public class ICal4jUtils {
 		
 		int max = (limit == -1) ? Integer.MAX_VALUE : limit;
 		//Date realRecurStart = getRecurStartDate(recur, toIC4jDateTime(recurStart, eventTimezone, false), toIC4jDateTime(eventStart, eventTimezone, false));
-		org.joda.time.LocalDate realRecurStart = calculateRecurrenceStart(recur, recurStart, eventStart, eventTimezone);
+		org.joda.time.DateTime realRecurStart = calculateRecurrenceStart(recur, recurStart, eventStart, eventTimezone);
 		//DateTime rstartDate = toIC4jDateTime(recurStart, eventTimezone, false);
 		if (realRecurStart == null) return new ArrayList<>(0);
 		
@@ -546,13 +628,14 @@ public class ICal4jUtils {
 			//veDummy.getProperties().add(toIC4jExDate(recurExcludedDates, eventAllDay, eventStart, eventTimezone, false));
 		}
 		
+		org.joda.time.LocalDate realRecurStartDate = realRecurStart.toLocalDate();
 		PeriodList list = veDummy.calculateRecurrenceSet(createPeriod(peStart, peEnd, eventTimezone));
 		ArrayList<org.joda.time.LocalDate> dates = new ArrayList<>(list.size() < max ? list.size() : max);
 		Iterator<Period> it = list.iterator();
 		while (it.hasNext()) {
 			Period period = it.next();
 			org.joda.time.LocalDate date = toJodaLocalDate(period.getStart(), eventTimezone);
-			if (date.compareTo(realRecurStart) >= 0) {
+			if (date.compareTo(realRecurStartDate) >= 0) {
 				dates.add(toJodaLocalDate(period.getStart(), eventTimezone));
 				if (dates.size() == max) break;
 			}	
@@ -564,16 +647,15 @@ public class ICal4jUtils {
 	 * Returns recurrence's start boundary.
 	 * @param recur
 	 * @param recurStart
-	 * @param eventStart
-	 * @param eventTimezone
+	 * @param start
+	 * @param timezone
 	 * @return 
 	 */
-	public static org.joda.time.LocalDate calculateRecurrenceStart(Recur recur, org.joda.time.DateTime recurStart, org.joda.time.DateTime eventStart, org.joda.time.DateTimeZone eventTimezone) {
-		//TODO: replace this properly using ical4j objects (getRecurStartDate)
-		org.joda.time.DateTime seed = eventStart.withZone(eventTimezone).withDate(recurStart.toLocalDate());
-		org.joda.time.DateTime start = recurStart.withZone(eventTimezone).minusDays(1);
-		// Do not use toICal4jDateTimeUTC otherwise, due to zone translation, boundaries may be wrong for all-day events!
-		return toJodaLocalDate(recur.getNextDate(toIC4jDateTime(seed, eventTimezone), toIC4jDateTime(start, eventTimezone)), eventTimezone);
+	public static org.joda.time.DateTime calculateRecurrenceStart(Recur recur, org.joda.time.DateTime recurStart, org.joda.time.DateTime start, org.joda.time.DateTimeZone timezone) {
+		org.joda.time.DateTime dtSeed = start.withZone(timezone).withDate(recurStart.toLocalDate());
+		org.joda.time.DateTime dtStart = recurStart.withZone(timezone).minusDays(1);
+		// NB: Do NOT use toICal4jDateTimeUTC here: otherwise, due to zone translation, time will be wrong for boundaries at 00:00! I think that getNextDate does not handle UTC well.
+		return toJodaDateTime(recur.getNextDate(toIC4jDateTime(dtSeed, timezone), toIC4jDateTime(dtStart, timezone)), timezone);
 	}
 	
 	/**
@@ -696,7 +778,7 @@ public class ICal4jUtils {
 	 * @param period Period object used within calculateRecurrenceSet
 	 * @return 
 	 */
-	private static boolean shouldSkipFirstRecurrenceSetInstance(VEvent ve, final Period period) {
+	private static boolean shouldSkipFirstRecurrenceSetInstance(final VEvent ve, final Period period) {
 		final DtStart start = (DtStart)ve.getProperty(Property.DTSTART);
 		DateProperty end = (DateProperty)ve.getProperty(Property.DTEND);
 		if (end == null) {
@@ -980,6 +1062,21 @@ public class ICal4jUtils {
 	}
 	*/
 	
+	public static void recur10times() throws Exception {
+		org.joda.time.format.DateTimeFormatter dtf = org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+		org.joda.time.DateTimeZone etz = org.joda.time.DateTimeZone.forID("Europe/Rome");
+		org.joda.time.DateTime estart = new org.joda.time.DateTime(2021, 10, 4, 0, 0, 0, etz);
+		org.joda.time.DateTime eend = new org.joda.time.DateTime(2021, 10, 4, 0, 0, 0, etz);
+		org.joda.time.DateTime rstart = new org.joda.time.DateTime(2021, 10, 4, 0, 0, 0, etz);
+		Recur recur = new Recur("FREQ=MONTHLY;COUNT=10;INTERVAL=1;BYMONTHDAY=4");
+		
+		org.joda.time.DateTime recStart = calculateRecurrenceStart(recur, rstart, estart, etz);
+		if (!"2021-10-04 00:00".equals(recStart.toString(dtf))) throw new Exception("Fail");
+		
+		List<org.joda.time.LocalDate> dates = calculateRecurrenceSet(recur, rstart, null, estart, eend, etz, null, null, -1);
+		if (dates.size() != 10) throw new Exception("Fail");
+	}
+	
 	/**
 	 * WTCALENDAR-91
 	 * @throws Exception 
@@ -992,7 +1089,7 @@ public class ICal4jUtils {
 		org.joda.time.DateTime rstart = new org.joda.time.DateTime(2019, 11, 1, 0, 0, 0, etz);
 		Recur recur = new Recur("FREQ=MONTHLY;COUNT=4;INTERVAL=1;BYMONTHDAY=1");
 		
-		org.joda.time.LocalDate recStart = calculateRecurrenceStart(recur, rstart, estart, etz);
+		org.joda.time.LocalDate recStart = calculateRecurrenceStart(recur, rstart, estart, etz).toLocalDate();
 		if (!"2019-11-01".equals(recStart.toString())) throw new Exception("Fail");
 		
 		org.joda.time.DateTime recEnd = calculateRecurrenceEnd(recur, rstart, estart, eend, etz);
@@ -1018,7 +1115,7 @@ public class ICal4jUtils {
 		org.joda.time.DateTime rstart = new org.joda.time.DateTime(2019, 11, 4, 0, 0, 0, etz);
 		Recur recur = new Recur("FREQ=WEEKLY;COUNT=2;INTERVAL=1");
 		
-		org.joda.time.LocalDate recStart = calculateRecurrenceStart(recur, rstart, estart, etz);
+		org.joda.time.LocalDate recStart = calculateRecurrenceStart(recur, rstart, estart, etz).toLocalDate();
 		if (!"2019-11-04".equals(recStart.toString())) throw new Exception("Fail");
 		
 		org.joda.time.DateTime recEnd = calculateRecurrenceEnd(recur, rstart, estart, eend, etz);
@@ -1041,7 +1138,7 @@ public class ICal4jUtils {
 				new org.joda.time.LocalDate(2020, 1, 13)
 		));
 		
-		org.joda.time.LocalDate recStart = calculateRecurrenceStart(recur, rstart, estart, etz);
+		org.joda.time.LocalDate recStart = calculateRecurrenceStart(recur, rstart, estart, etz).toLocalDate();
 		if (!"2020-01-13".equals(recStart.toString())) throw new Exception("Fail");
 		
 		List<org.joda.time.LocalDate> recSet = calculateRecurrenceSet(recur, rstart, rexdates, ead, estart, eend, etz, null, null, -1);
@@ -1056,6 +1153,7 @@ public class ICal4jUtils {
 			recur8days4times();
 			recur3days2times();
 			recur1day2times();
+			recur10times();
 			
 			org.joda.time.DateTimeZone jTz = org.joda.time.DateTimeZone.forID("Europe/Rome");
 			org.joda.time.DateTime jDt = new org.joda.time.DateTime(2020, 01, 14, 12, 0, 0, jTz);
