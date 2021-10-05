@@ -521,6 +521,7 @@ public class ICal4jUtils {
 	 * NB: returned dates are obtained by instant in target timezone.
 	 * @param recur Recurrence object instance.
 	 * @param recurStart Recurrence start instant.
+	 * @param recurExcludeStartNotMatching Set to `true` to skip any date before computed (hope real) recur's first instance instant.
 	 * @param recurExcludedDates List of dates to exclude from the final result.
 	 * @param start Event's start instant.
 	 * @param end Event's end instant.
@@ -530,13 +531,13 @@ public class ICal4jUtils {
 	 * @param limit Max number of elements to return, -1 means unlimited.
 	 * @return List of date instances.
 	 */
-	public static List<org.joda.time.LocalDate> calculateRecurrenceSet(Recur recur, org.joda.time.DateTime recurStart, Set<org.joda.time.LocalDate> recurExcludedDates, org.joda.time.DateTime start, org.joda.time.DateTime end, org.joda.time.DateTimeZone timezone, org.joda.time.DateTime rangeFrom, org.joda.time.DateTime rangeTo, int limit) {
+	public static List<org.joda.time.LocalDate> calculateRecurrenceSet(Recur recur, org.joda.time.DateTime recurStart, boolean recurExcludeStartNotMatching, Set<org.joda.time.LocalDate> recurExcludedDates, org.joda.time.DateTime start, org.joda.time.DateTime end, org.joda.time.DateTimeZone timezone, org.joda.time.DateTime rangeFrom, org.joda.time.DateTime rangeTo, int limit) {
 		// Dates computation needs to pass through VEvent otherwise recur may 
 		// not take into account some aspects relates to recurrence start and 
 		// so wrong dates are returned (eg. WEEKLY with missing BYDAY).
 		
 		int max = (limit == -1) ? Integer.MAX_VALUE : limit;
-		org.joda.time.DateTime realRecurStart = calculateRecurrenceStart(recur, recurStart, start, timezone);
+		org.joda.time.DateTime instantThreshold = recurExcludeStartNotMatching ? calculateRecurrenceStart(recur, recurStart, start, timezone) : start;
 		
 		org.joda.time.DateTime peStart = recurStart;
 		if (start.isBefore(peStart)) peStart = start;
@@ -567,7 +568,7 @@ public class ICal4jUtils {
 		while (it.hasNext()) {
 			Period period = it.next();
 			org.joda.time.DateTime instant = toJodaDateTime(period.getStart(), timezone);
-			if (instant.compareTo(realRecurStart) >= 0) {
+			if (instant.compareTo(instantThreshold) >= 0) {
 				date.add(instant.toLocalDate());
 				if (date.size() == max) break;
 			}
@@ -1062,6 +1063,21 @@ public class ICal4jUtils {
 	}
 	*/
 	
+	public static void recurStartNoInSync() throws Exception {
+		org.joda.time.format.DateTimeFormatter dtf = org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+		org.joda.time.DateTimeZone etz = org.joda.time.DateTimeZone.forID("Europe/Rome");
+		org.joda.time.DateTime estart = new org.joda.time.DateTime(2021, 10, 1, 0, 0, 0, etz);
+		org.joda.time.DateTime eend = new org.joda.time.DateTime(2021, 10, 8, 0, 0, 0, etz);
+		org.joda.time.DateTime rstart = new org.joda.time.DateTime(2021, 10, 1, 0, 0, 0, etz);
+		Recur recur = new Recur("FREQ=MONTHLY;COUNT=10;INTERVAL=1;BYMONTHDAY=8");
+		
+		org.joda.time.DateTime recStart = calculateRecurrenceStart(recur, rstart, estart, etz);
+		//if (!"2021-10-04 00:00".equals(recStart.toString(dtf))) throw new Exception("Fail");
+		
+		List<org.joda.time.LocalDate> dates = calculateRecurrenceSet(recur, rstart, false, null, estart, eend, etz, null, null, -1);
+		if (dates.size() != 11) throw new Exception("Fail");
+	}
+	
 	public static void recur10times() throws Exception {
 		org.joda.time.format.DateTimeFormatter dtf = org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 		org.joda.time.DateTimeZone etz = org.joda.time.DateTimeZone.forID("Europe/Rome");
@@ -1073,7 +1089,7 @@ public class ICal4jUtils {
 		org.joda.time.DateTime recStart = calculateRecurrenceStart(recur, rstart, estart, etz);
 		if (!"2021-10-04 00:00".equals(recStart.toString(dtf))) throw new Exception("Fail");
 		
-		List<org.joda.time.LocalDate> dates = calculateRecurrenceSet(recur, rstart, null, estart, eend, etz, null, null, -1);
+		List<org.joda.time.LocalDate> dates = calculateRecurrenceSet(recur, rstart, false, null, estart, eend, etz, null, null, -1);
 		if (dates.size() != 10) throw new Exception("Fail");
 	}
 	
@@ -1150,10 +1166,11 @@ public class ICal4jUtils {
 		try {
 			org.joda.time.DateTimeZone rome = org.joda.time.DateTimeZone.forID("Europe/Rome");
 			java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone("Europe/Riga"));
-			recur8days4times();
-			recur3days2times();
-			recur1day2times();
-			recur10times();
+			//recur8days4times();
+			//recur3days2times();
+			//recur1day2times();
+			//recur10times();
+			recurStartNoInSync();
 			
 			org.joda.time.DateTimeZone jTz = org.joda.time.DateTimeZone.forID("Europe/Rome");
 			org.joda.time.DateTime jDt = new org.joda.time.DateTime(2020, 01, 14, 12, 0, 0, jTz);
