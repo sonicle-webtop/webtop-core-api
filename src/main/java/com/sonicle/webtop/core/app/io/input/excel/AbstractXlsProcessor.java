@@ -30,28 +30,48 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.app.util.log;
+package com.sonicle.webtop.core.app.io.input.excel;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.io.InputStream;
+import org.apache.commons.io.IOUtils;
+import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
+import org.apache.poi.hssf.eventusermodel.HSSFEventFactory;
+import org.apache.poi.hssf.eventusermodel.HSSFListener;
+import org.apache.poi.hssf.eventusermodel.HSSFRequest;
+import org.apache.poi.hssf.eventusermodel.MissingRecordAwareHSSFListener;
+import org.apache.poi.hssf.record.Record;
 
 /**
  *
  * @author malbinola
  */
-public abstract class LogHandler {
+public abstract class AbstractXlsProcessor implements HSSFListener {
+	private InputStream is;
+	protected MissingRecordAwareHSSFListener hssfListener;
+	protected FormatTrackingHSSFListener formatTrackingListener;
 	
-	public abstract void handle(Collection<LogEntry> entries);
+	protected abstract HSSFRequest createRequest();
 	
-	public void handle(LogEntry entry) {
-		handle(entry != null ? Arrays.asList(entry) : null);
+	@Override
+	public abstract void processRecord(Record record);
+	
+	public AbstractXlsProcessor(InputStream is) {
+		this.is = is;
+		hssfListener = new MissingRecordAwareHSSFListener(this);
+		formatTrackingListener = new FormatTrackingHSSFListener(hssfListener);
 	}
 	
-	public void handle(LogEntry... entries) {
-		handle(entries != null ? Arrays.asList(entries) : null);
+	public void close() {
+		IOUtils.closeQuietly(is);
 	}
 	
-	public void handleMessage(int depth, LogEntry.Level level, String message, Object... arguments) {
-		handle(new LogMessage(depth, level, message, arguments));
+	public void process() {
+		HSSFRequest request = createRequest();
+		HSSFEventFactory factory = new HSSFEventFactory();
+		try {
+			factory.processEvents(request, is);
+		} catch(IllegalStateException ex) {
+			// Don't bother about illegal state of stream closed
+		}
 	}
 }

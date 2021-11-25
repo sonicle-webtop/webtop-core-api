@@ -30,28 +30,52 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.app.util.log;
+package com.sonicle.webtop.core.app.io.input.excel;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.io.InputStream;
+import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFComment;
 
 /**
  *
  * @author malbinola
  */
-public abstract class LogHandler {
+public class XlsxRowsHandler extends XlsxColumnsHandler {
+	protected final RowHandler rowHandler;
+	public RowValues rowValues;
 	
-	public abstract void handle(Collection<LogEntry> entries);
-	
-	public void handle(LogEntry entry) {
-		handle(entry != null ? Arrays.asList(entry) : null);
+	public XlsxRowsHandler(InputStream is, int headersRow, int firstDataRow, int lastDataRow, RowHandler rowHandler) {
+		super(is, headersRow, firstDataRow, lastDataRow, null);
+		this.rowHandler = rowHandler;
 	}
 	
-	public void handle(LogEntry... entries) {
-		handle(entries != null ? Arrays.asList(entries) : null);
+	@Override
+	public void startRow(int i) {
+		super.startRow(i);
+		if (isInRange) {
+			rowValues = new RowValues();
+		} else {
+			if ((lastDataRow != -1) && (row > lastDataRow)) close();
+		}
 	}
-	
-	public void handleMessage(int depth, LogEntry.Level level, String message, Object... arguments) {
-		handle(new LogMessage(depth, level, message, arguments));
+
+	@Override
+	public void endRow(int i) {
+		if (isInRange) {
+			try {
+				rowHandler.handle(row, rowValues);
+			} catch (Throwable t) {
+				close();
+			}
+		}
+	}
+
+	@Override
+	public void cell(String cellReference, String formattedValue, XSSFComment comment) {
+		super.cell(cellReference, formattedValue, comment);
+		if(isInRange) {
+			final int col = new CellReference(cellReference).getCol();
+			rowValues.put(col, formattedValue);
+		}
 	}
 }

@@ -30,28 +30,36 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.app.util.log;
+package com.sonicle.webtop.core.app.io.input.excel;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.io.InputStream;
+import org.apache.poi.hssf.eventusermodel.HSSFListener;
+import org.apache.poi.hssf.eventusermodel.HSSFRequest;
+import org.apache.poi.hssf.record.Record;
 
 /**
  *
  * @author malbinola
  */
-public abstract class LogHandler {
+public class XlsColumnsProcessor extends AbstractXlsRecordsProcessor implements HSSFListener {
 	
-	public abstract void handle(Collection<LogEntry> entries);
-	
-	public void handle(LogEntry entry) {
-		handle(entry != null ? Arrays.asList(entry) : null);
+	public XlsColumnsProcessor(InputStream is, int headersRow, int firstDataRow, int lastDataRow, String sheetName, ColumnMapper mapper) {
+		super(is, headersRow, firstDataRow, lastDataRow, sheetName, mapper);
 	}
 	
-	public void handle(LogEntry... entries) {
-		handle(entries != null ? Arrays.asList(entries) : null);
+	@Override
+	protected HSSFRequest createRequest() {
+		HSSFRequest request = new HSSFRequest();
+		request.addListenerForAllRecords(formatTrackingListener);
+		return request;
 	}
-	
-	public void handleMessage(int depth, LogEntry.Level level, String message, Object... arguments) {
-		handle(new LogMessage(depth, level, message, arguments));
+
+	@Override
+	public void processRecord(Record record) {
+		super.processRecord(record);
+		
+		if (cellValue != null) {
+			if (row > headersRow) close();
+		}
 	}
 }

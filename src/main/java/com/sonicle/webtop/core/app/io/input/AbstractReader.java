@@ -30,28 +30,55 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.app.util.log;
+package com.sonicle.webtop.core.app.io.input;
 
+import com.sonicle.webtop.core.app.util.log.BufferingLogHandler;
+import com.sonicle.webtop.core.app.util.log.LogEntry;
+import com.sonicle.webtop.core.app.util.log.LogHandler;
+import com.sonicle.webtop.core.app.util.log.LogMessage;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
  * @author malbinola
  */
-public abstract class LogHandler {
+public abstract class AbstractReader {
+	protected final LogHandler logHandler;
 	
-	public abstract void handle(Collection<LogEntry> entries);
-	
-	public void handle(LogEntry entry) {
-		handle(entry != null ? Arrays.asList(entry) : null);
+	public AbstractReader() {
+		this(null);
 	}
 	
-	public void handle(LogEntry... entries) {
-		handle(entries != null ? Arrays.asList(entries) : null);
+	public AbstractReader(LogHandler logHandler) {
+		this.logHandler = logHandler;
 	}
 	
-	public void handleMessage(int depth, LogEntry.Level level, String message, Object... arguments) {
-		handle(new LogMessage(depth, level, message, arguments));
+	protected BufferingLogHandler createBufferingLogHandler(LogMessage firstLogMessage) {
+		if (logHandler != null) {
+			return new BufferingLogHandler() {
+				@Override
+				public List<LogEntry> first() {
+					return Arrays.asList(firstLogMessage);
+				}
+			};
+		} else {
+			return null;
+		}
+	}
+	
+	protected void flushToLogHandler(BufferingLogHandler bufferingLogHandler) {
+		if (logHandler != null && bufferingLogHandler != null) {
+			final List<LogEntry> entries = bufferingLogHandler.flush();
+			if (entries != null) logHandler.handle(entries);
+		}
+	}
+	
+	protected void log(LogHandler handler, int depth, LogEntry.Level level, String message, Object... arguments) {
+		if (handler != null) {
+			try {
+				handler.handle(new LogMessage(depth, level, message, arguments));
+			} catch(Throwable t) {}
+		}
 	}
 }

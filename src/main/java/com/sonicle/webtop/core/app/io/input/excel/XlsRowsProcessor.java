@@ -30,28 +30,56 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.app.util.log;
+package com.sonicle.webtop.core.app.io.input.excel;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.io.InputStream;
+import org.apache.poi.hssf.eventusermodel.HSSFListener;
+import org.apache.poi.hssf.eventusermodel.HSSFRequest;
+import org.apache.poi.hssf.record.Record;
 
 /**
  *
  * @author malbinola
  */
-public abstract class LogHandler {
+public class XlsRowsProcessor extends AbstractXlsRecordsProcessor implements HSSFListener {
+	protected final RowHandler rowHandler;
+	protected RowValues rowValues;
 	
-	public abstract void handle(Collection<LogEntry> entries);
-	
-	public void handle(LogEntry entry) {
-		handle(entry != null ? Arrays.asList(entry) : null);
+	public XlsRowsProcessor(InputStream is, int headersRow, int firstDataRow, int lastDataRow, String sheetName, RowHandler rowHandler) {
+		super(is, headersRow, firstDataRow, lastDataRow, sheetName, null);
+		this.rowHandler = rowHandler;
 	}
 	
-	public void handle(LogEntry... entries) {
-		handle(entries != null ? Arrays.asList(entries) : null);
+	public RowValues getRowValues() {
+		return rowValues;
 	}
 	
-	public void handleMessage(int depth, LogEntry.Level level, String message, Object... arguments) {
-		handle(new LogMessage(depth, level, message, arguments));
+	@Override
+	protected HSSFRequest createRequest() {
+		HSSFRequest request = new HSSFRequest();
+		request.addListenerForAllRecords(formatTrackingListener);
+		return request;
+	}
+
+	@Override
+	public void processRecord(Record record) {
+		super.processRecord(record);
+		
+		if (isNewRow) rowValues = new RowValues();
+		if (isInRange) {
+			if (isDummyEndRow) {
+				try {
+					rowHandler.handle(row, rowValues);
+				} catch (Throwable t) {
+					close();
+				}
+			} else {
+				if(cellValue != null) {
+					rowValues.put(col, cellValue);
+				}
+			}
+		} else {
+			if ((lastDataRow != -1) && (row > lastDataRow)) close();
+		}
 	}
 }

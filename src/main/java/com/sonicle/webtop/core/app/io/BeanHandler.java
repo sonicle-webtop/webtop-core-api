@@ -30,28 +30,14 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.app.util.log;
-
-import java.util.Arrays;
-import java.util.Collection;
+package com.sonicle.webtop.core.app.io;
 
 /**
  *
  * @author malbinola
+ * @param <T> Bean type.
  */
-public abstract class LogHandler {
+public interface BeanHandler<T> {
 	
-	public abstract void handle(Collection<LogEntry> entries);
-	
-	public void handle(LogEntry entry) {
-		handle(entry != null ? Arrays.asList(entry) : null);
-	}
-	
-	public void handle(LogEntry... entries) {
-		handle(entries != null ? Arrays.asList(entries) : null);
-	}
-	
-	public void handleMessage(int depth, LogEntry.Level level, String message, Object... arguments) {
-		handle(new LogMessage(depth, level, message, arguments));
-	}
+	public boolean handle(final T bean);
 }

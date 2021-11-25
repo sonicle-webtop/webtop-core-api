@@ -30,28 +30,29 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.app.util.log;
+package com.sonicle.webtop.core.app.io.input;
 
-import java.util.Arrays;
-import java.util.Collection;
+import com.sonicle.webtop.core.sdk.WTException;
 
 /**
  *
  * @author malbinola
  */
-public abstract class LogHandler {
+public class WTReaderException extends WTException {
 	
-	public abstract void handle(Collection<LogEntry> entries);
-	
-	public void handle(LogEntry entry) {
-		handle(entry != null ? Arrays.asList(entry) : null);
+	public WTReaderException() {
+		super();
 	}
 	
-	public void handle(LogEntry... entries) {
-		handle(entries != null ? Arrays.asList(entries) : null);
+	public WTReaderException(Throwable cause) {
+		super(cause);
 	}
 	
-	public void handleMessage(int depth, LogEntry.Level level, String message, Object... arguments) {
-		handle(new LogMessage(depth, level, message, arguments));
+	public WTReaderException(String message, Object... arguments) {
+		super(message, arguments);
+	}
+	
+	public WTReaderException(Throwable cause, String message, Object... arguments) {
+		super(cause, message, arguments);
 	}
 }

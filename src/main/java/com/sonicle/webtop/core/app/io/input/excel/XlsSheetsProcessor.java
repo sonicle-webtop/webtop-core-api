@@ -30,28 +30,46 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.app.util.log;
+package com.sonicle.webtop.core.app.io.input.excel;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.poi.hssf.eventusermodel.HSSFListener;
+import org.apache.poi.hssf.eventusermodel.HSSFRequest;
+import org.apache.poi.hssf.record.BoundSheetRecord;
+import org.apache.poi.hssf.record.Record;
 
 /**
  *
  * @author malbinola
  */
-public abstract class LogHandler {
+public class XlsSheetsProcessor extends AbstractXlsProcessor implements HSSFListener {
+	protected ArrayList<String> sheetNames;
 	
-	public abstract void handle(Collection<LogEntry> entries);
-	
-	public void handle(LogEntry entry) {
-		handle(entry != null ? Arrays.asList(entry) : null);
+	public XlsSheetsProcessor(InputStream is) {
+		super(is);
+		sheetNames = new ArrayList<>();
 	}
 	
-	public void handle(LogEntry... entries) {
-		handle(entries != null ? Arrays.asList(entries) : null);
+	public List<String> getSheetNames() {
+		return sheetNames;
 	}
 	
-	public void handleMessage(int depth, LogEntry.Level level, String message, Object... arguments) {
-		handle(new LogMessage(depth, level, message, arguments));
+	@Override
+	protected HSSFRequest createRequest() {
+		HSSFRequest request = new HSSFRequest();
+		request.addListener(formatTrackingListener, BoundSheetRecord.sid);
+		return request;
+	}
+
+	@Override
+	public void processRecord(Record record) {
+		short sid = record.getSid();
+		switch(sid) {
+			case BoundSheetRecord.sid:
+				BoundSheetRecord bsr = (BoundSheetRecord) record;
+				sheetNames.add(bsr.getSheetname());
+		}
 	}
 }

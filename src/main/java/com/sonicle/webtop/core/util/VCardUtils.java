@@ -35,10 +35,12 @@ package com.sonicle.webtop.core.util;
 import com.sonicle.commons.LangUtils;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
+import ezvcard.VCardVersion;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
@@ -58,6 +60,10 @@ public class VCardUtils {
 		return "-//" + company + "//" + product + "//EN";
 	}
 	
+	/**
+	 * @deprecated Use parse or parseFirst instead. Remove me when WT-1071 will be merged!
+	 */
+	@Deprecated
 	public static List<VCard> parse(String s, boolean first) throws IOException {
 		if (first) {
 			VCard vCard = Ezvcard.parse(s).first();
@@ -65,6 +71,23 @@ public class VCardUtils {
 		} else {
 			return Ezvcard.parse(s).all();
 		}
+	}
+	
+	public static VCard parseFirst(String s) throws IOException {
+		return Ezvcard.parse(s)
+				.first();
+	}
+	
+	public static List<VCard> parse(String s) throws IOException {
+		return Ezvcard.parse(s)
+				.all();
+	}
+	
+	public static String write(VCard vCard) {
+		if (vCard == null) return null;
+		return Ezvcard.write(vCard)
+				.caretEncoding(true)
+				.go();
 	}
 	
 	/**
@@ -77,5 +100,11 @@ public class VCardUtils {
 		String uid = (vc.getUid() != null) ? vc.getUid().getValue() : null;
 		String fn = (vc.getFormattedName() != null) ? vc.getFormattedName().getValue() : null;
 		return LangUtils.joinStrings(", ", uid, fn);
+	}
+	
+	public static String computeHashCompat(VCard vCard) {
+		return DigestUtils.md5Hex(Ezvcard.write(vCard)
+				.caretEncoding(true)
+				.go());
 	}
 }

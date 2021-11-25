@@ -30,28 +30,68 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.app.util.log;
-
-import java.util.Arrays;
-import java.util.Collection;
+package com.sonicle.webtop.core.app.io;
 
 /**
  *
  * @author malbinola
+ * @param <T>
  */
-public abstract class LogHandler {
+public abstract class BatchBeanHandler<T> implements BeanHandler<T> {
+	protected Throwable lastException;
+	protected int batchSize;
+	protected int handledCount;
 	
-	public abstract void handle(Collection<LogEntry> entries);
+	protected abstract int getCurrentBeanBufferSize();
+	protected abstract void clearBeanBuffer();
+	protected abstract void addBeanToBuffer(T bean);
+	public abstract boolean handleBufferedBeans();
 	
-	public void handle(LogEntry entry) {
-		handle(entry != null ? Arrays.asList(entry) : null);
+	public BatchBeanHandler() {
+		this.batchSize = 100;
+		this.handledCount = 0;
 	}
 	
-	public void handle(LogEntry... entries) {
-		handle(entries != null ? Arrays.asList(entries) : null);
+	public Throwable getLastException() {
+		return lastException;
 	}
 	
-	public void handleMessage(int depth, LogEntry.Level level, String message, Object... arguments) {
-		handle(new LogMessage(depth, level, message, arguments));
+	public int getBatchSize() {
+		return batchSize;
+	}
+	
+	public void setBatchSize(int batchSize) {
+		this.batchSize = batchSize;
+	}
+	
+	public int getHandledCount() {
+		return handledCount;
+	}
+	
+	public boolean flush() {
+		if (getCurrentBeanBufferSize() > 0) {
+			try {
+				return handleBufferedBeans();
+			} finally {
+				clearBeanBuffer();
+			}
+		} else {
+			return true;
+		}
+	}
+	
+	@Override
+	public boolean handle(T bean) {
+		handledCount++;
+		addBeanToBuffer(bean);
+		if (getCurrentBeanBufferSize() == batchSize) {
+			try {
+				return handleBufferedBeans();
+			} finally {
+				clearBeanBuffer();
+			}
+		} else {
+			return true;
+		}
 	}
 }

@@ -30,28 +30,32 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.app.util.log;
+package com.sonicle.webtop.core.app.io.input.excel;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.io.InputStream;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
  * @author malbinola
  */
-public abstract class LogHandler {
-	
-	public abstract void handle(Collection<LogEntry> entries);
-	
-	public void handle(LogEntry entry) {
-		handle(entry != null ? Arrays.asList(entry) : null);
+public class AbstractXlsxHandler {
+	private InputStream is;
+	protected final int headersRow;
+	protected final int firstDataRow;
+	protected final int lastDataRow;
+	protected int row = -1;
+	protected boolean isHeader = false;
+
+	public AbstractXlsxHandler(InputStream is, int headersRow, int firstDataRow, int lastDataRow) {
+		this.is = is;
+		// Converts to 0-based indexes
+		this.headersRow = headersRow-1;
+		this.firstDataRow = firstDataRow-1;
+		this.lastDataRow = (lastDataRow >= 0) ? lastDataRow-1 : lastDataRow;
 	}
-	
-	public void handle(LogEntry... entries) {
-		handle(entries != null ? Arrays.asList(entries) : null);
-	}
-	
-	public void handleMessage(int depth, LogEntry.Level level, String message, Object... arguments) {
-		handle(new LogMessage(depth, level, message, arguments));
+
+	public void close() {
+		IOUtils.closeQuietly(is);
 	}
 }
