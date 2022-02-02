@@ -149,7 +149,7 @@
 						<groupId>org.postgresql</groupId>
 						<artifactId>postgresql</artifactId>
 						<!--<version>9.3-1102-jdbc4</version>-->
-						<version>42.2.19</version>
+						<version>42.2.25</version>
 					</dependency>
 				</dependencies>
 			</plugin>
