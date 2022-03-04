@@ -66,6 +66,7 @@ public class CustomPanelFieldDAO extends BaseDAO {
 	}
 	
 	public int[] batchInsert(Connection con, String customPanelId, Collection<String> customFieldIds) throws DAOException {
+		if (customFieldIds.isEmpty()) return new int[0];
 		DSLContext dsl = getDSL(con);
 		BatchBindStep batch = dsl.batch(
 			dsl.insertInto(CUSTOM_PANELS_FIELDS, 

@@ -82,6 +82,7 @@ public class AuditLogDAO extends BaseDAO {
 	}
 	
 	public int[] batchInsert(Connection con, OAuditLog baseItem, Collection<AuditReferenceDataEntry> entries) throws DAOException {
+		if (entries.isEmpty()) return new int[0];
 		DSLContext dsl = getDSL(con);
 		BatchBindStep batch = dsl.batch(
 			dsl.insertInto(AUDIT_LOG, 

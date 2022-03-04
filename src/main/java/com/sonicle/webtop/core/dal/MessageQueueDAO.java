@@ -73,6 +73,7 @@ public class MessageQueueDAO extends BaseDAO {
 	}
 	
 	public int[] batchInsert(Connection con, Collection<OMessageQueue> messages) throws DAOException {
+		if (messages.isEmpty()) return new int[0];
 		DSLContext dsl = getDSL(con);
 		DateTime queuedOn = DateTimeUtils.now();
 		BatchBindStep batch = dsl.batch(

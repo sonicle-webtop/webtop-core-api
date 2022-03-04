@@ -151,6 +151,7 @@ public class LicenseLeaseDAO extends BaseDAO {
 	*/
 	
 	public int[] batchInsert(Connection con, String domainId, String serviceId, String productCode, Collection<String> userIds, DateTime leaseTimestamp, LeaseOrigin origin) throws DAOException {
+		if (userIds.isEmpty()) return new int[0];
 		DSLContext dsl = getDSL(con);
 		BatchBindStep batch = dsl.batch(
 			dsl.insertInto(LICENSES_LEASES, 
