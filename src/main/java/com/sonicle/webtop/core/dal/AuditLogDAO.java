@@ -45,8 +45,10 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jooq.Batch;
 import org.jooq.BatchBindStep;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import static org.jooq.impl.DSL.*;
+import org.jooq.tools.StringUtils;
 
 /**
  *
@@ -129,19 +131,34 @@ public class AuditLogDAO extends BaseDAO {
 	
 	public List<OAuditLog> selectByReferenceId(Connection con, String domainId, String serviceId, String context, String action, String referenceId) throws DAOException {
 		DSLContext dsl = getDSL(con);
+		Condition whereCondition = AUDIT_LOG.DOMAIN_ID.equal(domainId)
+			.and(AUDIT_LOG.SERVICE_ID.equal(serviceId))
+			.and(AUDIT_LOG.CONTEXT.equal(context))
+			.and(AUDIT_LOG.REFERENCE_ID.equal(referenceId));
+		
+		if (!StringUtils.isEmpty(action)) {
+			whereCondition = whereCondition
+				.and(AUDIT_LOG.ACTION.equal(action));
+		}
+		
 		return dsl
 			.select()
 			.from(AUDIT_LOG)
-			.where(
-				AUDIT_LOG.DOMAIN_ID.equal(domainId)
-				.and(AUDIT_LOG.SERVICE_ID.equal(serviceId))
-				.and(AUDIT_LOG.CONTEXT.equal(context))
-				.and(AUDIT_LOG.ACTION.equal(action))
-				.and(AUDIT_LOG.REFERENCE_ID.equal(referenceId))
-			)
+			.where(whereCondition)
 			.orderBy(
 				AUDIT_LOG.TIMESTAMP.asc()
 			)
 			.fetchInto(OAuditLog.class);
+	}
+	
+	public int updateReferences(Connection con, String domainId, String serviceId, String context, String oldReference, String newReference) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.update(AUDIT_LOG)
+			.set(AUDIT_LOG.REFERENCE_ID, newReference)
+			.where(
+				AUDIT_LOG.REFERENCE_ID.eq(oldReference)
+			)
+			.execute();
 	}
 }

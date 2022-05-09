@@ -32,8 +32,6 @@
  */
 package com.sonicle.webtop.core.model;
 
-import org.joda.time.DateTime;
-
 /**
  *
  * @author malbinola
@@ -41,7 +39,7 @@ import org.joda.time.DateTime;
 public class AuditLog {
 	
 	public long auditLogId;
-	public DateTime timestamp;
+	public String timestamp;
 	public String userId;
 	public String userName;
 	public String serviceId;
@@ -59,11 +57,11 @@ public class AuditLog {
 		this.auditLogId = auditLogId;
 	}
 
-	public DateTime getTimestamp() {
+	public String getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(DateTime timestamp) {
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
