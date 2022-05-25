@@ -60,34 +60,46 @@ import org.jooq.impl.DefaultExecuteListenerProvider;
  */
 public class BaseDAO {
 	
-	public DSLContext getDSL(Connection con) {
-		return getDSL(con, null, null);
+	public Configuration createConfiguration(Connection con) {
+		return createConfiguration(con, null, null);
 	}
 	
-	public DSLContext getDSL(Connection con, RecordMapperProvider rmp) {
-		return getDSL(con, null, rmp);
+	public Configuration createConfiguration(Connection con, RecordMapperProvider recordMapperProvider) {
+		return createConfiguration(con, null, recordMapperProvider);
 	}
 	
-	public DSLContext getDSL(Connection con, MappedSchema mappedSchema) {
+	public Configuration createConfiguration(Connection con, MappedSchema mappedSchema) {
 		Settings settings = null;
 		if (mappedSchema != null) {
 			settings = new Settings()
-					.withRenderMapping(
-							new RenderMapping()
-							.withSchemata(mappedSchema)
-					);
+				.withRenderMapping(
+					new RenderMapping()
+					.withSchemata(mappedSchema)
+				);
 		}
-		return getDSL(con, settings, null);
+		return createConfiguration(con, settings, null);
 	}
 	
-	public DSLContext getDSL(Connection con, Settings settings, RecordMapperProvider recordMapperProvider) {
+	public Configuration createConfiguration(Connection con, Settings settings, RecordMapperProvider recordMapperProvider) {
 		Configuration configuration = new DefaultConfiguration()
-				.set(con)
-				.set(createDialect(con))
-				.set(new DefaultExecuteListenerProvider(new DAOExecuteListener()));
+			.set(con)
+			.set(createDialect(con))
+			.set(new DefaultExecuteListenerProvider(new DAOExecuteListener()));
 		if (settings != null) configuration.set(settings);
 		if (recordMapperProvider != null) configuration.set(recordMapperProvider);
-		return DSL.using(configuration);
+		return configuration;
+	}
+	
+	public DSLContext getDSL(Connection con) {
+		return DSL.using(createConfiguration(con));
+	}
+	
+	public DSLContext getDSL(Connection con, RecordMapperProvider recordMapperProvider) {
+		return DSL.using(createConfiguration(con, recordMapperProvider));
+	}
+	
+	public DSLContext getDSL(Connection con, MappedSchema mappedSchema) {
+		return DSL.using(createConfiguration(con, mappedSchema));
 	}
 	
 	public static SQLDialect createDialect(Connection con) {
@@ -96,8 +108,8 @@ public class BaseDAO {
 	
 	public static MappedSchema createMappedSchema(String mapFrom, String mapTo) {
 		return new MappedSchema()
-				.withInput(mapFrom)
-				.withOutput(mapTo);
+			.withInput(mapFrom)
+			.withOutput(mapTo);
 	}
 	
 	public static DateTime createRevisionTimestamp() {

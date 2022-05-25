@@ -34,20 +34,18 @@
 package com.sonicle.webtop.core.dal;
 
 import com.sonicle.webtop.core.app.sdk.AuditReferenceDataEntry;
+import com.sonicle.webtop.core.bol.OAccessLog;
 import com.sonicle.webtop.core.bol.OAuditLog;
-import com.sonicle.webtop.core.jooq.core.Sequences;
+import static com.sonicle.webtop.core.jooq.core.Tables.ACCESS_LOG;
 import static com.sonicle.webtop.core.jooq.core.Tables.AUDIT_LOG;
-import com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord;
 import java.sql.Connection;
 import java.util.Collection;
 import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.jooq.Batch;
 import org.jooq.BatchBindStep;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
-import static org.jooq.impl.DSL.*;
 import org.jooq.tools.StringUtils;
 
 /**
@@ -60,12 +58,6 @@ public class AuditLogDAO extends BaseDAO {
 	public static AuditLogDAO getInstance() {
 		return INSTANCE;
 	}
-
-	public Long getSequence(Connection con) throws DAOException {
-		DSLContext dsl = getDSL(con);
-		Long nextID = dsl.nextval(Sequences.SEQ_AUDIT_LOG);
-		return nextID;
-	}
 	
 	public int insert(Connection con, OAuditLog item) throws DAOException {
 		DSLContext dsl = getDSL(con);
@@ -74,10 +66,11 @@ public class AuditLogDAO extends BaseDAO {
 			.set(AUDIT_LOG.TIMESTAMP, item.getTimestamp())
 			.set(AUDIT_LOG.DOMAIN_ID, item.getDomainId())
 			.set(AUDIT_LOG.USER_ID, item.getUserId())
+			.set(AUDIT_LOG.REFERENCE_ID, item.getReferenceId())
+			.set(AUDIT_LOG.SOFTWARE_NAME, item.getSoftwareName())
 			.set(AUDIT_LOG.SERVICE_ID, item.getServiceId())
 			.set(AUDIT_LOG.CONTEXT, item.getContext())
 			.set(AUDIT_LOG.ACTION, item.getAction())
-			.set(AUDIT_LOG.REFERENCE_ID, item.getReferenceId())
 			.set(AUDIT_LOG.SESSION_ID, item.getSessionId())
 			.set(AUDIT_LOG.DATA, item.getData())
 			.execute();
@@ -88,20 +81,21 @@ public class AuditLogDAO extends BaseDAO {
 		DSLContext dsl = getDSL(con);
 		BatchBindStep batch = dsl.batch(
 			dsl.insertInto(AUDIT_LOG, 
-				AUDIT_LOG.TIMESTAMP, AUDIT_LOG.DOMAIN_ID, AUDIT_LOG.USER_ID, AUDIT_LOG.SERVICE_ID, 
-				AUDIT_LOG.CONTEXT, AUDIT_LOG.ACTION, AUDIT_LOG.REFERENCE_ID, AUDIT_LOG.SESSION_ID, AUDIT_LOG.DATA)
-				.values((DateTime)null, null, null, null, null, null, null, null, null)
+				AUDIT_LOG.TIMESTAMP, AUDIT_LOG.DOMAIN_ID, AUDIT_LOG.USER_ID, AUDIT_LOG.SOFTWARE_NAME, AUDIT_LOG.SESSION_ID,
+				AUDIT_LOG.SERVICE_ID, AUDIT_LOG.CONTEXT, AUDIT_LOG.ACTION, AUDIT_LOG.REFERENCE_ID, AUDIT_LOG.DATA)
+				.values((DateTime)null, null, null, null, null, null, null, null, null, null)
 		);
 		for (AuditReferenceDataEntry entry : entries) {
 			batch.bind(
 				baseItem.getTimestamp(),
 				baseItem.getDomainId(),
 				baseItem.getUserId(),
+				baseItem.getSoftwareName(),
+				baseItem.getSessionId(),
 				baseItem.getServiceId(),
 				baseItem.getContext(),
 				baseItem.getAction(),
 				entry.getReference(),
-				baseItem.getSessionId(),
 				entry.getData()
 			);
 		}
@@ -158,6 +152,59 @@ public class AuditLogDAO extends BaseDAO {
 			.set(AUDIT_LOG.REFERENCE_ID, newReference)
 			.where(
 				AUDIT_LOG.REFERENCE_ID.eq(oldReference)
+			)
+			.execute();
+	}
+	
+	public int insertAccess(Connection con, OAccessLog item) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.insertInto(ACCESS_LOG)
+			.set(ACCESS_LOG.TIMESTAMP, item.getTimestamp())
+			.set(ACCESS_LOG.DOMAIN_ID, item.getDomainId())
+			.set(ACCESS_LOG.USER_ID, item.getUserId())
+			.set(ACCESS_LOG.SOFTWARE_NAME, item.getSoftwareName())
+			.set(ACCESS_LOG.SESSION_ID, item.getSessionId())
+			.set(ACCESS_LOG.SERVICE_ID, item.getServiceId())
+			.set(ACCESS_LOG.CONTEXT, item.getContext())
+			.set(ACCESS_LOG.ACTION, item.getAction())
+			.set(ACCESS_LOG.REFERENCE_ID, item.getReferenceId())
+			.set(ACCESS_LOG.DATA, item.getData())
+			.execute();
+	}
+	
+	public int[] batchInsertAccess(Connection con, OAccessLog baseItem, Collection<AuditReferenceDataEntry> entries) throws DAOException {
+		if (entries.isEmpty()) return new int[0];
+		DSLContext dsl = getDSL(con);
+		BatchBindStep batch = dsl.batch(
+			dsl.insertInto(ACCESS_LOG, 
+				ACCESS_LOG.TIMESTAMP, ACCESS_LOG.DOMAIN_ID, ACCESS_LOG.USER_ID, ACCESS_LOG.SOFTWARE_NAME, ACCESS_LOG.SESSION_ID,  
+				ACCESS_LOG.SERVICE_ID, ACCESS_LOG.CONTEXT, ACCESS_LOG.ACTION, ACCESS_LOG.REFERENCE_ID, ACCESS_LOG.DATA)
+				.values((DateTime)null, null, null, null, null, null, null, null, null, null)
+		);
+		for (AuditReferenceDataEntry entry : entries) {
+			batch.bind(
+				baseItem.getTimestamp(),
+				baseItem.getDomainId(),
+				baseItem.getUserId(),
+				baseItem.getSoftwareName(),
+				baseItem.getSessionId(),
+				baseItem.getServiceId(),
+				baseItem.getContext(),
+				baseItem.getAction(),
+				entry.getReference(),
+				entry.getData()
+			);
+		}
+		return batch.execute();
+	}
+	
+	public int deleteAccessByDomain(Connection con, String domainId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(ACCESS_LOG)
+			.where(
+				ACCESS_LOG.DOMAIN_ID.equal(domainId)
 			)
 			.execute();
 	}

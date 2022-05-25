@@ -30,76 +30,14 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2020 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.model;
+package com.sonicle.webtop.core.bol;
 
-import org.joda.time.DateTime;
+import com.sonicle.webtop.core.jooq.core.tables.pojos.FnAccessLogAggr;
 
 /**
  *
  * @author Federico Ballarini
  */
-public class DomainAccessLog {
-	protected String sessionId;
-	protected String userId;
-	protected DateTime timestamp;
-	protected Integer duration;
-	protected Boolean authenticated;
-	protected Boolean failure;
-	protected Integer loginErrors;
-
-	public String getSessionId() {
-		return sessionId;
-	}
-
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	public DateTime getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(DateTime timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public Integer getDuration() {
-		return duration;
-	}
-
-	public void setDuration(Integer duration) {
-		this.duration = duration;
-	}
-
-	public Boolean getAuthenticated() {
-		return authenticated;
-	}
-
-	public void setAuthenticated(Boolean authenticated) {
-		this.authenticated = authenticated;
-	}
-
-	public Boolean getFailure() {
-		return failure;
-	}
-
-	public void setFailure(Boolean failure) {
-		this.failure = failure;
-	}
-
-	public Integer getLoginErrors() {
-		return loginErrors;
-	}
-
-	public void setLoginErrors(Integer loginErrors) {
-		this.loginErrors = loginErrors;
-	}
+public class VDomainAccessLog extends FnAccessLogAggr {
+	
 }

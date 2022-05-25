@@ -12,6 +12,11 @@ package com.sonicle.webtop.core.jooq.core;
 public class Tables {
 
     /**
+     * The table <code>core.access_log</code>.
+     */
+    public static final com.sonicle.webtop.core.jooq.core.tables.AccessLog ACCESS_LOG = com.sonicle.webtop.core.jooq.core.tables.AccessLog.ACCESS_LOG;
+
+    /**
      * The table <code>core.activities</code>.
      */
     public static final com.sonicle.webtop.core.jooq.core.tables.Activities ACTIVITIES = com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES;
@@ -25,11 +30,6 @@ public class Tables {
      * The table <code>core.audit_log</code>.
      */
     public static final com.sonicle.webtop.core.jooq.core.tables.AuditLog AUDIT_LOG = com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG;
-
-    /**
-     * The table <code>core.audit_log_bck</code>.
-     */
-    public static final com.sonicle.webtop.core.jooq.core.tables.AuditLogBck AUDIT_LOG_BCK = com.sonicle.webtop.core.jooq.core.tables.AuditLogBck.AUDIT_LOG_BCK;
 
     /**
      * The table <code>core.autosave</code>.
@@ -75,6 +75,57 @@ public class Tables {
      * The table <code>core.file_types</code>.
      */
     public static final com.sonicle.webtop.core.jooq.core.tables.FileTypes FILE_TYPES = com.sonicle.webtop.core.jooq.core.tables.FileTypes.FILE_TYPES;
+
+    /**
+     * The table <code>core.fn_access_log_aggr</code>.
+     */
+    public static final com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr FN_ACCESS_LOG_AGGR = com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr.FN_ACCESS_LOG_AGGR;
+
+    /**
+     * Call <code>core.fn_access_log_aggr</code>.
+     */
+    public static org.jooq.Result<com.sonicle.webtop.core.jooq.core.tables.records.FnAccessLogAggrRecord> FN_ACCESS_LOG_AGGR(
+          org.jooq.Configuration configuration
+        , java.lang.String domainId
+        , org.joda.time.DateTime fromDate
+        , org.joda.time.DateTime toDate
+    ) {
+        return configuration.dsl().selectFrom(com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr.FN_ACCESS_LOG_AGGR.call(
+              domainId
+            , fromDate
+            , toDate
+        )).fetch();
+    }
+
+    /**
+     * Get <code>core.fn_access_log_aggr</code> as a table.
+     */
+    public static com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr FN_ACCESS_LOG_AGGR(
+          java.lang.String domainId
+        , org.joda.time.DateTime fromDate
+        , org.joda.time.DateTime toDate
+    ) {
+        return com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr.FN_ACCESS_LOG_AGGR.call(
+              domainId
+            , fromDate
+            , toDate
+        );
+    }
+
+    /**
+     * Get <code>core.fn_access_log_aggr</code> as a table.
+     */
+    public static com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr FN_ACCESS_LOG_AGGR(
+          org.jooq.Field<java.lang.String> domainId
+        , org.jooq.Field<org.joda.time.DateTime> fromDate
+        , org.jooq.Field<org.joda.time.DateTime> toDate
+    ) {
+        return com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr.FN_ACCESS_LOG_AGGR.call(
+              domainId
+            , fromDate
+            , toDate
+        );
+    }
 
     /**
      * The table <code>core.im_chats</code>.
@@ -205,14 +256,4 @@ public class Tables {
      * The table <code>core.users_info</code>.
      */
     public static final com.sonicle.webtop.core.jooq.core.tables.UsersInfo USERS_INFO = com.sonicle.webtop.core.jooq.core.tables.UsersInfo.USERS_INFO;
-
-    /**
-     * The table <code>core.vw_access_log</code>.
-     */
-    public static final com.sonicle.webtop.core.jooq.core.tables.VwAccessLog VW_ACCESS_LOG = com.sonicle.webtop.core.jooq.core.tables.VwAccessLog.VW_ACCESS_LOG;
-
-    /**
-     * The table <code>core.vw_auth_details</code>.
-     */
-    public static final com.sonicle.webtop.core.jooq.core.tables.VwAuthDetails VW_AUTH_DETAILS = com.sonicle.webtop.core.jooq.core.tables.VwAuthDetails.VW_AUTH_DETAILS;
 }

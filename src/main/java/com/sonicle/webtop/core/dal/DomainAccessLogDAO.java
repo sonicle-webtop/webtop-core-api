@@ -32,14 +32,20 @@
  */
 package com.sonicle.webtop.core.dal;
 
-import com.sonicle.webtop.core.bol.ODomainAccessLog;
+import com.sonicle.commons.beans.SortInfo;
+import com.sonicle.webtop.core.bol.VDomainAccessLog;
 import com.sonicle.webtop.core.bol.ODomainAccessLogDetail;
-import static com.sonicle.webtop.core.jooq.core.Tables.AUDIT_LOG;
-import static com.sonicle.webtop.core.jooq.core.Tables.VW_AUTH_DETAILS;
+import com.sonicle.webtop.core.jooq.core.Routines;
+import com.sonicle.webtop.core.jooq.core.Tables;
+import static com.sonicle.webtop.core.jooq.core.Tables.ACCESS_LOG;
+import static com.sonicle.webtop.core.jooq.core.Tables.FN_ACCESS_LOG_AGGR;
 import java.sql.Connection;
 import java.util.List;
+import org.joda.time.DateTime;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.SelectConditionStep;
 import org.jooq.SortField;
 import org.jooq.impl.DSL;
 
@@ -54,43 +60,71 @@ public class DomainAccessLogDAO extends BaseDAO {
 		return INSTANCE;
 	}
 	
-	public Integer countByDomainIdCondition(Connection con, String domainId, Condition condition) throws DAOException {
-		DSLContext dsl = getDSL(con);
-		Condition filterCondition = (condition != null) ? condition : DSL.trueCondition();
+	public SortField<?> toFnAccessLogAggrSortField(SortInfo sortInfo) {
+		Field<?> field = null;
+		switch (sortInfo.getField()) {
+			case "sessionId":
+				field = FN_ACCESS_LOG_AGGR.SESSION_ID;
+				break;
+			case "userId":
+				field = FN_ACCESS_LOG_AGGR.USER_ID;
+				break;
+			case "timestamp":
+				field = FN_ACCESS_LOG_AGGR.TIMESTAMP;
+				break;
+			case "duration":
+				field = FN_ACCESS_LOG_AGGR.DURATION;
+				break;
+			case "authenticated":
+				field = FN_ACCESS_LOG_AGGR.AUTHENTICATED;
+				break;
+			case "loginErrors":
+				field = FN_ACCESS_LOG_AGGR.LOGIN_ERRORS;
+				break;
+		}
 		
-		return dsl
-			.selectCount()
-			.from(VW_AUTH_DETAILS)
-			.where(
-				VW_AUTH_DETAILS.DOMAIN_ID.equal(domainId)
-				.and(filterCondition)
-			)
-			.fetchOne(0, Integer.class);
+		if (field != null) {
+			if (sortInfo.isAscending()) {
+				return field.asc();
+			} else {
+				return field.desc();
+			}
+		} else {
+			return null;
+		}
 	}
 	
-	public List<ODomainAccessLog> getByDomainIdCondition(Connection con, String domainId, SortField<?> orderBy, Integer limit, Integer offset, Condition condition) {
+	public int countByDomainCondition(Connection con, String domainId, DateTime from, DateTime to, Condition condition) {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.selectCount()
+			.from(Routines.fnAccessLogAggr(domainId, from, to))
+			.where(condition)
+			.fetchOneInto(int.class);
+	}
+	
+	public List<VDomainAccessLog> selectByDomainCondition(Connection con, String domainId, DateTime from, DateTime to, Condition condition, SortInfo sortInfo, int limit, int offset) {
 		DSLContext dsl = getDSL(con);
 		Condition filterCondition = (condition != null) ? condition : DSL.trueCondition();
+		SortField<?> sortField = toFnAccessLogAggrSortField(sortInfo);
 		
-		return dsl
-			.select(
-				VW_AUTH_DETAILS.SESSION_ID,
-				VW_AUTH_DETAILS.USER_ID,
-				VW_AUTH_DETAILS.DATE,
-				VW_AUTH_DETAILS.MINUTES,
-				VW_AUTH_DETAILS.AUTHENTICATED,
-				VW_AUTH_DETAILS.FAILURE,
-				VW_AUTH_DETAILS.LOGIN_ERRORS
-			)
-			.from(VW_AUTH_DETAILS)
-			.where(
-				VW_AUTH_DETAILS.DOMAIN_ID.equal(domainId)
-				.and(filterCondition)
-			)
-			.orderBy(orderBy)
-			.limit(limit)
-			.offset(offset)
-			.fetchInto(ODomainAccessLog.class);
+		SelectConditionStep step = dsl
+			.select()
+			.from(Tables.FN_ACCESS_LOG_AGGR(domainId, from, to))
+			.where(filterCondition);
+		
+		if (sortField != null) {
+			return step
+				.orderBy(sortField)
+				.limit(limit)
+				.offset(offset)
+				.fetchInto(VDomainAccessLog.class);
+		} else {
+			return step
+				.limit(limit)
+				.offset(offset)
+				.fetchInto(VDomainAccessLog.class);
+		}
 	}
 	
 	public Integer countDetailBySessionId(Connection con, String sessionId, String domainId, String userId) throws DAOException {
@@ -98,12 +132,12 @@ public class DomainAccessLogDAO extends BaseDAO {
 		
 		return dsl
 			.selectCount()
-			.from(AUDIT_LOG)
+			.from(ACCESS_LOG)
 			.where(
-				AUDIT_LOG.SESSION_ID.equal(sessionId),
-				AUDIT_LOG.DOMAIN_ID.equal(domainId),
-				AUDIT_LOG.USER_ID.equal(userId),
-				AUDIT_LOG.CONTEXT.equal("AUTH")
+				ACCESS_LOG.SESSION_ID.equal(sessionId),
+				ACCESS_LOG.DOMAIN_ID.equal(domainId),
+				ACCESS_LOG.USER_ID.equal(userId),
+				ACCESS_LOG.CONTEXT.equal("AUTH")
 			)
 			.fetchOne(0, Integer.class);
 	}
@@ -113,18 +147,18 @@ public class DomainAccessLogDAO extends BaseDAO {
 		
 		return dsl
 			.select(
-				AUDIT_LOG.TIMESTAMP,
-				AUDIT_LOG.ACTION,
-				AUDIT_LOG.DATA
+				ACCESS_LOG.TIMESTAMP,
+				ACCESS_LOG.ACTION,
+				ACCESS_LOG.DATA
 			)
-			.from(AUDIT_LOG)
+			.from(ACCESS_LOG)
 			.where(
-				AUDIT_LOG.SESSION_ID.equal(sessionId),
-				AUDIT_LOG.DOMAIN_ID.equal(domainId),
-				AUDIT_LOG.USER_ID.equal(userId),
-				AUDIT_LOG.CONTEXT.equal("AUTH")
+				ACCESS_LOG.SESSION_ID.equal(sessionId),
+				ACCESS_LOG.DOMAIN_ID.equal(domainId),
+				ACCESS_LOG.USER_ID.equal(userId),
+				ACCESS_LOG.CONTEXT.equal("AUTH")
 			)
-			.orderBy(AUDIT_LOG.TIMESTAMP)
+			.orderBy(ACCESS_LOG.TIMESTAMP)
 			.fetchInto(ODomainAccessLogDetail.class);
 	}
 }

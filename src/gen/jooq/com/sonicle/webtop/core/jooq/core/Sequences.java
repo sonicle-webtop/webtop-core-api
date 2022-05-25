@@ -12,6 +12,11 @@ package com.sonicle.webtop.core.jooq.core;
 public class Sequences {
 
     /**
+     * The sequence <code>core.seq_access_log</code>
+     */
+    public static final org.jooq.Sequence<java.lang.Long> SEQ_ACCESS_LOG = org.jooq.impl.Internal.createSequence("seq_access_log", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>core.seq_activities</code>
      */
     public static final org.jooq.Sequence<java.lang.Long> SEQ_ACTIVITIES = org.jooq.impl.Internal.createSequence("seq_activities", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

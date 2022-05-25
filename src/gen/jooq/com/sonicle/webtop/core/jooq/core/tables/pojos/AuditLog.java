@@ -17,11 +17,12 @@ public class AuditLog implements java.io.Serializable {
     private org.joda.time.DateTime timestamp;
     private java.lang.String       domainId;
     private java.lang.String       userId;
+    private java.lang.String       softwareName;
+    private java.lang.String       sessionId;
     private java.lang.String       serviceId;
     private java.lang.String       context;
     private java.lang.String       action;
     private java.lang.String       referenceId;
-    private java.lang.String       sessionId;
     private java.lang.String       data;
 
     public AuditLog() {}
@@ -31,11 +32,12 @@ public class AuditLog implements java.io.Serializable {
         this.timestamp = value.timestamp;
         this.domainId = value.domainId;
         this.userId = value.userId;
+        this.softwareName = value.softwareName;
+        this.sessionId = value.sessionId;
         this.serviceId = value.serviceId;
         this.context = value.context;
         this.action = value.action;
         this.referenceId = value.referenceId;
-        this.sessionId = value.sessionId;
         this.data = value.data;
     }
 
@@ -44,22 +46,24 @@ public class AuditLog implements java.io.Serializable {
         org.joda.time.DateTime timestamp,
         java.lang.String       domainId,
         java.lang.String       userId,
+        java.lang.String       softwareName,
+        java.lang.String       sessionId,
         java.lang.String       serviceId,
         java.lang.String       context,
         java.lang.String       action,
         java.lang.String       referenceId,
-        java.lang.String       sessionId,
         java.lang.String       data
     ) {
         this.auditLogId = auditLogId;
         this.timestamp = timestamp;
         this.domainId = domainId;
         this.userId = userId;
+        this.softwareName = softwareName;
+        this.sessionId = sessionId;
         this.serviceId = serviceId;
         this.context = context;
         this.action = action;
         this.referenceId = referenceId;
-        this.sessionId = sessionId;
         this.data = data;
     }
 
@@ -120,6 +124,34 @@ public class AuditLog implements java.io.Serializable {
     }
 
     /**
+     * Getter for <code>core.audit_log.software_name</code>.
+     */
+    public java.lang.String getSoftwareName() {
+        return this.softwareName;
+    }
+
+    /**
+     * Setter for <code>core.audit_log.software_name</code>.
+     */
+    public void setSoftwareName(java.lang.String softwareName) {
+        this.softwareName = softwareName;
+    }
+
+    /**
+     * Getter for <code>core.audit_log.session_id</code>.
+     */
+    public java.lang.String getSessionId() {
+        return this.sessionId;
+    }
+
+    /**
+     * Setter for <code>core.audit_log.session_id</code>.
+     */
+    public void setSessionId(java.lang.String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    /**
      * Getter for <code>core.audit_log.service_id</code>.
      */
     public java.lang.String getServiceId() {
@@ -176,20 +208,6 @@ public class AuditLog implements java.io.Serializable {
     }
 
     /**
-     * Getter for <code>core.audit_log.session_id</code>.
-     */
-    public java.lang.String getSessionId() {
-        return this.sessionId;
-    }
-
-    /**
-     * Setter for <code>core.audit_log.session_id</code>.
-     */
-    public void setSessionId(java.lang.String sessionId) {
-        this.sessionId = sessionId;
-    }
-
-    /**
      * Getter for <code>core.audit_log.data</code>.
      */
     public java.lang.String getData() {
@@ -211,11 +229,12 @@ public class AuditLog implements java.io.Serializable {
         sb.append(", ").append(timestamp);
         sb.append(", ").append(domainId);
         sb.append(", ").append(userId);
+        sb.append(", ").append(softwareName);
+        sb.append(", ").append(sessionId);
         sb.append(", ").append(serviceId);
         sb.append(", ").append(context);
         sb.append(", ").append(action);
         sb.append(", ").append(referenceId);
-        sb.append(", ").append(sessionId);
         sb.append(", ").append(data);
 
         sb.append(")");

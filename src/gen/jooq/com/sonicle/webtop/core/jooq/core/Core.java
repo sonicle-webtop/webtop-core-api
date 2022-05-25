@@ -19,6 +19,11 @@ public class Core extends org.jooq.impl.SchemaImpl {
     public static final Core CORE = new Core();
 
     /**
+     * The table <code>core.access_log</code>.
+     */
+    public final com.sonicle.webtop.core.jooq.core.tables.AccessLog ACCESS_LOG = com.sonicle.webtop.core.jooq.core.tables.AccessLog.ACCESS_LOG;
+
+    /**
      * The table <code>core.activities</code>.
      */
     public final com.sonicle.webtop.core.jooq.core.tables.Activities ACTIVITIES = com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES;
@@ -32,11 +37,6 @@ public class Core extends org.jooq.impl.SchemaImpl {
      * The table <code>core.audit_log</code>.
      */
     public final com.sonicle.webtop.core.jooq.core.tables.AuditLog AUDIT_LOG = com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG;
-
-    /**
-     * The table <code>core.audit_log_bck</code>.
-     */
-    public final com.sonicle.webtop.core.jooq.core.tables.AuditLogBck AUDIT_LOG_BCK = com.sonicle.webtop.core.jooq.core.tables.AuditLogBck.AUDIT_LOG_BCK;
 
     /**
      * The table <code>core.autosave</code>.
@@ -82,6 +82,57 @@ public class Core extends org.jooq.impl.SchemaImpl {
      * The table <code>core.file_types</code>.
      */
     public final com.sonicle.webtop.core.jooq.core.tables.FileTypes FILE_TYPES = com.sonicle.webtop.core.jooq.core.tables.FileTypes.FILE_TYPES;
+
+    /**
+     * The table <code>core.fn_access_log_aggr</code>.
+     */
+    public final com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr FN_ACCESS_LOG_AGGR = com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr.FN_ACCESS_LOG_AGGR;
+
+    /**
+     * Call <code>core.fn_access_log_aggr</code>.
+     */
+    public static org.jooq.Result<com.sonicle.webtop.core.jooq.core.tables.records.FnAccessLogAggrRecord> FN_ACCESS_LOG_AGGR(
+          org.jooq.Configuration configuration
+        , java.lang.String domainId
+        , org.joda.time.DateTime fromDate
+        , org.joda.time.DateTime toDate
+    ) {
+        return configuration.dsl().selectFrom(com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr.FN_ACCESS_LOG_AGGR.call(
+              domainId
+            , fromDate
+            , toDate
+        )).fetch();
+    }
+
+    /**
+     * Get <code>core.fn_access_log_aggr</code> as a table.
+     */
+    public static com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr FN_ACCESS_LOG_AGGR(
+          java.lang.String domainId
+        , org.joda.time.DateTime fromDate
+        , org.joda.time.DateTime toDate
+    ) {
+        return com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr.FN_ACCESS_LOG_AGGR.call(
+              domainId
+            , fromDate
+            , toDate
+        );
+    }
+
+    /**
+     * Get <code>core.fn_access_log_aggr</code> as a table.
+     */
+    public static com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr FN_ACCESS_LOG_AGGR(
+          org.jooq.Field<java.lang.String> domainId
+        , org.jooq.Field<org.joda.time.DateTime> fromDate
+        , org.jooq.Field<org.joda.time.DateTime> toDate
+    ) {
+        return com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr.FN_ACCESS_LOG_AGGR.call(
+              domainId
+            , fromDate
+            , toDate
+        );
+    }
 
     /**
      * The table <code>core.im_chats</code>.
@@ -214,16 +265,6 @@ public class Core extends org.jooq.impl.SchemaImpl {
     public final com.sonicle.webtop.core.jooq.core.tables.UsersInfo USERS_INFO = com.sonicle.webtop.core.jooq.core.tables.UsersInfo.USERS_INFO;
 
     /**
-     * The table <code>core.vw_access_log</code>.
-     */
-    public final com.sonicle.webtop.core.jooq.core.tables.VwAccessLog VW_ACCESS_LOG = com.sonicle.webtop.core.jooq.core.tables.VwAccessLog.VW_ACCESS_LOG;
-
-    /**
-     * The table <code>core.vw_auth_details</code>.
-     */
-    public final com.sonicle.webtop.core.jooq.core.tables.VwAuthDetails VW_AUTH_DETAILS = com.sonicle.webtop.core.jooq.core.tables.VwAuthDetails.VW_AUTH_DETAILS;
-
-    /**
      * No further instances allowed
      */
     private Core() {
@@ -239,6 +280,7 @@ public class Core extends org.jooq.impl.SchemaImpl {
     @java.lang.Override
     public final java.util.List<org.jooq.Sequence<?>> getSequences() {
         return java.util.Arrays.<org.jooq.Sequence<?>>asList(
+            com.sonicle.webtop.core.jooq.core.Sequences.SEQ_ACCESS_LOG,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_ACTIVITIES,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_AUDIT_KNOWN_DEVICES,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_AUDIT_LOG,
@@ -258,10 +300,10 @@ public class Core extends org.jooq.impl.SchemaImpl {
     @java.lang.Override
     public final java.util.List<org.jooq.Table<?>> getTables() {
         return java.util.Arrays.<org.jooq.Table<?>>asList(
+            com.sonicle.webtop.core.jooq.core.tables.AccessLog.ACCESS_LOG,
             com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES,
             com.sonicle.webtop.core.jooq.core.tables.AuditKnownDevices.AUDIT_KNOWN_DEVICES,
             com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG,
-            com.sonicle.webtop.core.jooq.core.tables.AuditLogBck.AUDIT_LOG_BCK,
             com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE,
             com.sonicle.webtop.core.jooq.core.tables.Causals.CAUSALS,
             com.sonicle.webtop.core.jooq.core.tables.CustomFields.CUSTOM_FIELDS,
@@ -271,6 +313,7 @@ public class Core extends org.jooq.impl.SchemaImpl {
             com.sonicle.webtop.core.jooq.core.tables.DomainSettings.DOMAIN_SETTINGS,
             com.sonicle.webtop.core.jooq.core.tables.Domains.DOMAINS,
             com.sonicle.webtop.core.jooq.core.tables.FileTypes.FILE_TYPES,
+            com.sonicle.webtop.core.jooq.core.tables.FnAccessLogAggr.FN_ACCESS_LOG_AGGR,
             com.sonicle.webtop.core.jooq.core.tables.ImChats.IM_CHATS,
             com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES,
             com.sonicle.webtop.core.jooq.core.tables.IpGeoCache.IP_GEO_CACHE,
@@ -296,8 +339,6 @@ public class Core extends org.jooq.impl.SchemaImpl {
             com.sonicle.webtop.core.jooq.core.tables.UserSettings.USER_SETTINGS,
             com.sonicle.webtop.core.jooq.core.tables.Users.USERS,
             com.sonicle.webtop.core.jooq.core.tables.UsersAssociations.USERS_ASSOCIATIONS,
-            com.sonicle.webtop.core.jooq.core.tables.UsersInfo.USERS_INFO,
-            com.sonicle.webtop.core.jooq.core.tables.VwAccessLog.VW_ACCESS_LOG,
-            com.sonicle.webtop.core.jooq.core.tables.VwAuthDetails.VW_AUTH_DETAILS);
+            com.sonicle.webtop.core.jooq.core.tables.UsersInfo.USERS_INFO);
     }
 }

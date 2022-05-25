@@ -47,6 +47,16 @@ public class AuditLog extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jo
     public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> USER_ID = createField(org.jooq.impl.DSL.name("user_id"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
+     * The column <code>core.audit_log.software_name</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> SOFTWARE_NAME = createField(org.jooq.impl.DSL.name("software_name"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+
+    /**
+     * The column <code>core.audit_log.session_id</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> SESSION_ID = createField(org.jooq.impl.DSL.name("session_id"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+
+    /**
      * The column <code>core.audit_log.service_id</code>.
      */
     public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> SERVICE_ID = createField(org.jooq.impl.DSL.name("service_id"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
@@ -67,14 +77,9 @@ public class AuditLog extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jo
     public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> REFERENCE_ID = createField(org.jooq.impl.DSL.name("reference_id"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
 
     /**
-     * The column <code>core.audit_log.session_id</code>.
-     */
-    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> SESSION_ID = createField(org.jooq.impl.DSL.name("session_id"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
-
-    /**
      * The column <code>core.audit_log.data</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> DATA = createField(org.jooq.impl.DSL.name("data"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord, java.lang.String> DATA = createField(org.jooq.impl.DSL.name("data"), org.jooq.impl.SQLDataType.VARCHAR(10000), this, "");
 
     private AuditLog(org.jooq.Name alias, org.jooq.Table<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord> aliased) {
         this(alias, aliased, null);
@@ -116,17 +121,17 @@ public class AuditLog extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jo
 
     @java.lang.Override
     public java.util.List<org.jooq.Index> getIndexes() {
-        return java.util.Arrays.<org.jooq.Index>asList(com.sonicle.webtop.core.jooq.core.Indexes.AUDIT_LOG_AK1);
+        return java.util.Arrays.<org.jooq.Index>asList(com.sonicle.webtop.core.jooq.core.Indexes.AUDIT_LOG_AK1, com.sonicle.webtop.core.jooq.core.Indexes.AUDIT_LOG_AK2);
     }
 
     @java.lang.Override
     public org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord> getPrimaryKey() {
-        return com.sonicle.webtop.core.jooq.core.Keys.AUDIT_LOG_PKEY;
+        return com.sonicle.webtop.core.jooq.core.Keys.AUDIT_LOG_PKEY1;
     }
 
     @java.lang.Override
     public java.util.List<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord>> getKeys() {
-        return java.util.Arrays.<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord>>asList(com.sonicle.webtop.core.jooq.core.Keys.AUDIT_LOG_PKEY);
+        return java.util.Arrays.<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.AuditLogRecord>>asList(com.sonicle.webtop.core.jooq.core.Keys.AUDIT_LOG_PKEY1);
     }
 
     @java.lang.Override
@@ -156,11 +161,11 @@ public class AuditLog extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jo
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @java.lang.Override
-    public org.jooq.Row10<java.lang.Long, org.joda.time.DateTime, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String> fieldsRow() {
-        return (org.jooq.Row10) super.fieldsRow();
+    public org.jooq.Row11<java.lang.Long, org.joda.time.DateTime, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String> fieldsRow() {
+        return (org.jooq.Row11) super.fieldsRow();
     }
 }

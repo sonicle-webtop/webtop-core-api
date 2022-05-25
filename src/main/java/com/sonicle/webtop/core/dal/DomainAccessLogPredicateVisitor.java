@@ -35,7 +35,7 @@ package com.sonicle.webtop.core.dal;
 import com.sonicle.commons.qbuilders.nodes.ComparisonNode;
 import com.sonicle.commons.qbuilders.operators.ComparisonOperator;
 import com.sonicle.webtop.core.app.sdk.JOOQPredicateVisitor;
-import static com.sonicle.webtop.core.jooq.core.Tables.VW_AUTH_DETAILS;
+import static com.sonicle.webtop.core.jooq.core.Tables.FN_ACCESS_LOG_AGGR;
 import java.util.Collection;
 import org.joda.time.DateTime;
 import org.jooq.Condition;
@@ -45,10 +45,6 @@ import org.jooq.Condition;
  * @author Federico Ballarini
  */
 public class DomainAccessLogPredicateVisitor extends JOOQPredicateVisitor {
-	protected DateTime fromRange = null;
-	protected DateTime toRange = null;
-	protected Double minDuration = null;
-	protected Double maxDuration = null;
 	
 	public DomainAccessLogPredicateVisitor() {
 		super();
@@ -58,43 +54,34 @@ public class DomainAccessLogPredicateVisitor extends JOOQPredicateVisitor {
 	protected Condition toCondition(String fieldName, ComparisonOperator operator, Collection<?> values, ComparisonNode node) {
 		if ("session".equals(fieldName)) {
 			String singleAsString = valueToLikePattern(singleAsString(values));
-			return VW_AUTH_DETAILS.SESSION_ID.likeIgnoreCase(singleAsString);
+			return FN_ACCESS_LOG_AGGR.SESSION_ID.likeIgnoreCase(singleAsString);
 			
 		} else if ("user".equals(fieldName)) {
 			String singleAsString = valueToLikePattern(singleAsString(values));
-			return VW_AUTH_DETAILS.USER_ID.likeIgnoreCase(singleAsString);
+			return FN_ACCESS_LOG_AGGR.USER_ID.likeIgnoreCase(singleAsString);
 			
 		} else if ("ip".equals(fieldName)) {
 			String singleAsString = valueToLikePattern(singleAsString(values));
-			return VW_AUTH_DETAILS.DATA.like(singleAsString);
-			
-		} else if ("dateFrom".equals(fieldName)) {
-			fromRange = (DateTime)single(values);
-			return VW_AUTH_DETAILS.DATE.greaterOrEqual(fromRange);
-			
-		} else if ("dateTo".equals(fieldName)) {
-			toRange = (DateTime)single(values);
-			if (toRange != null) toRange = toRange.plusDays(1);
-			return VW_AUTH_DETAILS.DATE.lessThan(toRange);
+			return FN_ACCESS_LOG_AGGR.DATA.like(singleAsString);
 			
 		} else if ("minDuration".equals(fieldName)) {
-			minDuration = (Double)single(values);
-			return VW_AUTH_DETAILS.MINUTES.greaterOrEqual(minDuration);
+			Integer minutes = (Integer)single(values);
+			return FN_ACCESS_LOG_AGGR.DURATION.greaterOrEqual(minutes);
 			
 		} else if ("maxDuration".equals(fieldName)) {
-			maxDuration = (Double)single(values);
-			return VW_AUTH_DETAILS.MINUTES.lessOrEqual(maxDuration);
+			Integer minutes = (Integer)single(values);
+			return FN_ACCESS_LOG_AGGR.DURATION.lessOrEqual(minutes);
 			
 		} else if ("authenticated".equals(fieldName)) {
-			return defaultCondition(VW_AUTH_DETAILS.AUTHENTICATED, operator, values);
+			return defaultCondition(FN_ACCESS_LOG_AGGR.AUTHENTICATED, operator, values);
 			
 		} else if ("failure".equals(fieldName)) {
-			return defaultCondition(VW_AUTH_DETAILS.FAILURE, operator, values);
+			return defaultCondition(FN_ACCESS_LOG_AGGR.FAILURE, operator, values);
 			
 		} else if ("any".equals(fieldName)) {
 			String singleAsString = valueToLikePattern(singleAsString(values));
-			return VW_AUTH_DETAILS.SESSION_ID.likeIgnoreCase(singleAsString)
-				.or(VW_AUTH_DETAILS.USER_ID.likeIgnoreCase(singleAsString));
+			return FN_ACCESS_LOG_AGGR.SESSION_ID.likeIgnoreCase(singleAsString)
+				.or(FN_ACCESS_LOG_AGGR.USER_ID.likeIgnoreCase(singleAsString));
 			
 		}  else {
 			throw new UnsupportedOperationException("Field not supported: " + fieldName);
