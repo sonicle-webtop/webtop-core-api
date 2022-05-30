@@ -33,13 +33,15 @@
  */
 package com.sonicle.webtop.core.dal;
 
-import com.sonicle.webtop.core.bol.DomainSettingRow;
 import com.sonicle.webtop.core.bol.ODomainSetting;
+import com.sonicle.webtop.core.bol.VDomainSetting;
 import java.sql.Connection;
 import org.jooq.DSLContext;
 import static com.sonicle.webtop.core.jooq.core.Tables.*;
 import com.sonicle.webtop.core.jooq.core.tables.records.*;
 import java.util.List;
+import org.jooq.Condition;
+import org.jooq.impl.DSL;
 
 /**
  *
@@ -52,29 +54,34 @@ public class DomainSettingDAO extends BaseDAO {
 		return INSTANCE;
 	}
 	
-	public List<DomainSettingRow> selectAll(Connection con, boolean hidden) throws DAOException {
+	public List<VDomainSetting> viewByDomain(Connection con, String domainId, boolean includeHidden) throws DAOException {
 		DSLContext dsl = getDSL(con);
+		Condition notHiddenCndt = DSL.trueCondition();
+		if (!includeHidden) notHiddenCndt = SETTINGS_DB.HIDDEN.notEqual(true);
 		return dsl
 			.select(
-					DOMAIN_SETTINGS.SERVICE_ID,
-					DOMAIN_SETTINGS.KEY,
-					DOMAIN_SETTINGS.VALUE,
-					SETTINGS_DB.TYPE,
-					SETTINGS_DB.HELP
+				DOMAIN_SETTINGS.SERVICE_ID,
+				DOMAIN_SETTINGS.KEY,
+				DOMAIN_SETTINGS.VALUE,
+				SETTINGS_DB.TYPE,
+				SETTINGS_DB.HELP
 			)
 			.from(DOMAIN_SETTINGS)
 			.leftOuterJoin(SETTINGS_DB)
 			.on(
-					DOMAIN_SETTINGS.SERVICE_ID.eq(SETTINGS_DB.SERVICE_ID)
-					.and(DOMAIN_SETTINGS.KEY.eq(SETTINGS_DB.KEY))
-					.and(SETTINGS_DB.IS_DOMAIN.eq(true))
-					.and(SETTINGS_DB.HIDDEN.eq(hidden))
+				DOMAIN_SETTINGS.SERVICE_ID.equal(SETTINGS_DB.SERVICE_ID)
+				.and(DOMAIN_SETTINGS.KEY.equal(SETTINGS_DB.KEY))
+				.and(SETTINGS_DB.IS_DOMAIN.equal(true))
+			)
+			.where(
+				DOMAIN_SETTINGS.DOMAIN_ID.equal(domainId)
+				.and(SETTINGS_DB.HIDDEN.isNull().or(notHiddenCndt))
 			)
 			.orderBy(
-					DOMAIN_SETTINGS.SERVICE_ID.asc(),
-					DOMAIN_SETTINGS.KEY.asc()
+				DOMAIN_SETTINGS.SERVICE_ID.asc(),
+				DOMAIN_SETTINGS.KEY.asc()
 			)
-			.fetchInto(DomainSettingRow.class);
+			.fetchInto(VDomainSetting.class);
 	}
 	
 	public List<ODomainSetting> selectByDomainService(Connection con, String domainId, String serviceId) throws DAOException {
