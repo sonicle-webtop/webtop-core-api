@@ -117,7 +117,7 @@ public class DataSourceDAO extends BaseDAO {
 			.update(DATA_SOURCES)
 			.set(DATA_SOURCES.REVISION_TIMESTAMP, item.getRevisionTimestamp())
 			.set(DATA_SOURCES.NAME, item.getName())
-			.set(DATA_SOURCES.DESCRIPTION, item.getName())
+			.set(DATA_SOURCES.DESCRIPTION, item.getDescription())
 			.set(DATA_SOURCES.TYPE, item.getType())
 			.set(DATA_SOURCES.SERVER_NAME, item.getServerName())
 			.set(DATA_SOURCES.SERVER_PORT, item.getServerPort())
