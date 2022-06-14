@@ -96,6 +96,11 @@ public class CustomFields extends org.jooq.impl.TableImpl<com.sonicle.webtop.cor
      */
     public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.CustomFieldsRecord, java.lang.String> LABEL_I18N = createField(org.jooq.impl.DSL.name("label_i18n"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
+    /**
+     * The column <code>core.custom_fields.data_source_query_id</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.CustomFieldsRecord, java.lang.String> DATA_SOURCE_QUERY_ID = createField(org.jooq.impl.DSL.name("data_source_query_id"), org.jooq.impl.SQLDataType.VARCHAR(22), this, "");
+
     private CustomFields(org.jooq.Name alias, org.jooq.Table<com.sonicle.webtop.core.jooq.core.tables.records.CustomFieldsRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -176,11 +181,11 @@ public class CustomFields extends org.jooq.impl.TableImpl<com.sonicle.webtop.cor
     }
 
     // -------------------------------------------------------------------------
-    // Row14 type methods
+    // Row15 type methods
     // -------------------------------------------------------------------------
 
     @java.lang.Override
-    public org.jooq.Row14<java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, java.lang.Boolean, java.lang.String, java.lang.String, java.lang.String> fieldsRow() {
-        return (org.jooq.Row14) super.fieldsRow();
+    public org.jooq.Row15<java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, java.lang.Boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String> fieldsRow() {
+        return (org.jooq.Row15) super.fieldsRow();
     }
 }

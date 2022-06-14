@@ -69,6 +69,16 @@ public class Core extends org.jooq.impl.SchemaImpl {
     public final com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags CUSTOM_PANELS_TAGS = com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags.CUSTOM_PANELS_TAGS;
 
     /**
+     * The table <code>core.data_sources</code>.
+     */
+    public final com.sonicle.webtop.core.jooq.core.tables.DataSources DATA_SOURCES = com.sonicle.webtop.core.jooq.core.tables.DataSources.DATA_SOURCES;
+
+    /**
+     * The table <code>core.data_sources_queries</code>.
+     */
+    public final com.sonicle.webtop.core.jooq.core.tables.DataSourcesQueries DATA_SOURCES_QUERIES = com.sonicle.webtop.core.jooq.core.tables.DataSourcesQueries.DATA_SOURCES_QUERIES;
+
+    /**
      * The table <code>core.domain_settings</code>.
      */
     public final com.sonicle.webtop.core.jooq.core.tables.DomainSettings DOMAIN_SETTINGS = com.sonicle.webtop.core.jooq.core.tables.DomainSettings.DOMAIN_SETTINGS;
@@ -310,6 +320,8 @@ public class Core extends org.jooq.impl.SchemaImpl {
             com.sonicle.webtop.core.jooq.core.tables.CustomPanels.CUSTOM_PANELS,
             com.sonicle.webtop.core.jooq.core.tables.CustomPanelsFields.CUSTOM_PANELS_FIELDS,
             com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags.CUSTOM_PANELS_TAGS,
+            com.sonicle.webtop.core.jooq.core.tables.DataSources.DATA_SOURCES,
+            com.sonicle.webtop.core.jooq.core.tables.DataSourcesQueries.DATA_SOURCES_QUERIES,
             com.sonicle.webtop.core.jooq.core.tables.DomainSettings.DOMAIN_SETTINGS,
             com.sonicle.webtop.core.jooq.core.tables.Domains.DOMAINS,
             com.sonicle.webtop.core.jooq.core.tables.FileTypes.FILE_TYPES,

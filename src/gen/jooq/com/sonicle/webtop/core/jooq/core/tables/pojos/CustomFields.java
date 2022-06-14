@@ -27,6 +27,7 @@ public class CustomFields implements java.io.Serializable {
     private java.lang.String       properties;
     private java.lang.String       values;
     private java.lang.String       labelI18n;
+    private java.lang.String       dataSourceQueryId;
 
     public CustomFields() {}
 
@@ -45,6 +46,7 @@ public class CustomFields implements java.io.Serializable {
         this.properties = value.properties;
         this.values = value.values;
         this.labelI18n = value.labelI18n;
+        this.dataSourceQueryId = value.dataSourceQueryId;
     }
 
     public CustomFields(
@@ -61,7 +63,8 @@ public class CustomFields implements java.io.Serializable {
         java.lang.Boolean      previewable,
         java.lang.String       properties,
         java.lang.String       values,
-        java.lang.String       labelI18n
+        java.lang.String       labelI18n,
+        java.lang.String       dataSourceQueryId
     ) {
         this.customFieldId = customFieldId;
         this.domainId = domainId;
@@ -77,6 +80,7 @@ public class CustomFields implements java.io.Serializable {
         this.properties = properties;
         this.values = values;
         this.labelI18n = labelI18n;
+        this.dataSourceQueryId = dataSourceQueryId;
     }
 
     /**
@@ -275,6 +279,20 @@ public class CustomFields implements java.io.Serializable {
         this.labelI18n = labelI18n;
     }
 
+    /**
+     * Getter for <code>core.custom_fields.data_source_query_id</code>.
+     */
+    public java.lang.String getDataSourceQueryId() {
+        return this.dataSourceQueryId;
+    }
+
+    /**
+     * Setter for <code>core.custom_fields.data_source_query_id</code>.
+     */
+    public void setDataSourceQueryId(java.lang.String dataSourceQueryId) {
+        this.dataSourceQueryId = dataSourceQueryId;
+    }
+
     @Override
     public String toString() {
         java.lang.StringBuilder sb = new java.lang.StringBuilder("CustomFields (");
@@ -293,6 +311,7 @@ public class CustomFields implements java.io.Serializable {
         sb.append(", ").append(properties);
         sb.append(", ").append(values);
         sb.append(", ").append(labelI18n);
+        sb.append(", ").append(dataSourceQueryId);
 
         sb.append(")");
         return sb.toString();

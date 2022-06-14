@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Sonicle S.r.l.
+ * Copyright (C) 2022 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,7 +28,7 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2019 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2022 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.core.model;
 
@@ -36,34 +36,41 @@ package com.sonicle.webtop.core.model;
  *
  * @author malbinola
  */
-public class CustomPanel extends CustomPanelBase {
-	protected String panelId;
-	protected String domainId;
-	protected String serviceId;
+public class DataSourceDriver {
+	protected String className;
+	protected String dataSourceClassName;
+	protected String name;
 	
-	protected Boolean important;
+	public DataSourceDriver() {}
 	
-	public String getPanelId() {
-		return panelId;
+	public DataSourceDriver(String className, String dataSourceClassName, String name) {
+		this.className = className;
+		this.dataSourceClassName = null;
+		this.name = name;
 	}
 
-	public void setPanelId(String panelId) {
-		this.panelId = panelId;
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDataSourceClassName() {
+		return dataSourceClassName;
+	}
+
+	public void setDataSourceClassName(String dataSourceClassName) {
+		this.dataSourceClassName = dataSourceClassName;
 	}
 	
-	public String getDomainId() {
-		return domainId;
-	}
-
-	public void setDomainId(String domainId) {
-		this.domainId = domainId;
-	}
-
-	public String getServiceId() {
-		return serviceId;
-	}
-
-	public void setServiceId(String serviceId) {
-		this.serviceId = serviceId;
-	}
 }

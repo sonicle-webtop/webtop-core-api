@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Sonicle S.r.l.
+ * Copyright (C) 2022 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,42 +28,28 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2019 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2022 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.model;
+package com.sonicle.webtop.core.app.io.dbutils;
 
 /**
  *
  * @author malbinola
  */
-public class CustomPanel extends CustomPanelBase {
-	protected String panelId;
-	protected String domainId;
-	protected String serviceId;
-	
-	protected Boolean important;
-	
-	public String getPanelId() {
-		return panelId;
+public class FilterInfo {
+	public final String value;
+	public final boolean isQuery;
+
+	private FilterInfo(String value, boolean isQuery) {
+		this.value = value;
+		this.isQuery = isQuery;
 	}
 
-	public void setPanelId(String panelId) {
-		this.panelId = panelId;
-	}
-	
-	public String getDomainId() {
-		return domainId;
+	public static FilterInfo newById(String id) {
+		return new FilterInfo(id, false);
 	}
 
-	public void setDomainId(String domainId) {
-		this.domainId = domainId;
-	}
-
-	public String getServiceId() {
-		return serviceId;
-	}
-
-	public void setServiceId(String serviceId) {
-		this.serviceId = serviceId;
+	public static FilterInfo newByQuery(String likePattern) {
+		return new FilterInfo(likePattern, true);
 	}
 }

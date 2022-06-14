@@ -58,6 +58,7 @@ public class OffsetDateTimeJodaConverter implements Converter<OffsetDateTime, or
 		if (u == null) {
 			return null;
 		} else {
+			// https://gist.github.com/simon04/26f68a3f21f76dc0bc1ff012676432c9
 			// https://blog.joda.org/2014/11/converting-from-joda-time-to-javatime.html
 			// https://stackoverflow.com/questions/39723232/what-is-the-best-way-to-convert-a-org-joda-time-datetime-to-a-java-time-offsetda
 			final Instant instant = Instant.ofEpochMilli(u.getMillis());

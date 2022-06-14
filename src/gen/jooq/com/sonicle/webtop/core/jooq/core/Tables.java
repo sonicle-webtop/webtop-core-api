@@ -62,6 +62,16 @@ public class Tables {
     public static final com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags CUSTOM_PANELS_TAGS = com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags.CUSTOM_PANELS_TAGS;
 
     /**
+     * The table <code>core.data_sources</code>.
+     */
+    public static final com.sonicle.webtop.core.jooq.core.tables.DataSources DATA_SOURCES = com.sonicle.webtop.core.jooq.core.tables.DataSources.DATA_SOURCES;
+
+    /**
+     * The table <code>core.data_sources_queries</code>.
+     */
+    public static final com.sonicle.webtop.core.jooq.core.tables.DataSourcesQueries DATA_SOURCES_QUERIES = com.sonicle.webtop.core.jooq.core.tables.DataSourcesQueries.DATA_SOURCES_QUERIES;
+
+    /**
      * The table <code>core.domain_settings</code>.
      */
     public static final com.sonicle.webtop.core.jooq.core.tables.DomainSettings DOMAIN_SETTINGS = com.sonicle.webtop.core.jooq.core.tables.DomainSettings.DOMAIN_SETTINGS;

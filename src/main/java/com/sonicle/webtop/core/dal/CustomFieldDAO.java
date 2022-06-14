@@ -61,6 +61,19 @@ public class CustomFieldDAO extends BaseDAO {
 		return INSTANCE;
 	}
 	
+	public boolean nameIsAvailableByDomainService(Connection con, String domainId, String serviceId, String name) {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.selectCount()
+			.from(CUSTOM_FIELDS)
+			.where(
+				CUSTOM_FIELDS.DOMAIN_ID.equal(domainId)
+				.and(CUSTOM_FIELDS.SERVICE_ID.equal(serviceId))
+				.and(CUSTOM_FIELDS.NAME.equal(name))
+			)
+			.fetchOne(0, Integer.class) == 0;
+	}
+	
 	public String generateCustomFieldId() {
 		return IdentifierUtils.getTimeBasedShortID();
 	}
@@ -278,6 +291,7 @@ public class CustomFieldDAO extends BaseDAO {
 			.set(CUSTOM_FIELDS.PROPERTIES, item.getProperties())
 			.set(CUSTOM_FIELDS.VALUES, item.getValues())
 			.set(CUSTOM_FIELDS.LABEL_I18N, item.getLabelI18n())
+			.set(CUSTOM_FIELDS.DATA_SOURCE_QUERY_ID, item.getDataSourceQueryId())
 			.where(
 				CUSTOM_FIELDS.DOMAIN_ID.equal(item.getDomainId())
 				.and(CUSTOM_FIELDS.SERVICE_ID.equal(item.getServiceId()))

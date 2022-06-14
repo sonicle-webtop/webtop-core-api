@@ -280,6 +280,7 @@ public class CustomPanelDAO extends BaseDAO {
 			.set(CUSTOM_PANELS.NAME, item.getName())
 			.set(CUSTOM_PANELS.DESCRIPTION, item.getDescription())
 			.set(CUSTOM_PANELS.TITLE_I18N, item.getTitleI18n())
+			.set(CUSTOM_PANELS.PROPERTIES, item.getProperties())
 			.execute();
 	}
 	
@@ -290,6 +291,7 @@ public class CustomPanelDAO extends BaseDAO {
 			.set(CUSTOM_PANELS.NAME, item.getName())
 			.set(CUSTOM_PANELS.DESCRIPTION, item.getDescription())
 			.set(CUSTOM_PANELS.TITLE_I18N, item.getTitleI18n())
+			.set(CUSTOM_PANELS.PROPERTIES, item.getProperties())
 			.where(
 				CUSTOM_PANELS.CUSTOM_PANEL_ID.equal(item.getCustomPanelId())
 				.and(CUSTOM_PANELS.DOMAIN_ID.equal(item.getDomainId()))

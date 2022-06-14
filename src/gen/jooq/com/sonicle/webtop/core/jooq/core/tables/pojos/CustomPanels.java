@@ -20,6 +20,7 @@ public class CustomPanels implements java.io.Serializable {
     private java.lang.String name;
     private java.lang.String description;
     private java.lang.String titleI18n;
+    private java.lang.String properties;
 
     public CustomPanels() {}
 
@@ -31,6 +32,7 @@ public class CustomPanels implements java.io.Serializable {
         this.name = value.name;
         this.description = value.description;
         this.titleI18n = value.titleI18n;
+        this.properties = value.properties;
     }
 
     public CustomPanels(
@@ -40,7 +42,8 @@ public class CustomPanels implements java.io.Serializable {
         java.lang.Short  order,
         java.lang.String name,
         java.lang.String description,
-        java.lang.String titleI18n
+        java.lang.String titleI18n,
+        java.lang.String properties
     ) {
         this.customPanelId = customPanelId;
         this.domainId = domainId;
@@ -49,6 +52,7 @@ public class CustomPanels implements java.io.Serializable {
         this.name = name;
         this.description = description;
         this.titleI18n = titleI18n;
+        this.properties = properties;
     }
 
     /**
@@ -149,6 +153,20 @@ public class CustomPanels implements java.io.Serializable {
         this.titleI18n = titleI18n;
     }
 
+    /**
+     * Getter for <code>core.custom_panels.properties</code>.
+     */
+    public java.lang.String getProperties() {
+        return this.properties;
+    }
+
+    /**
+     * Setter for <code>core.custom_panels.properties</code>.
+     */
+    public void setProperties(java.lang.String properties) {
+        this.properties = properties;
+    }
+
     @Override
     public String toString() {
         java.lang.StringBuilder sb = new java.lang.StringBuilder("CustomPanels (");
@@ -160,6 +178,7 @@ public class CustomPanels implements java.io.Serializable {
         sb.append(", ").append(name);
         sb.append(", ").append(description);
         sb.append(", ").append(titleI18n);
+        sb.append(", ").append(properties);
 
         sb.append(")");
         return sb.toString();

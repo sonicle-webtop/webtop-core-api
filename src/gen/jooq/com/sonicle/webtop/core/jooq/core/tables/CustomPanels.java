@@ -61,6 +61,11 @@ public class CustomPanels extends org.jooq.impl.TableImpl<com.sonicle.webtop.cor
      */
     public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.CustomPanelsRecord, java.lang.String> TITLE_I18N = createField(org.jooq.impl.DSL.name("title_i18n"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
+    /**
+     * The column <code>core.custom_panels.properties</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.CustomPanelsRecord, java.lang.String> PROPERTIES = createField(org.jooq.impl.DSL.name("properties"), org.jooq.impl.SQLDataType.CLOB, this, "");
+
     private CustomPanels(org.jooq.Name alias, org.jooq.Table<com.sonicle.webtop.core.jooq.core.tables.records.CustomPanelsRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -141,11 +146,11 @@ public class CustomPanels extends org.jooq.impl.TableImpl<com.sonicle.webtop.cor
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @java.lang.Override
-    public org.jooq.Row7<java.lang.String, java.lang.String, java.lang.String, java.lang.Short, java.lang.String, java.lang.String, java.lang.String> fieldsRow() {
-        return (org.jooq.Row7) super.fieldsRow();
+    public org.jooq.Row8<java.lang.String, java.lang.String, java.lang.String, java.lang.Short, java.lang.String, java.lang.String, java.lang.String, java.lang.String> fieldsRow() {
+        return (org.jooq.Row8) super.fieldsRow();
     }
 }

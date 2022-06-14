@@ -114,11 +114,15 @@ public class CustomFieldValue {
 			return (dateValue != null) ? dateValue.withZone(DateTimeZone.UTC).toLocalTime(): null;
 		} else if (CustomField.Type.DATE_TIME.equals(type)) {
 			return dateValue;
-		} else if (CustomField.Type.COMBOBOX.equals(type)) {
+		} else if (CustomField.Type.COMBOBOX.equals(type) || CustomField.Type.COMBOBOX_DATASOURCE.equals(type)) {
+			return stringValue;
+		} else if (CustomField.Type.TAG.equals(type) || CustomField.Type.TAG_DATASOURCE.equals(type)) {
 			return stringValue;
 		} else if (CustomField.Type.CHECKBOX.equals(type)) {
 			return booleanValue;
-		} else {
+		} else if (CustomField.Type.CONTACT_PICKER.equals(type)) {
+			return stringValue;
+		}  else {
 			throw new WTRuntimeException("Custom field type not supported [{}]", EnumUtils.toSerializedName(type));
 		}
 	}
@@ -138,10 +142,14 @@ public class CustomFieldValue {
 			dateValue = (time != null) ? new LocalDate(1970, 1, 1).toDateTime(time, DateTimeZone.UTC) : null;
 		} else if (CustomField.Type.DATE_TIME.equals(type)) {
 			dateValue = (DateTime)value;
-		} else if (CustomField.Type.COMBOBOX.equals(type)) {
+		} else if (CustomField.Type.COMBOBOX.equals(type) || CustomField.Type.COMBOBOX_DATASOURCE.equals(type)) {
+			stringValue = (String)value;
+		} else if (CustomField.Type.TAG.equals(type) || CustomField.Type.TAG_DATASOURCE.equals(type)) {
 			stringValue = (String)value;
 		} else if (CustomField.Type.CHECKBOX.equals(type)) {
 			booleanValue = (Boolean)value;
+		} else if (CustomField.Type.CONTACT_PICKER.equals(type)) {
+			stringValue = (String)value;
 		} else {
 			throw new WTRuntimeException("Custom field type not supported [{}]", EnumUtils.toSerializedName(type));
 		}

@@ -49,6 +49,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
+import org.jooq.util.postgres.PostgresDSL;
 
 /**
  *
@@ -116,15 +117,28 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 	}
 	
 	protected <T> Condition defaultCondition(Field<T> field, ComparisonOperator operator, Collection<?> values) {
+		return defaultCondition(field, false, operator, values);
+	}
+	
+	protected <T> Condition defaultCondition(Field<T> field, boolean fieldModeArray, ComparisonOperator operator, Collection<?> values) {
+		// When fieldModeArray is `true`, DB field value will be a String of values separated by a colon (,).
+		// In this situation, the only operators suitable are EQ and NOT EQ.
+		if (fieldModeArray && (!ComparisonOperator.EQ.equals(operator) && !ComparisonOperator.NE.equals(operator))) {
+			throw new UnsupportedOperationException("Operator not supported in array mode: " + operator.toString());
+		}
 		if (ComparisonOperator.EQ.equals(operator)) {
 			if (hasStringType(field)) {
 				String value = (String)single(values);
-				if (forceStringLikeComparison || valueContainsWildcard(value)) {
-					return ignoreCase ? field.likeIgnoreCase(valueToLikePattern(value)) : field.like(valueToLikePattern(value));
-				} else if (ignoreCase) {
-					return field.equalIgnoreCase(value);
+				if (fieldModeArray) {
+					return DSL.value((String)value).equal(DSL.any(PostgresDSL.stringToArray((Field<String>) field, ",")));
+					
+				} else {
+					if (forceStringLikeComparison || valueContainsWildcard(value)) {
+						return ignoreCase ? field.likeIgnoreCase(valueToLikePattern(value)) : field.like(valueToLikePattern(value));
+					} else if (ignoreCase) {
+						return field.equalIgnoreCase(value);
+					}
 				}
-				
 			} else if (hasBooleanType(field)) {
 				Boolean value = singleAsBoolean(values);
 				return true == value ? field.isTrue() : field.isFalse();
@@ -134,12 +148,16 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 		} else if (ComparisonOperator.NE.equals(operator)) {
 			if (hasStringType(field)) {
 				String value = (String)single(values);
-				if (forceStringLikeComparison || valueContainsWildcard(value)) {
-					return ignoreCase ? field.notLikeIgnoreCase(valueToLikePattern(value)) : field.notLike(valueToLikePattern(value));
-				} else if (ignoreCase) {
-					return field.notEqualIgnoreCase(value);
+				if (fieldModeArray) {
+					return DSL.value((String)value).notEqual(DSL.all(PostgresDSL.stringToArray((Field<String>) field, ",")));
+					
+				} else {
+					if (forceStringLikeComparison || valueContainsWildcard(value)) {
+						return ignoreCase ? field.notLikeIgnoreCase(valueToLikePattern(value)) : field.notLike(valueToLikePattern(value));
+					} else if (ignoreCase) {
+						return field.notEqualIgnoreCase(value);
+					}
 				}
-				
 			} else if (hasBooleanType(field)) {
 				Boolean value = singleAsBoolean(values);
 				return true == value ? field.isFalse() : field.isTrue();

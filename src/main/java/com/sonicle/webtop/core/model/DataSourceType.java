@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Sonicle S.r.l.
+ * Copyright (C) 2022 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,42 +28,72 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2019 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2022 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.core.model;
+
+import net.sf.qualitycheck.Check;
 
 /**
  *
  * @author malbinola
  */
-public class CustomPanel extends CustomPanelBase {
-	protected String panelId;
-	protected String domainId;
-	protected String serviceId;
+public class DataSourceType {
+	protected String proto;
+	protected String name;
+	protected String loadDriverClassName;
+	protected String databasePropName;
+	protected String dialectMime;
 	
-	protected Boolean important;
-	
-	public String getPanelId() {
-		return panelId;
-	}
-
-	public void setPanelId(String panelId) {
-		this.panelId = panelId;
+	public DataSourceType(String scheme, String name, String dialectMime) {
+		this(scheme, name, dialectMime, null, null);
 	}
 	
-	public String getDomainId() {
-		return domainId;
+	public DataSourceType(String proto, String name, String dialectMime, String loadDriverClassName, String databasePropName) {
+		this.proto = Check.notEmpty(proto, "proto");
+		this.name = Check.notEmpty(name, "name");
+		this.dialectMime = dialectMime;
+		this.loadDriverClassName = loadDriverClassName;
+		this.databasePropName = databasePropName;
 	}
 
-	public void setDomainId(String domainId) {
-		this.domainId = domainId;
+	public String getProto() {
+		return proto;
 	}
 
-	public String getServiceId() {
-		return serviceId;
+	public void setProto(String proto) {
+		this.proto = proto;
 	}
 
-	public void setServiceId(String serviceId) {
-		this.serviceId = serviceId;
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDialectMime() {
+		return dialectMime;
+	}
+
+	public void setDialectMime(String dialectMime) {
+		this.dialectMime = dialectMime;
+	}
+
+	public String getLoadDriverClassName() {
+		return loadDriverClassName;
+	}
+
+	public void setLoadDriverClassName(String loadDriverClassName) {
+		this.loadDriverClassName = loadDriverClassName;
+	}
+
+	public String getDatabasePropName() {
+		return databasePropName;
+	}
+
+	public void setDatabasePropName(String databasePropName) {
+		this.databasePropName = databasePropName;
 	}
 }

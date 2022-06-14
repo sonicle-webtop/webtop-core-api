@@ -33,31 +33,15 @@
 package com.sonicle.webtop.core.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.sonicle.commons.web.json.JsonResult;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import org.joda.time.DateTime;
 
 /**
  *
  * @author malbinola
  */
-public class CustomField {
+public class CustomField extends CustomFieldBase {
 	protected String fieldId;
 	protected String domainId;
 	protected String serviceId;
-	protected RevisionStatus revisionStatus;
-	protected DateTime revisionTimestamp;
-	protected DateTime creationTimestamp;
-	protected String name;
-	protected String description;
-	protected Type type;
-	protected Boolean searchable;
-	protected Boolean previewable;
-	protected Props props;
-	protected Values values;
-	protected LabelI18n labelI18n;
 
 	public String getFieldId() {
 		return fieldId;
@@ -83,101 +67,18 @@ public class CustomField {
 		this.serviceId = serviceId;
 	}
 	
-	public RevisionStatus getRevisionStatus() {
-		return revisionStatus;
-	}
-
-	public void setRevisionStatus(RevisionStatus revisionStatus) {
-		this.revisionStatus = revisionStatus;
-	}
-
-	public DateTime getRevisionTimestamp() {
-		return revisionTimestamp;
-	}
-
-	public void setRevisionTimestamp(DateTime revisionTimestamp) {
-		this.revisionTimestamp = revisionTimestamp;
-	}
-	
-	public DateTime getCreationTimestamp() {
-		return creationTimestamp;
-	}
-
-	public void setCreationTimestamp(DateTime creationTimestamp) {
-		this.creationTimestamp = creationTimestamp;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
-	}
-	
-	public Boolean getSearchable() {
-		return searchable;
-	}
-
-	public void setSearchable(Boolean searchable) {
-		this.searchable = searchable;
-	}
-	
-	public Boolean getPreviewable() {
-		return previewable;
-	}
-
-	public void setPreviewable(Boolean previewable) {
-		this.previewable = previewable;
-	}
-	
-	public Props getProps() {
-		return props;
-	}
-
-	public void setProps(Props props) {
-		this.props = props;
-	}
-	
-	public Values getValues() {
-		return values;
-	}
-
-	public void setValues(Values values) {
-		this.values = values;
-	}
-	
-	public LabelI18n getLabelI18n() {
-		return labelI18n;
-	}
-
-	public void setLabelI18n(LabelI18n labelI18n) {
-		this.labelI18n = labelI18n;
-	}
-	
-	public static enum RevisionStatus {
-		@SerializedName("N") NEW,
-		@SerializedName("M") MODIFIED,
-		@SerializedName("D") DELETED;
-	}
-	
+	//TODO: Type class is used in many projects so we leave here for now. When branch is fully merged move definition in CustomFieldBase!
 	public static enum Type {
+		
+		// !!! Note for the maintainer !!!
+		// When adding a new type, remember to update implementation also 
+		// in the following classes:
+		//  - com.sonicle.webtop.core.bol.js.ObjCustomFieldValue
+		//  - com.sonicle.webtop.core.app.sdk.QueryBuilderWithCValues
+		//  - com.sonicle.webtop.core.model.CustomFieldValue
+		//  - com.sonicle.webtop.core.model.CustomFieldBase.isDataBindableType (only for DS feature)
+		//  - client-core.model.isDataBindableType (only for DS feature)
+		
 		@SerializedName("text") TEXT,
 		@SerializedName("textarea") TEXTAREA,
 		@SerializedName("number") NUMBER,
@@ -185,149 +86,11 @@ public class CustomField {
 		@SerializedName("time") TIME,
 		@SerializedName("datetime") DATE_TIME,
 		@SerializedName("combobox") COMBOBOX,
-		@SerializedName("checkbox") CHECKBOX
+		@SerializedName("comboboxds") COMBOBOX_DATASOURCE,
+		@SerializedName("checkbox") CHECKBOX,
+		@SerializedName("tag") TAG,
+		@SerializedName("tagds") TAG_DATASOURCE,
+		@SerializedName("contactpicker") CONTACT_PICKER
 		;
-	}
-	
-	public static class Props extends HashMap<String, String> {
-	
-		public Props() {
-			super();
-		}
-		
-		public Props(Map<String, String> map) {
-			super(map);
-		}
-		
-		public Props(int initialCapacity) {
-			super(initialCapacity);
-		}
-
-		public static Props fromJson(String value) {
-			if (value == null) return null;
-			return JsonResult.gson().fromJson(value, Props.class);
-		}
-
-		public static String toJson(Props value) {
-			if (value == null) return null;
-			return JsonResult.gson().toJson(value, Props.class);
-		}
-	}
-	
-	public static class Values extends LinkedHashMap<String, String> {
-	
-		public Values() {
-			super();
-		}
-		
-		public Values(Map<String, String> map) {
-			super(map);
-		}
-		
-		public Values(int initialCapacity) {
-			super(initialCapacity);
-		}
-
-		public static Values fromJson(String value) {
-			if (value == null) return null;
-			return JsonResult.gson().fromJson(value, Values.class);
-		}
-
-		public static String toJson(Values value) {
-			if (value == null) return null;
-			return JsonResult.gson().toJson(value, Values.class);
-		}
-	}
-	
-	public static class LabelI18n extends HashMap<String, String> {
-	
-		public LabelI18n() {
-			super();
-		}
-		
-		public LabelI18n(Map<String, String> map) {
-			super(map);
-		}
-		
-		public LabelI18n(int initialCapacity) {
-			super(initialCapacity);
-		}
-
-		public static LabelI18n fromJson(String value) {
-			if (value == null) return null;
-			return JsonResult.gson().fromJson(value, LabelI18n.class);
-		}
-
-		public static String toJson(LabelI18n value) {
-			if (value == null) return null;
-			return JsonResult.gson().toJson(value, LabelI18n.class);
-		}
-	}
-	
-	/*
-	protected String domainId;
-	protected String serviceId;
-	protected String fieldId;
-	protected RevisionStatus revisionStatus;
-	protected DateTime revisionTimestamp;
-	protected DateTime creationTimestamp;
-	protected String name;
-	protected String description;
-	protected Type type;
-	protected Props props;
-	protected Values values;
-	protected Labels labels;
-	*/
-	
-	public static class NewBuilder<T extends NewBuilder, I extends CustomField> {
-		protected I item;
-		
-		public NewBuilder() {
-			this.item = newItem();
-		}
-		
-		protected I newItem() {
-			return (I)new CustomField();
-		}
-		
-		public T fieldId(String fieldId) {
-			item.setFieldId(fieldId);
-			return (T)this;
-		}
-		
-		public T name(String name) {
-			item.setName(name);
-			return (T)this;
-		}
-		
-		public T description(String description) {
-			item.setDescription(description);
-			return (T)this;
-		}
-		
-		public T type(CustomField.Type type) {
-			item.setType(type);
-			return (T)this;
-		}
-		
-		public T searchable(boolean searchable) {
-			item.setSearchable(searchable);
-			return (T)this;
-		}
-		
-		public T props(CustomField.Props props) {
-			item.setProps(props);
-			return (T)this;
-		}
-		
-		public T values(CustomField.Values values) {
-			item.setValues(values);
-			return (T)this;
-		}
-		
-		public T labels(CustomField.LabelI18n labelI18n) {
-			item.setLabelI18n(labelI18n);
-			return (T)this;
-		}
 	}
 }

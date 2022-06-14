@@ -50,11 +50,15 @@ import org.joda.time.DateTimeZone;
 public abstract class QueryBuilderWithCValues<T extends QueryBuilder<T>> extends QueryBuilder<T> {
 	
 	public static enum Type {
-		CVSTRING, CVNUMBER, CVBOOL, CVDATE, CVTEXT
+		CVSTRING, CVSTRINGARRAY, CVNUMBER, CVBOOL, CVDATE, CVTEXT
 	}
 	
 	public StringProperty<T> customValueString(final String fieldId) {
 		return string(CId.build(EnumUtils.getName(Type.CVSTRING), fieldId).toString());
+	}
+	
+	public StringProperty<T> customValueStringArray(final String fieldId) {
+		return string(CId.build(EnumUtils.getName(Type.CVSTRINGARRAY), fieldId).toString());
 	}
 	
 	public DoubleProperty<T> customValueNumber(final String fieldId) {
@@ -95,7 +99,13 @@ public abstract class QueryBuilderWithCValues<T extends QueryBuilder<T>> extends
 		} else if (CustomField.Type.CHECKBOX.equals(customFieldType)) {
 			return condition(customValueBoolean(customFieldId), value, negated);
 		
-		} else if (CustomField.Type.COMBOBOX.equals(customFieldType)) {
+		} else if (CustomField.Type.COMBOBOX.equals(customFieldType) || CustomField.Type.COMBOBOX_DATASOURCE.equals(customFieldType)) {
+			return condition(customValueString(customFieldId), value, negated);
+			
+		} else if (CustomField.Type.TAG.equals(customFieldType) || CustomField.Type.TAG_DATASOURCE.equals(customFieldType)) {
+			return condition(customValueStringArray(customFieldId), value, negated);
+			
+		} else if (CustomField.Type.CONTACT_PICKER.equals(customFieldType)) {
 			return condition(customValueString(customFieldId), value, negated);
 			
 		} else {
