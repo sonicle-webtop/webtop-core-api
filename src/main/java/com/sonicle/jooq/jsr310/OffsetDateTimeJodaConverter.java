@@ -48,7 +48,9 @@ public class OffsetDateTimeJodaConverter implements Converter<OffsetDateTime, or
 		if (t == null) {
 			return null;
 		} else {
-			final org.joda.time.DateTimeZone dtz = org.joda.time.DateTimeZone.forID(t.getOffset().getId());
+			// https://github.com/jklingsporn/vertx-jooq/issues/64
+			// https://gist.github.com/liry/701adafca6c6c3776aa7
+			final org.joda.time.DateTimeZone dtz = "Z".equals(t.getOffset().getId()) ? org.joda.time.DateTimeZone.UTC : org.joda.time.DateTimeZone.forID(t.toZonedDateTime().getZone().getId());
 			return new org.joda.time.DateTime(t.getYear(), t.getMonthValue(), t.getDayOfMonth(), t.getHour(), t.getMinute(), t.getSecond(), dtz);
 		}
 	}
