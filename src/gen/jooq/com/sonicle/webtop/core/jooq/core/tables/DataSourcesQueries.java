@@ -116,24 +116,16 @@ public class DataSourcesQueries extends org.jooq.impl.TableImpl<com.sonicle.webt
 
     @java.lang.Override
     public java.util.List<org.jooq.ForeignKey<com.sonicle.webtop.core.jooq.core.tables.records.DataSourcesQueriesRecord, ?>> getReferences() {
-        return java.util.Arrays.<org.jooq.ForeignKey<com.sonicle.webtop.core.jooq.core.tables.records.DataSourcesQueriesRecord, ?>>asList(com.sonicle.webtop.core.jooq.core.Keys.DATA_SOURCES_QUERIES__DATA_SOURCES_QUERIES_DATA_SOURCE_ID_FKEY, com.sonicle.webtop.core.jooq.core.Keys.DATA_SOURCES_QUERIES__DATA_SOURCES_QUERIES_DATA_SOURCE_ID_FKEY1);
+        return java.util.Arrays.<org.jooq.ForeignKey<com.sonicle.webtop.core.jooq.core.tables.records.DataSourcesQueriesRecord, ?>>asList(com.sonicle.webtop.core.jooq.core.Keys.DATA_SOURCES_QUERIES__DATA_SOURCES_QUERIES_DATA_SOURCE_ID_FKEY);
     }
 
-    private transient com.sonicle.webtop.core.jooq.core.tables.DataSources _dataSourcesQueriesDataSourceIdFkey;
-    private transient com.sonicle.webtop.core.jooq.core.tables.DataSources _dataSourcesQueriesDataSourceIdFkey1;
+    private transient com.sonicle.webtop.core.jooq.core.tables.DataSources _dataSources;
 
-    public com.sonicle.webtop.core.jooq.core.tables.DataSources dataSourcesQueriesDataSourceIdFkey() {
-        if (_dataSourcesQueriesDataSourceIdFkey == null)
-            _dataSourcesQueriesDataSourceIdFkey = new com.sonicle.webtop.core.jooq.core.tables.DataSources(this, com.sonicle.webtop.core.jooq.core.Keys.DATA_SOURCES_QUERIES__DATA_SOURCES_QUERIES_DATA_SOURCE_ID_FKEY);
+    public com.sonicle.webtop.core.jooq.core.tables.DataSources dataSources() {
+        if (_dataSources == null)
+            _dataSources = new com.sonicle.webtop.core.jooq.core.tables.DataSources(this, com.sonicle.webtop.core.jooq.core.Keys.DATA_SOURCES_QUERIES__DATA_SOURCES_QUERIES_DATA_SOURCE_ID_FKEY);
 
-        return _dataSourcesQueriesDataSourceIdFkey;
-    }
-
-    public com.sonicle.webtop.core.jooq.core.tables.DataSources dataSourcesQueriesDataSourceIdFkey1() {
-        if (_dataSourcesQueriesDataSourceIdFkey1 == null)
-            _dataSourcesQueriesDataSourceIdFkey1 = new com.sonicle.webtop.core.jooq.core.tables.DataSources(this, com.sonicle.webtop.core.jooq.core.Keys.DATA_SOURCES_QUERIES__DATA_SOURCES_QUERIES_DATA_SOURCE_ID_FKEY1);
-
-        return _dataSourcesQueriesDataSourceIdFkey1;
+        return _dataSources;
     }
 
     @java.lang.Override

@@ -130,11 +130,6 @@ public class DataSources extends org.jooq.impl.TableImpl<com.sonicle.webtop.core
     }
 
     @java.lang.Override
-    public java.util.List<org.jooq.Index> getIndexes() {
-        return java.util.Arrays.<org.jooq.Index>asList(com.sonicle.webtop.core.jooq.core.Indexes.DATA_SOURCES_AK1);
-    }
-
-    @java.lang.Override
     public org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.DataSourcesRecord> getPrimaryKey() {
         return com.sonicle.webtop.core.jooq.core.Keys.DATA_SOURCES_PKEY;
     }

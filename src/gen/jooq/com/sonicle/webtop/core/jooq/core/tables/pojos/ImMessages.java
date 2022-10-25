@@ -23,9 +23,9 @@ public class ImMessages implements java.io.Serializable {
     private org.joda.time.DateTime deliveryTimestamp;
     private java.lang.String       action;
     private java.lang.String       text;
+    private java.lang.String       data;
     private java.lang.String       messageUid;
     private java.lang.String       stanzaId;
-    private java.lang.String       data;
 
     public ImMessages() {}
 
@@ -40,9 +40,9 @@ public class ImMessages implements java.io.Serializable {
         this.deliveryTimestamp = value.deliveryTimestamp;
         this.action = value.action;
         this.text = value.text;
+        this.data = value.data;
         this.messageUid = value.messageUid;
         this.stanzaId = value.stanzaId;
-        this.data = value.data;
     }
 
     public ImMessages(
@@ -56,9 +56,9 @@ public class ImMessages implements java.io.Serializable {
         org.joda.time.DateTime deliveryTimestamp,
         java.lang.String       action,
         java.lang.String       text,
+        java.lang.String       data,
         java.lang.String       messageUid,
-        java.lang.String       stanzaId,
-        java.lang.String       data
+        java.lang.String       stanzaId
     ) {
         this.id = id;
         this.domainId = domainId;
@@ -70,9 +70,9 @@ public class ImMessages implements java.io.Serializable {
         this.deliveryTimestamp = deliveryTimestamp;
         this.action = action;
         this.text = text;
+        this.data = data;
         this.messageUid = messageUid;
         this.stanzaId = stanzaId;
-        this.data = data;
     }
 
     /**
@@ -216,6 +216,20 @@ public class ImMessages implements java.io.Serializable {
     }
 
     /**
+     * Getter for <code>core.im_messages.data</code>.
+     */
+    public java.lang.String getData() {
+        return this.data;
+    }
+
+    /**
+     * Setter for <code>core.im_messages.data</code>.
+     */
+    public void setData(java.lang.String data) {
+        this.data = data;
+    }
+
+    /**
      * Getter for <code>core.im_messages.message_uid</code>.
      */
     public java.lang.String getMessageUid() {
@@ -243,20 +257,6 @@ public class ImMessages implements java.io.Serializable {
         this.stanzaId = stanzaId;
     }
 
-    /**
-     * Getter for <code>core.im_messages.data</code>.
-     */
-    public java.lang.String getData() {
-        return this.data;
-    }
-
-    /**
-     * Setter for <code>core.im_messages.data</code>.
-     */
-    public void setData(java.lang.String data) {
-        this.data = data;
-    }
-
     @Override
     public String toString() {
         java.lang.StringBuilder sb = new java.lang.StringBuilder("ImMessages (");
@@ -271,9 +271,9 @@ public class ImMessages implements java.io.Serializable {
         sb.append(", ").append(deliveryTimestamp);
         sb.append(", ").append(action);
         sb.append(", ").append(text);
+        sb.append(", ").append(data);
         sb.append(", ").append(messageUid);
         sb.append(", ").append(stanzaId);
-        sb.append(", ").append(data);
 
         sb.append(")");
         return sb.toString();
