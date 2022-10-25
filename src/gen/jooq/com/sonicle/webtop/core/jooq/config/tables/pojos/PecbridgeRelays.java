@@ -23,6 +23,7 @@ public class PecbridgeRelays implements java.io.Serializable {
     private java.lang.String  password;
     private java.lang.Boolean debug;
     private java.lang.String  webtopProfileId;
+    private java.lang.Boolean enabled;
 
     public PecbridgeRelays() {}
 
@@ -37,6 +38,7 @@ public class PecbridgeRelays implements java.io.Serializable {
         this.password = value.password;
         this.debug = value.debug;
         this.webtopProfileId = value.webtopProfileId;
+        this.enabled = value.enabled;
     }
 
     public PecbridgeRelays(
@@ -49,7 +51,8 @@ public class PecbridgeRelays implements java.io.Serializable {
         java.lang.String  username,
         java.lang.String  password,
         java.lang.Boolean debug,
-        java.lang.String  webtopProfileId
+        java.lang.String  webtopProfileId,
+        java.lang.Boolean enabled
     ) {
         this.relayId = relayId;
         this.context = context;
@@ -61,6 +64,7 @@ public class PecbridgeRelays implements java.io.Serializable {
         this.password = password;
         this.debug = debug;
         this.webtopProfileId = webtopProfileId;
+        this.enabled = enabled;
     }
 
     /**
@@ -203,6 +207,20 @@ public class PecbridgeRelays implements java.io.Serializable {
         this.webtopProfileId = webtopProfileId;
     }
 
+    /**
+     * Getter for <code>config.pecbridge_relays.enabled</code>.
+     */
+    public java.lang.Boolean getEnabled() {
+        return this.enabled;
+    }
+
+    /**
+     * Setter for <code>config.pecbridge_relays.enabled</code>.
+     */
+    public void setEnabled(java.lang.Boolean enabled) {
+        this.enabled = enabled;
+    }
+
     @Override
     public String toString() {
         java.lang.StringBuilder sb = new java.lang.StringBuilder("PecbridgeRelays (");
@@ -217,6 +235,7 @@ public class PecbridgeRelays implements java.io.Serializable {
         sb.append(", ").append(password);
         sb.append(", ").append(debug);
         sb.append(", ").append(webtopProfileId);
+        sb.append(", ").append(enabled);
 
         sb.append(")");
         return sb.toString();

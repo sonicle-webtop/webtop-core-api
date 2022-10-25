@@ -37,11 +37,6 @@ public class Tags extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.c
     public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord, java.lang.String> DOMAIN_ID = createField(org.jooq.impl.DSL.name("domain_id"), org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false), this, "");
 
     /**
-     * The column <code>core.tags.user_id</code>.
-     */
-    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord, java.lang.String> USER_ID = createField(org.jooq.impl.DSL.name("user_id"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
-
-    /**
      * The column <code>core.tags.built_in</code>.
      */
     public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord, java.lang.Boolean> BUILT_IN = createField(org.jooq.impl.DSL.name("built_in"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
@@ -55,6 +50,11 @@ public class Tags extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.c
      * The column <code>core.tags.color</code>.
      */
     public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord, java.lang.String> COLOR = createField(org.jooq.impl.DSL.name("color"), org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false), this, "");
+
+    /**
+     * The column <code>core.tags.user_id</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.TagsRecord, java.lang.String> USER_ID = createField(org.jooq.impl.DSL.name("user_id"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * The column <code>core.tags.external_id</code>.
@@ -145,7 +145,7 @@ public class Tags extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.c
     // -------------------------------------------------------------------------
 
     @java.lang.Override
-    public org.jooq.Row7<java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, java.lang.String, java.lang.String, java.lang.String> fieldsRow() {
+    public org.jooq.Row7<java.lang.String, java.lang.String, java.lang.Boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String> fieldsRow() {
         return (org.jooq.Row7) super.fieldsRow();
     }
 }

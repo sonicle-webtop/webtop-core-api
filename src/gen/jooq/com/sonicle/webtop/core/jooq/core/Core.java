@@ -19,6 +19,11 @@ public class Core extends org.jooq.impl.SchemaImpl {
     public static final Core CORE = new Core();
 
     /**
+     * The table <code>core.____customers</code>.
+     */
+    public final com.sonicle.webtop.core.jooq.core.tables.____Customers ____CUSTOMERS = com.sonicle.webtop.core.jooq.core.tables.____Customers.____CUSTOMERS;
+
+    /**
      * The table <code>core.access_log</code>.
      */
     public final com.sonicle.webtop.core.jooq.core.tables.AccessLog ACCESS_LOG = com.sonicle.webtop.core.jooq.core.tables.AccessLog.ACCESS_LOG;
@@ -67,6 +72,11 @@ public class Core extends org.jooq.impl.SchemaImpl {
      * The table <code>core.custom_panels_tags</code>.
      */
     public final com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags CUSTOM_PANELS_TAGS = com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags.CUSTOM_PANELS_TAGS;
+
+    /**
+     * The table <code>core.customers_deprecated</code>.
+     */
+    public final com.sonicle.webtop.core.jooq.core.tables.CustomersDeprecated CUSTOMERS_DEPRECATED = com.sonicle.webtop.core.jooq.core.tables.CustomersDeprecated.CUSTOMERS_DEPRECATED;
 
     /**
      * The table <code>core.data_sources</code>.
@@ -303,6 +313,7 @@ public class Core extends org.jooq.impl.SchemaImpl {
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_SHARES,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_SNOOZED_REMINDERS,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_SYSLOG,
+            com.sonicle.webtop.core.jooq.core.Sequences.SEQ_TEST,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_UPGRADE_STATEMENTS,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_USERS_ASSOCIATIONS);
     }
@@ -310,6 +321,7 @@ public class Core extends org.jooq.impl.SchemaImpl {
     @java.lang.Override
     public final java.util.List<org.jooq.Table<?>> getTables() {
         return java.util.Arrays.<org.jooq.Table<?>>asList(
+            com.sonicle.webtop.core.jooq.core.tables.____Customers.____CUSTOMERS,
             com.sonicle.webtop.core.jooq.core.tables.AccessLog.ACCESS_LOG,
             com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES,
             com.sonicle.webtop.core.jooq.core.tables.AuditKnownDevices.AUDIT_KNOWN_DEVICES,
@@ -320,6 +332,7 @@ public class Core extends org.jooq.impl.SchemaImpl {
             com.sonicle.webtop.core.jooq.core.tables.CustomPanels.CUSTOM_PANELS,
             com.sonicle.webtop.core.jooq.core.tables.CustomPanelsFields.CUSTOM_PANELS_FIELDS,
             com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags.CUSTOM_PANELS_TAGS,
+            com.sonicle.webtop.core.jooq.core.tables.CustomersDeprecated.CUSTOMERS_DEPRECATED,
             com.sonicle.webtop.core.jooq.core.tables.DataSources.DATA_SOURCES,
             com.sonicle.webtop.core.jooq.core.tables.DataSourcesQueries.DATA_SOURCES_QUERIES,
             com.sonicle.webtop.core.jooq.core.tables.DomainSettings.DOMAIN_SETTINGS,

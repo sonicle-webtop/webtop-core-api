@@ -23,6 +23,7 @@ public class PecbridgeFetchers implements java.io.Serializable {
     private java.lang.String  username;
     private java.lang.String  password;
     private java.lang.String  webtopProfileId;
+    private java.lang.Boolean enabled;
 
     public PecbridgeFetchers() {}
 
@@ -37,6 +38,7 @@ public class PecbridgeFetchers implements java.io.Serializable {
         this.username = value.username;
         this.password = value.password;
         this.webtopProfileId = value.webtopProfileId;
+        this.enabled = value.enabled;
     }
 
     public PecbridgeFetchers(
@@ -49,7 +51,8 @@ public class PecbridgeFetchers implements java.io.Serializable {
         java.lang.String  protocol,
         java.lang.String  username,
         java.lang.String  password,
-        java.lang.String  webtopProfileId
+        java.lang.String  webtopProfileId,
+        java.lang.Boolean enabled
     ) {
         this.fetcherId = fetcherId;
         this.context = context;
@@ -61,6 +64,7 @@ public class PecbridgeFetchers implements java.io.Serializable {
         this.username = username;
         this.password = password;
         this.webtopProfileId = webtopProfileId;
+        this.enabled = enabled;
     }
 
     /**
@@ -203,6 +207,20 @@ public class PecbridgeFetchers implements java.io.Serializable {
         this.webtopProfileId = webtopProfileId;
     }
 
+    /**
+     * Getter for <code>config.pecbridge_fetchers.enabled</code>.
+     */
+    public java.lang.Boolean getEnabled() {
+        return this.enabled;
+    }
+
+    /**
+     * Setter for <code>config.pecbridge_fetchers.enabled</code>.
+     */
+    public void setEnabled(java.lang.Boolean enabled) {
+        this.enabled = enabled;
+    }
+
     @Override
     public String toString() {
         java.lang.StringBuilder sb = new java.lang.StringBuilder("PecbridgeFetchers (");
@@ -217,6 +235,7 @@ public class PecbridgeFetchers implements java.io.Serializable {
         sb.append(", ").append(username);
         sb.append(", ").append(password);
         sb.append(", ").append(webtopProfileId);
+        sb.append(", ").append(enabled);
 
         sb.append(")");
         return sb.toString();

@@ -23,10 +23,10 @@ public class CustomFields implements java.io.Serializable {
     private java.lang.String       description;
     private java.lang.String       type;
     private java.lang.Boolean      searchable;
-    private java.lang.Boolean      previewable;
     private java.lang.String       properties;
     private java.lang.String       values;
     private java.lang.String       labelI18n;
+    private java.lang.Boolean      previewable;
     private java.lang.String       dataSourceQueryId;
 
     public CustomFields() {}
@@ -42,10 +42,10 @@ public class CustomFields implements java.io.Serializable {
         this.description = value.description;
         this.type = value.type;
         this.searchable = value.searchable;
-        this.previewable = value.previewable;
         this.properties = value.properties;
         this.values = value.values;
         this.labelI18n = value.labelI18n;
+        this.previewable = value.previewable;
         this.dataSourceQueryId = value.dataSourceQueryId;
     }
 
@@ -60,10 +60,10 @@ public class CustomFields implements java.io.Serializable {
         java.lang.String       description,
         java.lang.String       type,
         java.lang.Boolean      searchable,
-        java.lang.Boolean      previewable,
         java.lang.String       properties,
         java.lang.String       values,
         java.lang.String       labelI18n,
+        java.lang.Boolean      previewable,
         java.lang.String       dataSourceQueryId
     ) {
         this.customFieldId = customFieldId;
@@ -76,10 +76,10 @@ public class CustomFields implements java.io.Serializable {
         this.description = description;
         this.type = type;
         this.searchable = searchable;
-        this.previewable = previewable;
         this.properties = properties;
         this.values = values;
         this.labelI18n = labelI18n;
+        this.previewable = previewable;
         this.dataSourceQueryId = dataSourceQueryId;
     }
 
@@ -224,20 +224,6 @@ public class CustomFields implements java.io.Serializable {
     }
 
     /**
-     * Getter for <code>core.custom_fields.previewable</code>.
-     */
-    public java.lang.Boolean getPreviewable() {
-        return this.previewable;
-    }
-
-    /**
-     * Setter for <code>core.custom_fields.previewable</code>.
-     */
-    public void setPreviewable(java.lang.Boolean previewable) {
-        this.previewable = previewable;
-    }
-
-    /**
      * Getter for <code>core.custom_fields.properties</code>.
      */
     public java.lang.String getProperties() {
@@ -280,6 +266,20 @@ public class CustomFields implements java.io.Serializable {
     }
 
     /**
+     * Getter for <code>core.custom_fields.previewable</code>.
+     */
+    public java.lang.Boolean getPreviewable() {
+        return this.previewable;
+    }
+
+    /**
+     * Setter for <code>core.custom_fields.previewable</code>.
+     */
+    public void setPreviewable(java.lang.Boolean previewable) {
+        this.previewable = previewable;
+    }
+
+    /**
      * Getter for <code>core.custom_fields.data_source_query_id</code>.
      */
     public java.lang.String getDataSourceQueryId() {
@@ -307,10 +307,10 @@ public class CustomFields implements java.io.Serializable {
         sb.append(", ").append(description);
         sb.append(", ").append(type);
         sb.append(", ").append(searchable);
-        sb.append(", ").append(previewable);
         sb.append(", ").append(properties);
         sb.append(", ").append(values);
         sb.append(", ").append(labelI18n);
+        sb.append(", ").append(previewable);
         sb.append(", ").append(dataSourceQueryId);
 
         sb.append(")");
