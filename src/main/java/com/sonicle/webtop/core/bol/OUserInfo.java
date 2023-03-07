@@ -34,6 +34,7 @@
 package com.sonicle.webtop.core.bol;
 
 import com.sonicle.webtop.core.jooq.core.tables.pojos.UsersInfo;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -41,4 +42,8 @@ import com.sonicle.webtop.core.jooq.core.tables.pojos.UsersInfo;
  */
 public class OUserInfo extends UsersInfo {
 	
+	public void sanitize() {
+		setFirstName(StringUtils.strip(getFirstName()));
+		setLastName(StringUtils.strip(getLastName()));
+	}
 }

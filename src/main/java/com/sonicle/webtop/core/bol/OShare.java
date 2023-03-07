@@ -50,16 +50,20 @@ public class OShare extends Shares {
 	public boolean hasWildcard() {
 		return getInstance().equals(INSTANCE_WILDCARD);
 	}
+	
+	public String getShareIdAsString() {
+		return getShareId() != null ? String.valueOf(getShareId()) : null;
+	}
 
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
-				.append(getShareId())
-				.append(getUserUid())
-				.append(getServiceId())
-				.append(getKey())
-				.append(getInstance())
-				.toString();
+			.append(getShareId())
+			.append(getUserUid())
+			.append(getServiceId())
+			.append(getKey())
+			.append(getInstance())
+			.toString();
 	}
 	
 	public static boolean isRootKey(String key) {

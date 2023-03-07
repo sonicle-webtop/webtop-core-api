@@ -222,6 +222,15 @@ public class LicenseDAO extends BaseDAO {
 			.execute();
 	}
 	
+	public int deleteByDomain(Connection con, String domainId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(LICENSES)
+			.where(
+				LICENSES.DOMAIN_ID.eq(domainId)
+			)
+			.execute();
+	}
 	
 	/*
 	public List<OLicense> selectByInternetName(Connection con, String internetName) throws DAOException {

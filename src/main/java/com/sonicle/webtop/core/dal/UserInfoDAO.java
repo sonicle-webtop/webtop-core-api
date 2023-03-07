@@ -34,7 +34,7 @@
 package com.sonicle.webtop.core.dal;
 
 import com.sonicle.webtop.core.bol.OUserInfo;
-import com.sonicle.webtop.core.bol.UserId;
+import com.sonicle.webtop.core.bol.ProfileIdentifier;
 import static com.sonicle.webtop.core.jooq.core.Tables.USERS_INFO;
 import com.sonicle.webtop.core.jooq.core.tables.records.UsersInfoRecord;
 import java.sql.Connection;
@@ -65,7 +65,7 @@ public class UserInfoDAO extends BaseDAO {
 			.fetchOneInto(OUserInfo.class);
 	}
 	
-	public List<UserId> viewByEmail(Connection con, String email) throws DAOException {
+	public List<ProfileIdentifier> viewByEmail(Connection con, String email) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -75,7 +75,7 @@ public class UserInfoDAO extends BaseDAO {
 			.where(
 				USERS_INFO.EMAIL.equal(email)
 			)
-			.fetchInto(UserId.class);
+			.fetchInto(ProfileIdentifier.class);
 	}
 	
 	public int insert(Connection con, String domainId, String userId) throws DAOException {

@@ -33,6 +33,7 @@
  */
 package com.sonicle.webtop.core.dal;
 
+import com.sonicle.webtop.core.app.model.EnabledCond;
 import com.sonicle.webtop.core.bol.ODomain;
 import static com.sonicle.webtop.core.jooq.core.Tables.DOMAINS;
 import java.sql.Connection;
@@ -40,6 +41,10 @@ import org.jooq.DSLContext;
 import com.sonicle.webtop.core.jooq.core.tables.records.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import org.jooq.Condition;
+import org.jooq.UpdateSetMoreStep;
+import org.jooq.impl.DSL;
 
 /**
  *
@@ -51,6 +56,65 @@ public class DomainDAO extends BaseDAO {
 		return INSTANCE;
 	}
 	
+	public boolean idIsAvailable(Connection con, String domainId) {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.selectCount()
+			.from(DOMAINS)
+			.where(
+				DOMAINS.DOMAIN_ID.equal(domainId)
+			)
+			.fetchOne(0, Integer.class) == 0;
+	}
+	
+	public Set<String> selectIdsByEnabled(Connection con, EnabledCond enabled) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		Condition cndtEnabled = DSL.trueCondition();
+		if (EnabledCond.ENABLED_ONLY.equals(enabled)) {
+			cndtEnabled = DOMAINS.ENABLED.equal(true);
+		} else if (EnabledCond.DISABLED_ONLY.equals(enabled)) {
+			cndtEnabled = DOMAINS.ENABLED.equal(false);
+		}
+		
+		return dsl
+			.select(
+				DOMAINS.DOMAIN_ID
+			)
+			.from(DOMAINS)
+			.where(cndtEnabled)
+			.orderBy(
+				DOMAINS.DOMAIN_ID.asc()
+			)
+			.fetchSet(DOMAINS.DOMAIN_ID);
+	}
+	
+	public List<ODomain> selectBasicByEnabled(Connection con, EnabledCond enabled) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		Condition cndtEnabled = DSL.trueCondition();
+		if (EnabledCond.ENABLED_ONLY.equals(enabled)) {
+			cndtEnabled = DOMAINS.ENABLED.equal(true);
+		} else if (EnabledCond.DISABLED_ONLY.equals(enabled)) {
+			cndtEnabled = DOMAINS.ENABLED.equal(false);
+		}
+		
+		return dsl
+			.select(
+				DOMAINS.DOMAIN_ID,
+				DOMAINS.ENABLED,
+				DOMAINS.DESCRIPTION,
+				DOMAINS.INTERNET_NAME,
+				DOMAINS.USER_AUTO_CREATION,
+				DOMAINS.DIR_URI
+			)
+			.from(DOMAINS)
+			.where(cndtEnabled)
+			.orderBy(
+				DOMAINS.DOMAIN_ID.asc()
+			)
+			.fetchInto(ODomain.class);
+	}
+	
+	@Deprecated
 	public List<ODomain> selectAll(Connection con) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -59,6 +123,7 @@ public class DomainDAO extends BaseDAO {
 			.fetchInto(ODomain.class);
 	}
 	
+	@Deprecated
 	public List<ODomain> selectEnabled(Connection con) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -67,6 +132,22 @@ public class DomainDAO extends BaseDAO {
 			.where(
 				DOMAINS.ENABLED.isTrue()
 			)
+			.orderBy(
+				DOMAINS.DOMAIN_ID.asc()
+			)
+			.fetchInto(ODomain.class);
+	}
+	
+	public List<ODomain> selectInfo(Connection con) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				DOMAINS.DOMAIN_ID,
+				DOMAINS.ENABLED,
+				DOMAINS.DESCRIPTION, // -> DISPLAY_NAME
+				DOMAINS.INTERNET_NAME // -> AUTH_FQDN
+			)
+			.from(DOMAINS)
 			.orderBy(
 				DOMAINS.DOMAIN_ID.asc()
 			)
@@ -103,6 +184,24 @@ public class DomainDAO extends BaseDAO {
 				DOMAINS.DOMAIN_ID.asc()
 			)
 			.fetchInto(ODomain.class);
+	}
+	
+	public ODomain selectBasicById(Connection con, String domainId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				DOMAINS.DOMAIN_ID,
+				DOMAINS.ENABLED,
+				DOMAINS.INTERNET_NAME,
+				DOMAINS.DESCRIPTION,
+				DOMAINS.USER_AUTO_CREATION,
+				DOMAINS.DIR_URI
+			)
+			.from(DOMAINS)
+			.where(
+				DOMAINS.DOMAIN_ID.equal(domainId)
+			)
+			.fetchOneInto(ODomain.class);
 	}
 	
 	public ODomain selectById(Connection con, String domainId) throws DAOException {
@@ -157,17 +256,37 @@ public class DomainDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int update(Connection con, ODomain item) throws DAOException {
+	public int updateBasic(Connection con, ODomain item) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.update(DOMAINS)
-			.set(DOMAINS.INTERNET_NAME, item.getInternetName())
 			.set(DOMAINS.ENABLED, item.getEnabled())
-			.set(DOMAINS.DESCRIPTION, item.getDescription())
+			.set(DOMAINS.DESCRIPTION, item.getDisplayName())
+			.set(DOMAINS.INTERNET_NAME, item.getAuthDomainName())
+			//.set(DOMAINS.INTERNET_NAME, item.getDomainName())
+			.set(DOMAINS.USER_AUTO_CREATION, item.getUserAutoCreation())
+			.where(
+				DOMAINS.DOMAIN_ID.equal(item.getDomainId())
+			)
+			.execute();
+	}
+	
+	public int update(Connection con, ODomain item, boolean setPassword) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		UpdateSetMoreStep update = dsl
+			.update(DOMAINS)
+			.set(DOMAINS.ENABLED, item.getEnabled())
+			.set(DOMAINS.DESCRIPTION, item.getDisplayName())
+			.set(DOMAINS.INTERNET_NAME, item.getAuthDomainName())
+			//.set(DOMAINS.INTERNET_NAME, item.getDomainName())
 			.set(DOMAINS.USER_AUTO_CREATION, item.getUserAutoCreation())
 			.set(DOMAINS.DIR_URI, item.getDirUri())
-			.set(DOMAINS.DIR_ADMIN, item.getDirAdmin())
-			.set(DOMAINS.DIR_PASSWORD, item.getDirPassword())
+			.set(DOMAINS.DIR_ADMIN, item.getDirAdmin());
+		if (setPassword) {
+			update = update
+				.set(DOMAINS.DIR_PASSWORD, item.getDirPassword());
+		}
+		update = update
 			.set(DOMAINS.DIR_CONNECTION_SECURITY, item.getDirConnectionSecurity())
 			.set(DOMAINS.DIR_CASE_SENSITIVE, item.getDirCaseSensitive())
 			.set(DOMAINS.DIR_PARAMETERS, item.getDirParameters())
@@ -177,7 +296,9 @@ public class DomainDAO extends BaseDAO {
 			.set(DOMAINS.DIR_PWD_POLICY_AVOID_OLD_SIMILARITY, item.getDirPwdPolicyAvoidOldSimilarity())
 			.set(DOMAINS.DIR_PWD_POLICY_AVOID_USERNAME_SIMILARITY, item.getDirPwdPolicyAvoidUsernameSimilarity())
 			.set(DOMAINS.DIR_PWD_POLICY_EXPIRATION, item.getDirPwdPolicyExpiration())
-			.set(DOMAINS.DIR_PWD_POLICY_VERIFY_AT_LOGIN, item.getDirPwdPolicyVerifyAtLogin())
+			.set(DOMAINS.DIR_PWD_POLICY_VERIFY_AT_LOGIN, item.getDirPwdPolicyVerifyAtLogin());
+		
+		return update
 			.where(
 				DOMAINS.DOMAIN_ID.equal(item.getDomainId())
 			)

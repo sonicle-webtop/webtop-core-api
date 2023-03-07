@@ -33,6 +33,7 @@
 package com.sonicle.webtop.core.sdk;
 
 import com.sonicle.security.DomainAccount;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -58,5 +59,29 @@ public class UserProfileId extends DomainAccount {
 	
 	public static boolean isWildcardUser(UserProfileId profileId) {
 		return "*".equals(profileId.getUserId());
+	}
+	
+	public static UserProfileId parse(final String fullName) {
+		return new UserProfileId(fullName);
+	}
+	
+	public static UserProfileId parse(final String fullName, final String defaultDomainId) {
+		return new UserProfileId(StringUtils.contains(fullName, "@") ? fullName : fullName + "@" + defaultDomainId);
+	}
+	
+	public static UserProfileId parseQuielty(final String fullName) {
+		try {
+			return parse(fullName);
+		} catch (Exception ex) {
+			return null;
+		}
+	}
+	
+	public static UserProfileId parseQuielty(final String fullName, final String defaultDomainId) {
+		try {
+			return parse(fullName, defaultDomainId);
+		} catch (Exception ex) {
+			return null;
+		}
 	}
 }

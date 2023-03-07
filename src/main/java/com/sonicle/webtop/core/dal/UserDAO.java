@@ -33,14 +33,21 @@
  */
 package com.sonicle.webtop.core.dal;
 
+import com.sonicle.commons.EnumUtils;
+import com.sonicle.webtop.core.app.model.EnabledCond;
 import com.sonicle.webtop.core.bol.OUser;
-import com.sonicle.webtop.core.bol.UserUid;
+import com.sonicle.webtop.core.bol.UserSid;
+import com.sonicle.webtop.core.bol.VUser;
+import com.sonicle.webtop.core.bol.VUserData;
 import static com.sonicle.webtop.core.jooq.core.Tables.*;
 import com.sonicle.webtop.core.jooq.core.tables.records.UsersRecord;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 /**
  *
@@ -50,6 +57,186 @@ public class UserDAO extends BaseDAO {
 	private final static UserDAO INSTANCE = new UserDAO();
 	public static UserDAO getInstance() {
 		return INSTANCE;
+	}
+	
+	@Deprecated
+	public List<UserSid> viewAllSids(Connection con) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				USERS.DOMAIN_ID,
+				USERS.USER_ID,
+				USERS.TYPE,
+				USERS.USER_UID
+			).from(USERS)
+			.where(
+				USERS.TYPE.equal(OUser.TYPE_USER)
+			)
+			.fetchInto(UserSid.class);
+	}
+	
+	public boolean idIsAvailableByDomain(Connection con, String domainId, String userId) {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.selectCount()
+			.from(USERS)
+			.where(
+				USERS.DOMAIN_ID.equal(domainId)
+				.and(USERS.USER_ID.equal(userId))
+			)
+			.fetchOne(0, Integer.class) == 0;
+	}
+	
+	public VUser selectByProfile(Connection con, String domainId, String userId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				USERS.DOMAIN_ID,
+				USERS.USER_ID,
+				USERS.USER_UID,
+				USERS.ENABLED,
+				USERS.DISPLAY_NAME,
+				USERS_INFO.FIRST_NAME,
+				USERS_INFO.LAST_NAME,
+				USERS_INFO.EMAIL
+			)
+			.from(USERS)
+			.join(USERS_INFO).on(
+				USERS.DOMAIN_ID.equal(USERS_INFO.DOMAIN_ID).and(USERS.USER_ID.equal(USERS_INFO.USER_ID))
+			)
+			.where(
+				USERS.DOMAIN_ID.equal(domainId)
+				.and(USERS.USER_ID.equal(userId))
+				.and(USERS.TYPE.equal(EnumUtils.toSerializedName(OUser.Type.USER)))
+			)
+			.fetchOneInto(VUser.class);
+	}
+	
+	public Map<String, VUser> selectByDomainEnabled(Connection con, String domainId, EnabledCond enabled) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		Condition cndtEnabled = DSL.trueCondition();
+		if (EnabledCond.ENABLED_ONLY.equals(enabled)) {
+			cndtEnabled = USERS.ENABLED.equal(true);
+		} else if (EnabledCond.DISABLED_ONLY.equals(enabled)) {
+			cndtEnabled = USERS.ENABLED.equal(false);
+		}
+		
+		return dsl
+			.select(
+				USERS.DOMAIN_ID,
+				USERS.USER_ID,
+				USERS.USER_UID,
+				USERS.ENABLED,
+				USERS.DISPLAY_NAME,
+				USERS_INFO.FIRST_NAME,
+				USERS_INFO.LAST_NAME,
+				USERS_INFO.EMAIL
+			)
+			.from(USERS)
+			.join(USERS_INFO).on(
+				USERS.DOMAIN_ID.equal(USERS_INFO.DOMAIN_ID).and(USERS.USER_ID.equal(USERS_INFO.USER_ID))
+			)
+			.where(
+				USERS.DOMAIN_ID.equal(domainId)
+				.and(cndtEnabled)
+				.and(USERS.TYPE.equal(EnumUtils.toSerializedName(OUser.Type.USER)))
+			)
+			.orderBy(
+				USERS.USER_ID.asc()
+			)
+			.fetchMap(USERS.USER_ID, VUser.class);
+	}
+	
+	public Set<String> selectIdsByDomainEnabled(Connection con, String domainId, EnabledCond enabled) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		Condition cndtEnabled = DSL.trueCondition();
+		if (EnabledCond.ENABLED_ONLY.equals(enabled)) {
+			cndtEnabled = USERS.ENABLED.equal(true);
+		} else if (EnabledCond.DISABLED_ONLY.equals(enabled)) {
+			cndtEnabled = USERS.ENABLED.equal(false);
+		}
+		
+		return dsl
+			.select(
+				USERS.USER_ID
+			)
+			.from(USERS)
+			.where(
+				USERS.DOMAIN_ID.equal(domainId)
+				.and(cndtEnabled)
+				.and(USERS.TYPE.equal(EnumUtils.toSerializedName(OUser.Type.USER)))
+			)
+			.orderBy(
+				USERS.USER_ID.asc()
+			)
+			.fetchSet(USERS.USER_ID);
+	}
+	
+	public VUserData viewDataByProfile(Connection con, String domainId, String userId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				USERS.ENABLED,
+				USERS.DISPLAY_NAME
+			)
+			.from(USERS)
+			.where(
+				USERS.DOMAIN_ID.equal(domainId)
+				.and(USERS.USER_ID.equal(userId))
+				.and(USERS.TYPE.equal(EnumUtils.toSerializedName(OUser.Type.USER)))
+			)
+			.fetchOneInto(VUserData.class);
+	}
+	
+	public List<OUser> selectAllAsSubjects(Connection con) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				USERS.DOMAIN_ID,
+				USERS.USER_ID,
+				USERS.TYPE,
+				USERS.USER_UID
+			).from(USERS)
+			.fetchInto(OUser.class);
+	}
+	
+	public OUser selectAsSubjectByDomainId(Connection con, String domainId, String userId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				USERS.DOMAIN_ID,
+				USERS.USER_ID,
+				USERS.TYPE,
+				USERS.USER_UID
+			).from(USERS)
+			.where(
+				USERS.DOMAIN_ID.equal(domainId)
+				.and(USERS.USER_ID.equal(userId))
+			)
+			.fetchOneInto(OUser.class);
+	}
+	
+	public OUser selectAsSubjectBySidEnabled(Connection con, String userSid, EnabledCond enabled) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		Condition cndtEnabled = DSL.trueCondition();
+		if (EnabledCond.ENABLED_ONLY.equals(enabled)) {
+			cndtEnabled = USERS.ENABLED.equal(true);
+		} else if (EnabledCond.DISABLED_ONLY.equals(enabled)) {
+			cndtEnabled = USERS.ENABLED.equal(false);
+		}
+		
+		return dsl
+			.select(
+				USERS.DOMAIN_ID,
+				USERS.USER_ID,
+				USERS.TYPE,
+				USERS.USER_UID
+			).from(USERS)
+			.where(
+				USERS.USER_UID.equal(userSid)
+				.and(cndtEnabled)
+			)
+			.fetchOneInto(OUser.class);
 	}
 	
 	public boolean existByDomainUser(Connection con, String domainId, String userId) throws DAOException {
@@ -63,20 +250,6 @@ public class UserDAO extends BaseDAO {
 				.and(USERS.TYPE.equal(OUser.TYPE_USER))
 			)
 			.fetchOne(0, Integer.class) == 1;
-	}
-	
-	public List<UserUid> viewAllUids(Connection con) throws DAOException {
-		DSLContext dsl = getDSL(con);
-		return dsl
-			.select(
-				USERS.DOMAIN_ID,
-				USERS.USER_ID,
-				USERS.USER_UID
-			).from(USERS)
-			.where(
-				USERS.TYPE.equal(OUser.TYPE_USER)
-			)
-			.fetchInto(UserUid.class);
 	}
 	
 	public List<OUser> selectAll(Connection con) throws DAOException {
@@ -97,7 +270,8 @@ public class UserDAO extends BaseDAO {
 			.fetchInto(OUser.class);
 	}
 	
-	public List<OUser> selectByDomain(Connection con, String domainId) throws DAOException {
+	@Deprecated
+	public List<OUser> selectByDomain_OLD(Connection con, String domainId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -116,7 +290,7 @@ public class UserDAO extends BaseDAO {
 			.fetchInto(OUser.class);
 	}
 	
-	public Map<String, OUser> selectByDomain2(Connection con, String domainId) throws DAOException {
+	public Map<String, OUser> selectByDomain(Connection con, String domainId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -127,10 +301,11 @@ public class UserDAO extends BaseDAO {
 				USERS.USER_UID,
 				USERS.DISPLAY_NAME,
 				USERS.SECRET
-			).from(USERS)
+			)
+			.from(USERS)
 			.where(
 				USERS.DOMAIN_ID.equal(domainId)
-				.and(USERS.TYPE.equal(OUser.TYPE_USER))
+				.and(USERS.TYPE.equal(EnumUtils.toSerializedName(OUser.Type.USER)))
 			)
 			.fetchMap(USERS.USER_ID, OUser.class);
 	}
@@ -172,6 +347,22 @@ public class UserDAO extends BaseDAO {
 			.fetchOneInto(OUser.class);
 	}
 	
+	public String selectDisplayNameByProfile(Connection con, String domainId, String userId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				USERS.DISPLAY_NAME
+			)
+			.from(USERS)
+			.where(
+				USERS.DOMAIN_ID.equal(domainId)
+				.and(USERS.USER_ID.equal(userId))
+				.and(USERS.TYPE.equal(OUser.TYPE_USER))
+			)
+			.fetchOne(USERS.DISPLAY_NAME);
+	}
+	
+	@Deprecated
 	public OUser selectByDomainUser(Connection con, String domainId, String userId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -192,7 +383,7 @@ public class UserDAO extends BaseDAO {
 			.fetchOneInto(OUser.class);
 	}
 	
-	public OUser selectByUid(Connection con, String userUid) throws DAOException {
+	public OUser selectBySid(Connection con, String userSid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -206,7 +397,7 @@ public class UserDAO extends BaseDAO {
 			).from(USERS)
 			.where(
 				USERS.TYPE.equal(OUser.TYPE_USER)
-				.and(USERS.USER_UID.equal(userUid))
+				.and(USERS.USER_UID.equal(userSid))
 			)
 			.fetchOneInto(OUser.class);
 	}
@@ -221,7 +412,7 @@ public class UserDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int updateDisplayNameByDomainUser(Connection con, String domainId, String userId, String displayName) throws DAOException {
+	public int updateDisplayNameByProfile(Connection con, String domainId, String userId, String displayName) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.update(USERS)
@@ -229,6 +420,7 @@ public class UserDAO extends BaseDAO {
 			.where(
 				USERS.DOMAIN_ID.equal(domainId)
 				.and(USERS.USER_ID.equal(userId))
+				.and(USERS.TYPE.equal(EnumUtils.toSerializedName(OUser.Type.USER)))
 				.and(USERS.TYPE.equal(OUser.TYPE_USER))
 			)
 			.execute();
@@ -248,6 +440,20 @@ public class UserDAO extends BaseDAO {
 			.execute();
 	}
 	
+	public int updateEnabledByProfile(Connection con, String domainId, String userId, boolean enabled) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.update(USERS)
+			.set(USERS.ENABLED, enabled)
+			.where(
+				USERS.DOMAIN_ID.equal(domainId)
+				.and(USERS.USER_ID.equal(userId))
+				.and(USERS.TYPE.equal(EnumUtils.toSerializedName(OUser.Type.USER)))
+			)
+			.execute();
+	}
+	
+	@Deprecated
 	public int updateEnabledByDomainUser(Connection con, String domainId, String userId, boolean enabled) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -297,13 +503,13 @@ public class UserDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int deleteByUid(Connection con, String userUid) throws DAOException {
+	public int deleteBySid(Connection con, String userSid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(USERS)
 			.where(
 					USERS.TYPE.equal(OUser.TYPE_USER)
-					.and(USERS.USER_UID.equal(userUid))
+					.and(USERS.USER_UID.equal(userSid))
 			)
 			.execute();
 	}

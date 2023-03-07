@@ -40,7 +40,6 @@ import com.sonicle.webtop.core.model.MasterData;
 import java.sql.Connection;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -270,5 +269,15 @@ public class MasterDataDAO extends BaseDAO {
 				MASTER_DATA.DESCRIPTION.asc()
 			)
 			.fetchInto(OMasterData.class);
+	}
+	
+	public int deleteByDomain(Connection con, String domainId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(MASTER_DATA)
+			.where(
+				MASTER_DATA.DOMAIN_ID.equal(domainId)
+			)
+			.execute();
 	}
 }

@@ -33,7 +33,12 @@
  */
 package com.sonicle.webtop.core.bol;
 
+import com.sonicle.commons.IdentifierUtils;
+import com.sonicle.commons.RegexUtils;
 import com.sonicle.webtop.core.jooq.core.tables.pojos.Users;
+import com.sonicle.webtop.core.sdk.UserProfileId;
+import net.sf.qualitycheck.Check;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -50,20 +55,48 @@ public class OGroup extends Users {
 		setUserId(groupId);
 	}
 	
-	public String getGroupUid() {
+	public String getGroupSid() {
 		return getUserUid();
 	}
 	
-	public void setGroupUid(String groupUid) {
-		setUserUid(groupUid);
+	public void setGroupSid(String groupSid) {
+		setUserUid(groupSid);
+	}
+	
+	public String getDescription() {
+		return getDisplayName();
+	}
+	
+	public void setDescription(String description) {
+		setDisplayName(description);
+	}
+	
+	public UserProfileId getProfileId() {
+		return new UserProfileId(this.getDomainId(), this.getUserId());
 	}
 	
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
-				.append(getDomainId())
-				.append(getUserId())
-				.append(getUserUid())
-				.toString();
+			.append(getDomainId())
+			.append(getUserId())
+			.append(getUserUid())
+			.toString();
+	}
+	
+	public static void validate(OGroup tgt) {
+		Check.matchesPattern(RegexUtils.match(RegexUtils.MATCH_USERNAME_CHARS), tgt.getGroupId(), "groupId");
+		Check.notNull(tgt.getEnabled(), "enabled");
+		Check.notNull(tgt.getDescription(), "description");
+	}
+	
+	public static OGroup fillDefaultsForInsert(OGroup tgt) {
+		if (tgt != null) {
+			tgt.setEnabled(true);
+			tgt.setSecret(null);
+			if (StringUtils.isBlank(tgt.getUserUid())) tgt.setUserUid(IdentifierUtils.getUUID());
+			tgt.setDescription(StringUtils.defaultIfBlank(tgt.getDescription(), "")); // Description (displayName in table) needs to be at least empty!
+		}
+		return tgt;
 	}
 }

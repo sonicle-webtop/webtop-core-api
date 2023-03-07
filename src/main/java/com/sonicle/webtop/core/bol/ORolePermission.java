@@ -33,6 +33,7 @@
  */
 package com.sonicle.webtop.core.bol;
 
+import com.sonicle.webtop.core.dal.RolePermissionDAO;
 import com.sonicle.webtop.core.jooq.core.tables.pojos.RolesPermissions;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -42,6 +43,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * @author malbinola
  */
 public class ORolePermission extends RolesPermissions {
+	
+	public String getContext() {
+		return getKey();
+	}
 	
 	@Override
 	public int hashCode() {

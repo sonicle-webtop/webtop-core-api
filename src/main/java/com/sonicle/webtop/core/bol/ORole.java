@@ -33,7 +33,12 @@
  */
 package com.sonicle.webtop.core.bol;
 
+import com.sonicle.commons.IdentifierUtils;
+import com.sonicle.commons.RegexUtils;
 import com.sonicle.webtop.core.jooq.core.tables.pojos.Roles;
+import com.sonicle.webtop.core.sdk.UserProfileId;
+import net.sf.qualitycheck.Check;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -41,11 +46,36 @@ import com.sonicle.webtop.core.jooq.core.tables.pojos.Roles;
  */
 public class ORole extends Roles {
 	
-	public ORole() {}
+	public String getRoleId() {
+		return getName();
+	}
 	
-	public ORole(String roleSid, String name, String description) {
+	public void setRoleId(String roleId) {
+		setName(roleId);
+	}
+	
+	public String getRoleSid() {
+		return getRoleUid();
+	}
+	
+	public void setRoleSid(String roleSid) {
 		setRoleUid(roleSid);
-		setName(name);
-		setDescription(description);
+	}
+	
+	public UserProfileId getProfileId() {
+		return new UserProfileId(this.getDomainId(), this.getName());
+	}
+	
+	public static void validate(ORole tgt) {
+		Check.matchesPattern(RegexUtils.match(RegexUtils.MATCH_USERNAME_CHARS), tgt.getRoleId(), "roleId");
+		Check.notNull(tgt.getDescription(), "description");
+	}
+	
+	public static ORole fillDefaultsForInsert(ORole tgt) {
+		if (tgt != null) {
+			if (StringUtils.isBlank(tgt.getRoleSid())) tgt.setRoleSid(IdentifierUtils.getUUID());
+			tgt.setDescription(StringUtils.defaultIfBlank(tgt.getDescription(), ""));
+		}
+		return tgt;
 	}
 }

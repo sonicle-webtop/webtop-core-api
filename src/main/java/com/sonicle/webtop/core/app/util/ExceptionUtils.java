@@ -32,11 +32,13 @@
  */
 package com.sonicle.webtop.core.app.util;
 
+import com.sonicle.commons.LangUtils;
 import com.sonicle.webtop.core.app.sdk.WTIntegrityException;
 import com.sonicle.webtop.core.dal.DAOException;
 import com.sonicle.webtop.core.dal.DAOIntegrityViolationException;
 import com.sonicle.webtop.core.sdk.WTException;
 import java.sql.SQLException;
+import org.apache.commons.lang3.ClassUtils;
 
 /**
  *
@@ -52,7 +54,11 @@ public class ExceptionUtils {
 		} else if ((t instanceof SQLException) || (t instanceof DAOException)) {
 			return new WTException(t, "DB error");
 		} else {
-			return new WTException(t);
+			if ((t != null) && "net.sf.qualitycheck.exception".equals(ClassUtils.getPackageName(t.getClass()))) {
+				return new WTException(t, t.getMessage());
+			} else {
+				return new WTException(t);
+			}
 		}
 	}
 }

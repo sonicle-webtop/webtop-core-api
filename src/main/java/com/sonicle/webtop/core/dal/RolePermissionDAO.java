@@ -33,6 +33,7 @@
  */
 package com.sonicle.webtop.core.dal;
 
+import com.sonicle.webtop.core.app.model.ServicePermissionString;
 import com.sonicle.webtop.core.bol.ORolePermission;
 import static com.sonicle.webtop.core.jooq.core.Sequences.SEQ_ROLES_PERMISSIONS;
 import static com.sonicle.webtop.core.jooq.core.Tables.*;
@@ -40,6 +41,12 @@ import com.sonicle.webtop.core.jooq.core.tables.records.RolesPermissionsRecord;
 import java.sql.Connection;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.jooq.BatchBindStep;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
@@ -59,13 +66,13 @@ public class RolePermissionDAO extends BaseDAO {
 		return nextID;
 	}
 	
-	public List<ORolePermission> selectByRoleUid(Connection con, String roleUid) throws DAOException {
+	public List<ORolePermission> selectByRoleSid(Connection con, String roleSid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select()
 			.from(ROLES_PERMISSIONS)
 			.where(
-					ROLES_PERMISSIONS.ROLE_UID.equal(roleUid)
+					ROLES_PERMISSIONS.ROLE_UID.equal(roleSid)
 			)
 			.orderBy(
 					ROLES_PERMISSIONS.SERVICE_ID,
@@ -76,13 +83,70 @@ public class RolePermissionDAO extends BaseDAO {
 			.fetchInto(ORolePermission.class);
 	}
 	
-	public List<ORolePermission> selectByRoleIn(Connection con, Collection<String> roleUids) throws DAOException {
+	public static Condition createServicePermissionAndKeysExcludeCondition(Collection<String> likeKeys) {
+		Condition notLikeCond = DSL.noCondition();
+		for (String like : likeKeys) {
+			notLikeCond = notLikeCond.or(ROLES_PERMISSIONS.KEY.like(like));
+		}
+		return DSL.not(
+			DSL.or(
+				ROLES_PERMISSIONS.SERVICE_ID.equal(ServicePermissionString.SERVICE)
+				.and(ROLES_PERMISSIONS.KEY.equal(ServicePermissionString.CONTEXT)),
+				notLikeCond
+			)
+		);	
+	}
+	
+	public static Condition createServicePermissionAndShareExcludeCondition(String folderPermissionKeyLike, String itemsPermissionKeyLike) {
+		return DSL.not(
+			DSL.or(
+				ROLES_PERMISSIONS.SERVICE_ID.equal(ServicePermissionString.SERVICE)
+				.and(ROLES_PERMISSIONS.KEY.equal(ServicePermissionString.CONTEXT)),
+				ROLES_PERMISSIONS.KEY.notLike(folderPermissionKeyLike)
+				.and(ROLES_PERMISSIONS.KEY.notLike(itemsPermissionKeyLike))
+			)
+		);
+	}
+	
+	public static Condition createServicePermissionOnlyCondition() {
+		return DSL.and(
+			ROLES_PERMISSIONS.SERVICE_ID.equal(ServicePermissionString.SERVICE),
+			ROLES_PERMISSIONS.KEY.equal(ServicePermissionString.CONTEXT),
+			ROLES_PERMISSIONS.ACTION.equal(ServicePermissionString.ACTION_ACCESS)
+		);
+	}
+	
+	public Map<Integer, ORolePermission> viewSubjectEntriesBySubjectCondition(Connection con, String subjectSid, Condition condition) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				ROLES_PERMISSIONS.ROLE_PERMISSION_ID,
+				ROLES_PERMISSIONS.SERVICE_ID,
+				ROLES_PERMISSIONS.KEY,
+				ROLES_PERMISSIONS.ACTION,
+				ROLES_PERMISSIONS.INSTANCE
+			)
+			.from(ROLES_PERMISSIONS)
+			.where(
+				ROLES_PERMISSIONS.ROLE_UID.equal(subjectSid)
+				.and(condition)
+			)
+			.orderBy(
+				ROLES_PERMISSIONS.SERVICE_ID,
+				ROLES_PERMISSIONS.KEY,
+				ROLES_PERMISSIONS.ACTION,
+				ROLES_PERMISSIONS.INSTANCE
+			)
+			.fetchMap(ROLES_PERMISSIONS.ROLE_PERMISSION_ID, ORolePermission.class);
+	}
+	
+	public List<ORolePermission> selectByRoleIn(Connection con, Collection<String> roleSids) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select()
 			.from(ROLES_PERMISSIONS)
 			.where(
-					ROLES_PERMISSIONS.ROLE_UID.in(roleUids)
+					ROLES_PERMISSIONS.ROLE_UID.in(roleSids)
 			)
 			.orderBy(
 					ROLES_PERMISSIONS.SERVICE_ID,
@@ -93,13 +157,13 @@ public class RolePermissionDAO extends BaseDAO {
 			.fetchInto(ORolePermission.class);
 	}
 	
-	public List<ORolePermission> selectByRoleServiceKeyInstance(Connection con, String roleUid, String serviceId, String key, String instance) throws DAOException {
+	public List<ORolePermission> selectByRoleServiceKeyInstance(Connection con, String roleSid, String serviceId, String key, String instance) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select()
 			.from(ROLES_PERMISSIONS)
 			.where(
-					ROLES_PERMISSIONS.ROLE_UID.equal(roleUid)
+					ROLES_PERMISSIONS.ROLE_UID.equal(roleSid)
 					.and(ROLES_PERMISSIONS.SERVICE_ID.equal(serviceId))
 					.and(ROLES_PERMISSIONS.KEY.equal(key))
 					.and(ROLES_PERMISSIONS.INSTANCE.equal(instance))
@@ -107,6 +171,35 @@ public class RolePermissionDAO extends BaseDAO {
 			.fetchInto(ORolePermission.class);
 	}
 	
+	public Map<String, List<ORolePermission>> groupSubjectsByByServiceKeysInstance(Connection con, String serviceId, Collection<String> keys, String instance) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select()
+			.from(ROLES_PERMISSIONS)
+			.where(
+				ROLES_PERMISSIONS.SERVICE_ID.equal(serviceId)
+				.and(ROLES_PERMISSIONS.KEY.in(keys))
+				.and(ROLES_PERMISSIONS.INSTANCE.equal(instance))
+			)
+			.fetchGroups(ROLES_PERMISSIONS.ROLE_UID, ORolePermission.class);
+	}
+	
+	public Set<String> selectSubjectsByServiceKeysInstance(Connection con, String serviceId, Collection<String> keys, String instance) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.selectDistinct(
+				ROLES_PERMISSIONS.ROLE_UID
+			)
+			.from(ROLES_PERMISSIONS)
+			.where(
+				ROLES_PERMISSIONS.SERVICE_ID.equal(serviceId)
+				.and(ROLES_PERMISSIONS.KEY.in(keys))
+				.and(ROLES_PERMISSIONS.INSTANCE.equal(instance))
+			)
+			.fetchSet(ROLES_PERMISSIONS.ROLE_UID);
+	}
+	
+	@Deprecated
 	public List<String> selectRolesByServiceKeyInstance(Connection con, String serviceId, String key, String instance) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -120,6 +213,56 @@ public class RolePermissionDAO extends BaseDAO {
 					.and(ROLES_PERMISSIONS.INSTANCE.equal(instance))
 			)
 			.fetchInto(String.class);
+	}
+	
+	public int[] batchInsertOfSubject(Connection con, String subjectId, Collection<SubjectEntry> entries) throws DAOException {
+		if (entries.isEmpty()) return new int[0];
+		DSLContext dsl = getDSL(con);
+		BatchBindStep batch = dsl.batch(
+			dsl.insertInto(ROLES_PERMISSIONS, 
+				ROLES_PERMISSIONS.ROLE_UID, 
+				ROLES_PERMISSIONS.SERVICE_ID,
+				ROLES_PERMISSIONS.KEY,
+				ROLES_PERMISSIONS.ACTION,
+				ROLES_PERMISSIONS.INSTANCE
+			)
+			.values((String)null, null, null, null, null)
+		);
+		for (SubjectEntry entry : entries) {
+			batch.bind(
+				subjectId,
+				entry.serviceId,
+				entry.context,
+				entry.action,
+				entry.instance
+			);
+		}
+		return batch.execute();
+	}
+	
+	public int[] batchInsertOfService(Connection con, String serviceId, Collection<ServiceEntry> entries) throws DAOException {
+		if (entries.isEmpty()) return new int[0];
+		DSLContext dsl = getDSL(con);
+		BatchBindStep batch = dsl.batch(
+			dsl.insertInto(ROLES_PERMISSIONS, 
+				ROLES_PERMISSIONS.ROLE_UID, 
+				ROLES_PERMISSIONS.SERVICE_ID,
+				ROLES_PERMISSIONS.KEY,
+				ROLES_PERMISSIONS.ACTION,
+				ROLES_PERMISSIONS.INSTANCE
+			)
+			.values((String)null, null, null, null, null)
+		);
+		for (ServiceEntry entry : entries) {
+			batch.bind(
+				entry.subjectSid,
+				serviceId,
+				entry.context,
+				entry.action,
+				entry.instance
+			);
+		}
+		return batch.execute();
 	}
 	
 	public int insert(Connection con, ORolePermission item) throws DAOException {
@@ -143,6 +286,27 @@ public class RolePermissionDAO extends BaseDAO {
 			.execute();
 	}
 	
+	public int deleteByIds(Connection con, Collection<Integer> ids) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(ROLES_PERMISSIONS)
+			.where(
+				ROLES_PERMISSIONS.ROLE_PERMISSION_ID.in(ids)
+			)
+			.execute();
+	}
+	
+	public int deleteBySubject(Connection con, String subjectSid) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(ROLES_PERMISSIONS)
+			.where(
+				ROLES_PERMISSIONS.ROLE_UID.equal(subjectSid)
+			)
+			.execute();
+	}
+	
+	@Deprecated
 	public int deleteById(Connection con, int id) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -153,12 +317,13 @@ public class RolePermissionDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int deleteByRole(Connection con, String roleUid) throws DAOException {
+	@Deprecated
+	public int deleteByRole(Connection con, String roleSid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(ROLES_PERMISSIONS)
 			.where(
-					ROLES_PERMISSIONS.ROLE_UID.equal(roleUid)
+					ROLES_PERMISSIONS.ROLE_UID.equal(roleSid)
 			)
 			.execute();
 	}
@@ -175,12 +340,36 @@ public class RolePermissionDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int deleteByRoleServiceKeyActionInstance(Connection con, String roleUid, String serviceId, String key, String action, String instance) throws DAOException {
+	public int deleteByServiceKeysInstance(Connection con, String serviceId, Collection<String> keys, String instance) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(ROLES_PERMISSIONS)
 			.where(
-					ROLES_PERMISSIONS.ROLE_UID.equal(roleUid)
+				ROLES_PERMISSIONS.SERVICE_ID.equal(serviceId)
+				.and(ROLES_PERMISSIONS.KEY.in(keys))
+				.and(ROLES_PERMISSIONS.INSTANCE.equal(instance))
+			)
+			.execute();
+	}
+	
+	public int deleteByServiceKeysInstances(Connection con, String serviceId, Collection<String> keys, Collection<String> instances) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(ROLES_PERMISSIONS)
+			.where(
+				ROLES_PERMISSIONS.SERVICE_ID.equal(serviceId)
+				.and(ROLES_PERMISSIONS.KEY.in(keys))
+				.and(ROLES_PERMISSIONS.INSTANCE.in(instances))
+			)
+			.execute();
+	}
+	
+	public int deleteByRoleServiceKeyActionInstance(Connection con, String roleSid, String serviceId, String key, String action, String instance) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(ROLES_PERMISSIONS)
+			.where(
+					ROLES_PERMISSIONS.ROLE_UID.equal(roleSid)
 					.and(ROLES_PERMISSIONS.SERVICE_ID.equal(serviceId))
 					.and(ROLES_PERMISSIONS.KEY.equal(key))
 					.and(ROLES_PERMISSIONS.ACTION.equal(action))
@@ -213,5 +402,97 @@ public class RolePermissionDAO extends BaseDAO {
 					))
 			)
 			.execute();
+	}
+	
+	public static class SubjectEntry {
+		public String serviceId;
+		public String context;
+		public String action;
+		public String instance;
+		
+		public SubjectEntry() {}
+		
+		public SubjectEntry(String serviceId, String context, String action, String instance) {
+			this.serviceId = serviceId;
+			this.context = context;
+			this.action = action;
+			this.instance = instance;
+		}
+		
+		public void setServiceId(String serviceId) {
+			this.serviceId = serviceId;
+		}
+
+		public void setKey(String key) {
+			this.context = key;
+		}
+
+		public void setAction(String action) {
+			this.action = action;
+		}
+
+		public void setInstance(String instance) {
+			this.instance = instance;
+		}
+		
+		@Override
+		public int hashCode() {
+			return new HashCodeBuilder()
+				.append(serviceId)
+				.append(context)
+				.append(action)
+				.append(instance)
+				.toHashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof SubjectEntry == false) return false;
+			if (this == obj) return true;
+			final SubjectEntry otherObject = (SubjectEntry)obj;
+			return new EqualsBuilder()
+				.append(serviceId, otherObject.serviceId)
+				.append(context, otherObject.context)
+				.append(action, otherObject.action)
+				.append(instance, otherObject.instance)
+				.isEquals();
+		}
+	}
+	
+	public static class ServiceEntry {
+		public final String subjectSid;
+		public final String context;
+		public final String action;
+		public final String instance;
+		
+		public ServiceEntry(String subjectSid, String context, String action, String instance) {
+			this.subjectSid = subjectSid;
+			this.context = context;
+			this.action = action;
+			this.instance = instance;
+		}
+		
+		@Override
+		public int hashCode() {
+			return new HashCodeBuilder()
+				.append(subjectSid)
+				.append(context)
+				.append(action)
+				.append(instance)
+				.toHashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof ServiceEntry == false) return false;
+			if (this == obj) return true;
+			final ServiceEntry otherObject = (ServiceEntry)obj;
+			return new EqualsBuilder()
+				.append(subjectSid, otherObject.subjectSid)
+				.append(context, otherObject.context)
+				.append(action, otherObject.action)
+				.append(instance, otherObject.instance)
+				.isEquals();
+		}
 	}
 }

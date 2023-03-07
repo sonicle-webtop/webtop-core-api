@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.core.model;
 
+import com.sonicle.webtop.core.app.model.LicenseExInfo;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -51,6 +52,7 @@ public class ServiceLicense extends License {
 	protected LocalDate expirationDate;
 	protected Integer quantity;
 	protected Map<String, ServiceLicenseLease> leases = new LinkedHashMap<>();
+	protected LicenseExInfo extendedInfo;
 	
 	public Boolean getBuiltIn() {
 		return builtIn;
@@ -110,7 +112,15 @@ public class ServiceLicense extends License {
 	
 	public void setLeases(Collection<ServiceLicenseLease> leases) {
 		this.leases = leases.stream()
-				.filter(item -> item.getUserId()!= null)
-				.collect(Collectors.toMap(item -> item.getUserId(), item -> item, (ov, nv) -> nv, LinkedHashMap::new));
+			.filter(item -> item.getUserId() != null)
+			.collect(Collectors.toMap(item -> item.getUserId(), item -> item, (ov, nv) -> nv, LinkedHashMap::new));
+	}
+
+	public LicenseExInfo getExtendedInfo() {
+		return extendedInfo;
+	}
+
+	public void setExtendedInfo(LicenseExInfo extendedInfo) {
+		this.extendedInfo = extendedInfo;
 	}
 }

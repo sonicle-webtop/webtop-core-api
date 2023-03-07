@@ -37,7 +37,7 @@ package com.sonicle.webtop.core.bol;
  *
  * @author malbinola
  */
-public class GroupUid extends UserUid {
+public class GroupUid extends UserSid {
 	
 	public GroupUid() {}
 	

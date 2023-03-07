@@ -33,9 +33,10 @@
  */
 package com.sonicle.webtop.core.util;
 
-import com.sonicle.commons.LangUtils;
+import com.sonicle.commons.InternetAddressUtils;
 import com.sonicle.commons.MailUtils;
 import com.sonicle.commons.time.DateTimeUtils;
+import com.sonicle.webtop.core.app.sdk.WTParseException;
 import com.sonicle.webtop.core.util.ical4j.model.property.PreferredLanguage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -62,6 +63,7 @@ import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterFactoryRegistry;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyFactoryRegistry;
@@ -86,7 +88,6 @@ import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.RecurrenceId;
-import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.validate.ValidationException;
 import net.sf.qualitycheck.Check;
@@ -99,6 +100,22 @@ import org.joda.time.DateTimeZone;
  * @author malbinola
  */
 public class ICalendarUtils {
+	
+	/**
+	 * @deprecated use print instead
+	 */
+	@Deprecated
+	public static String calendarToString(Calendar ical) throws IOException {
+		return print(ical);
+	}
+	
+	/**
+	 * @deprecated Use ICal4jUtils.printDump instead
+	 */
+	@Deprecated
+	public static String print(VEvent ve) {
+		return ICal4jUtils.printDump(ve);
+	}
 	
 	public static void setUnfoldingRelaxed(Properties properties, boolean value) {
 		properties.setProperty("ical4j.unfolding.relaxed", String.valueOf(value));
@@ -152,14 +169,6 @@ public class ICalendarUtils {
 	 */
 	public static Calendar parse(InputStream is) throws ParserException, IOException {
 		return createCalendarBuilder().build(is);
-	}
-	
-	/**
-	 * @deprecated use print instead
-	 */
-	@Deprecated
-	public static String calendarToString(Calendar ical) throws IOException {
-		return print(ical);
 	}
 	
 	/**
@@ -274,33 +283,65 @@ public class ICalendarUtils {
 	}
 	
 	/**
-	 * Returns the first attendee in the VEvent object.
+	 * Extracts the Uid from the passed VEvent object.
 	 * @param ve The VEvent object
-	 * @return The first attendee or null if not present
+	 * @return Uid property value
+	 */
+	public static String getUidValue(VEvent ve) {
+		Check.notNull(ve, "ve");
+		return ICal4jUtils.getPropertyValue(ve.getProperty(Property.UID));
+	}
+	
+	/**
+	 * Extracts the Summary from the passed VEvent object.
+	 * @param ve The VEvent object
+	 * @return Summary property value
+	 */
+	public static String getSummary(VEvent ve) {
+		Check.notNull(ve, "ve");
+		return ICal4jUtils.getPropertyValue(ve.getProperty(Property.SUMMARY));
+	}
+	
+	/**
+	 * Extracts the first  the Organizer of the VEvent object.
+	 * @param ve The VEvent object
+	 * @return Summary property value
+	 * @throws com.sonicle.webtop.core.app.sdk.WTParseException
+	 */
+	public static InternetAddress getOrganizerAddress(VEvent ve) throws WTParseException {
+		Check.notNull(ve, "ve");
+		// See http://www.kanzaki.com/docs/ical/organizer.html
+		
+		InternetAddress ia = null;
+		final Organizer org = (Organizer)ve.getProperty(Property.ORGANIZER);
+		if (org != null) {
+			// Evaluates organizer details
+			// Extract email and common name (CN)
+			// Eg: CN=Henry Cabot:MAILTO:hcabot@host2.com -> drop ":MAILTO:"
+			URI uri = org.getCalAddress();
+			Cn cn = (Cn)org.getParameter(Parameter.CN);
+			if (uri != null) {
+				String address = uri.getSchemeSpecificPart();
+				ia = InternetAddressUtils.toInternetAddress(address, (cn == null) ? address : cn.getValue());
+			} else {
+				throw new WTParseException("Organizer not valid [{0}]", org.toString());
+			}
+		}
+		return ia;
+	}
+	
+	/**
+	 * Extracts the first Attendee from the passed VEvent object.
+	 * @param ve The VEvent object
+	 * @return The first Attendee or null if not present
 	 */
 	public static Attendee getAttendee(VEvent ve) {
+		Check.notNull(ve, "ve");
 		PropertyList atts = ve.getProperties(Property.ATTENDEE);
 		for (Iterator attIt = atts.iterator(); attIt.hasNext();) {
 			return (Attendee) attIt.next();
 		}
 		return null;
-	}
-	
-	/**
-	 * @deprecated use ICal4jUtils.getPropertyValue instead passing Uid prop
-	 */
-	@Deprecated
-	public static String getUidValue(VEvent vevent) {
-		Uid uid = vevent.getUid();
-		return (uid != null) ? uid.getValue() : null;
-	}
-	
-	/**
-	 * @deprecated Use ICal4jUtils.printDump instead
-	 */
-	@Deprecated
-	public static String print(VEvent ve) {
-		return ICal4jUtils.printDump(ve);
 	}
 	
 	/**
@@ -619,7 +660,7 @@ public class ICalendarUtils {
 		}
 		
 		if (matchingAtt == null) {
-			return null;
+			throw new IOException("Unable to find matching attendee: are you sure to be into attendee list?");
 		} else {
 			props.add(matchingAtt);
 			return nical;

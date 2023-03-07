@@ -39,7 +39,10 @@ import static com.sonicle.webtop.core.jooq.core.Sequences.SEQ_ROLES_ASSOCIATIONS
 import static com.sonicle.webtop.core.jooq.core.Tables.*;
 import com.sonicle.webtop.core.jooq.core.tables.records.RolesAssociationsRecord;
 import java.sql.Connection;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import org.jooq.BatchBindStep;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
@@ -59,7 +62,34 @@ public class RoleAssociationDAO extends BaseDAO {
 		return nextID;
 	}
 	
-	public List<AssignedRole> viewAssignedByUser(Connection con, String userUid) throws DAOException {
+	public Set<String> viewRoleSidsBySubject(Connection con, String subjectSid) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				ROLES_ASSOCIATIONS.ROLE_UID
+			)
+			.from(ROLES_ASSOCIATIONS)
+			.where(
+				ROLES_ASSOCIATIONS.USER_UID.equal(subjectSid)
+			)
+			.fetchSet(ROLES_ASSOCIATIONS.ROLE_UID);
+	}
+	
+	public Set<String> viewSubjectSidsByRole(Connection con, String roleSid) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				ROLES_ASSOCIATIONS.USER_UID
+			)
+			.from(ROLES_ASSOCIATIONS)
+			.where(
+				ROLES_ASSOCIATIONS.ROLE_UID.equal(roleSid)
+			)
+			.fetchSet(ROLES_ASSOCIATIONS.USER_UID);
+	}
+	
+	@Deprecated
+	public List<AssignedRole> viewAssignedByUser(Connection con, String userSid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -72,7 +102,7 @@ public class RoleAssociationDAO extends BaseDAO {
 					ROLES_ASSOCIATIONS.ROLE_UID.equal(ROLES.ROLE_UID)
 			)
 			.where(
-					ROLES_ASSOCIATIONS.USER_UID.equal(userUid)
+					ROLES_ASSOCIATIONS.USER_UID.equal(userSid)
 			)
 			.orderBy(
 				ROLES.NAME
@@ -80,10 +110,12 @@ public class RoleAssociationDAO extends BaseDAO {
 			.fetchInto(AssignedRole.class);
 	}
 	
-	public List<AssignedRole> viewAssignedByGroup(Connection con, String groupUid) throws DAOException {
-		return viewAssignedByUser(con, groupUid);
+	@Deprecated
+	public List<AssignedRole> viewAssignedByGroup(Connection con, String groupSid) throws DAOException {
+		return viewAssignedByUser(con, groupSid);
 	}
 	
+	@Deprecated
 	public int insert(Connection con, ORoleAssociation item) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		RolesAssociationsRecord record = dsl.newRecord(ROLES_ASSOCIATIONS, item);
@@ -93,6 +125,41 @@ public class RoleAssociationDAO extends BaseDAO {
 			.execute();
 	}
 	
+	public int[] batchInsert(Connection con, String subjectSid, Collection<String> roleSids) throws DAOException {
+		if (roleSids.isEmpty()) return new int[0];
+		DSLContext dsl = getDSL(con);
+		BatchBindStep batch = dsl.batch(
+			dsl.insertInto(ROLES_ASSOCIATIONS, 
+				ROLES_ASSOCIATIONS.USER_UID, ROLES_ASSOCIATIONS.ROLE_UID
+			).values((String)null, null)
+		);
+		for (String roleSid : roleSids) {
+			batch.bind(
+				subjectSid,
+				roleSid
+			);
+		}
+		return batch.execute();
+	}
+	
+	public int[] batchInsert(Connection con, Collection<String> subjectSids, String roleSid) throws DAOException {
+		if (subjectSids.isEmpty()) return new int[0];
+		DSLContext dsl = getDSL(con);
+		BatchBindStep batch = dsl.batch(
+			dsl.insertInto(ROLES_ASSOCIATIONS, 
+				ROLES_ASSOCIATIONS.USER_UID, ROLES_ASSOCIATIONS.ROLE_UID
+			).values((String)null, null)
+		);
+		for (String subjectSid : subjectSids) {
+			batch.bind(
+				roleSid,
+				subjectSid
+			);
+		}
+		return batch.execute();
+	}
+	
+	@Deprecated
 	public int deleteById(Connection con, int id) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -103,22 +170,55 @@ public class RoleAssociationDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int deleteByUser(Connection con, String userUid) throws DAOException {
+	@Deprecated
+	public int deleteByUser(Connection con, String userSid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(ROLES_ASSOCIATIONS)
 			.where(
-					ROLES_ASSOCIATIONS.USER_UID.equal(userUid)
+					ROLES_ASSOCIATIONS.USER_UID.equal(userSid)
 			)
 			.execute();
 	}
 	
-	public int deleteByRole(Connection con, String roleUid) throws DAOException {
+	public int deleteBySubject(Connection con, String subjectSid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(ROLES_ASSOCIATIONS)
 			.where(
-					ROLES_ASSOCIATIONS.ROLE_UID.equal(roleUid)
+				ROLES_ASSOCIATIONS.USER_UID.equal(subjectSid)
+			)
+			.execute();
+	}
+	
+	public int deleteBySubjectsRoleSid(Connection con, Collection<String> subjectSids, String roleSid) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(ROLES_ASSOCIATIONS)
+			.where(
+				ROLES_ASSOCIATIONS.USER_UID.in(subjectSids)
+				.and(ROLES_ASSOCIATIONS.ROLE_UID.equal(roleSid))
+			)
+			.execute();
+	}
+	
+	public int deleteBySubjectRolesSids(Connection con, String subjectSid, Collection<String> roleSids) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(ROLES_ASSOCIATIONS)
+			.where(
+				ROLES_ASSOCIATIONS.USER_UID.equal(subjectSid)
+				.and(ROLES_ASSOCIATIONS.ROLE_UID.in(roleSids))
+			)
+			.execute();
+	}
+	
+	public int deleteByRole(Connection con, String roleSid) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(ROLES_ASSOCIATIONS)
+			.where(
+				ROLES_ASSOCIATIONS.ROLE_UID.equal(roleSid)
 			)
 			.execute();
 	}

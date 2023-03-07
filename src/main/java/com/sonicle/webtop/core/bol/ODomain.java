@@ -33,7 +33,10 @@
  */
 package com.sonicle.webtop.core.bol;
 
+import com.sonicle.commons.RegexUtils;
 import com.sonicle.webtop.core.jooq.core.tables.pojos.Domains;
+import net.sf.qualitycheck.Check;
+import org.jooq.tools.StringUtils;
 
 /**
  *
@@ -41,4 +44,51 @@ import com.sonicle.webtop.core.jooq.core.tables.pojos.Domains;
  */
 public class ODomain extends Domains {
 	
+	public String getDisplayName() {
+		return getDescription();
+	}
+
+	public void setDisplayName(String displayName) {
+		setDescription(displayName);
+	}
+	
+	public String getAuthDomainName() {
+		return getInternetName();
+	}
+
+	public void setAuthDomainName(String authDomainName) {
+		setInternetName(authDomainName);
+	}
+	
+	public String getDomainName() {
+		return getInternetName();
+	}
+
+	public void setDomainName(String domainName) {
+		// Do nothing for now...
+	}
+	
+	public static void validate(ODomain tgt) {
+		Check.matchesPattern(RegexUtils.match(RegexUtils.MATCH_USERNAME_CHARS), tgt.getDomainId(), "domainId");
+		Check.notNull(tgt.getEnabled(), "enabled");
+		Check.notEmpty(tgt.getDisplayName(), "displayName");
+		Check.notEmpty(tgt.getAuthDomainName(), "authDomainName");
+		Check.matchesPattern(RegexUtils.match(RegexUtils.MATCH_HOST), tgt.getAuthDomainName(), "authDomainName");
+		Check.notEmpty(tgt.getDomainName(), "domainName");
+		Check.matchesPattern(RegexUtils.match(RegexUtils.MATCH_HOST), tgt.getDomainName(), "domainName");
+	}
+	
+	public static ODomain fillDefaultsForInsert(ODomain tgt) {
+		if (tgt != null) {
+			if (StringUtils.isBlank(tgt.getDomainName())) tgt.setDomainName(tgt.getAuthDomainName());
+		}
+		return tgt;
+	}
+	
+	public static ODomain fillDefaultsForUpdate(ODomain tgt) {
+		if (tgt != null) {
+			if (StringUtils.isBlank(tgt.getDomainName())) tgt.setDomainName(tgt.getAuthDomainName());
+		}
+		return tgt;
+	}
 }
