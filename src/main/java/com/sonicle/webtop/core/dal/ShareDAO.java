@@ -87,6 +87,35 @@ public class ShareDAO extends BaseDAO {
 			.fetchSet(SHARES.INSTANCE);
 	}
 	
+	public Set<String> viewInstancesByOriginServiceContext(Connection con, String originSid, String serviceId, String context) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.selectDistinct(
+				SHARES.INSTANCE
+			)
+			.from(SHARES)
+			.where(
+				SHARES.USER_UID.equal(originSid)
+				.and(SHARES.SERVICE_ID.equal(serviceId))
+				.and(SHARES.KEY.equal(context))
+			)
+			.fetchSet(SHARES.INSTANCE);
+	}
+	
+	public Set<String> viewOriginatingSidsByServiceKey(Connection con, String serviceId, String shareKey) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.selectDistinct(
+				SHARES.USER_UID
+			)
+			.from(SHARES)
+			.where(
+				SHARES.SERVICE_ID.equal(serviceId)
+				.and(SHARES.KEY.equal(shareKey))
+			)
+			.fetchSet(SHARES.USER_UID);
+	}
+	
 	public Set<String> viewOriginatingSidsByRoleServiceKey(Connection con, String serviceId, String shareKey, Collection<String> permissionSubjectSids, Collection<String> permissionKeys) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl

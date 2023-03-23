@@ -50,6 +50,7 @@ public class ShareDataDAO extends BaseDAO {
 		return INSTANCE;
 	}
 	
+	@Deprecated
 	public OShareData selectByShareUser(Connection con, int shareId, String userUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -64,6 +65,7 @@ public class ShareDataDAO extends BaseDAO {
 			.fetchOneInto(OShareData.class);
 	}
 	
+	@Deprecated
 	public int insert(Connection con, OShareData item) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		SharesDataRecord record = dsl.newRecord(SHARES_DATA, item);
@@ -73,6 +75,7 @@ public class ShareDataDAO extends BaseDAO {
 			.execute();
 	}
 	
+	@Deprecated
 	public int update(Connection con, OShareData item) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -85,13 +88,48 @@ public class ShareDataDAO extends BaseDAO {
 			.execute();
 	}
 	
+	@Deprecated
 	public int deleteByShareUser(Connection con, int shareId, String userUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(SHARES_DATA)
 			.where(
-					SHARES_DATA.SHARE_ID.equal(shareId)
-					.and(SHARES_DATA.USER_UID.equal(userUid))
+				SHARES_DATA.SHARE_ID.equal(shareId)
+				.and(SHARES_DATA.USER_UID.equal(userUid))
+			)
+			.execute();
+	}
+	
+	public String selectValueByShareUser(Connection con, int shareId, String targetUserSid) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				SHARES_DATA.VALUE
+			)
+			.from(SHARES_DATA)
+			.where(
+				SHARES_DATA.SHARE_ID.equal(shareId)
+				.and(SHARES_DATA.USER_UID.equal(targetUserSid))
+			)
+			.fetchOne(0, String.class);
+	}
+	
+	public int insert(Connection con, int shareId, String targetUserSid, String value) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.insertInto(SHARES_DATA, SHARES_DATA.SHARE_ID, SHARES_DATA.USER_UID, SHARES_DATA.VALUE)
+			.values(shareId, targetUserSid, value)
+			.execute();
+	}
+	
+	public int update(Connection con, int shareId, String targetUserSid, String value) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.update(SHARES_DATA)
+			.set(SHARES_DATA.VALUE, value)
+			.where(
+				SHARES_DATA.SHARE_ID.equal(shareId)
+				.and(SHARES_DATA.USER_UID.equal(targetUserSid))
 			)
 			.execute();
 	}
@@ -101,15 +139,15 @@ public class ShareDataDAO extends BaseDAO {
 		return dsl
 			.delete(SHARES_DATA)
 			.where(
-					SHARES_DATA.USER_UID.in(
-							DSL.select(
-								USERS.USER_UID
-							)
-							.from(USERS)
-							.where(
-									USERS.DOMAIN_ID.equal(domainId)
-							)
+				SHARES_DATA.USER_UID.in(
+					DSL.select(
+						USERS.USER_UID
 					)
+					.from(USERS)
+					.where(
+						USERS.DOMAIN_ID.equal(domainId)
+					)
+				)
 			)
 			.execute();
 	}
