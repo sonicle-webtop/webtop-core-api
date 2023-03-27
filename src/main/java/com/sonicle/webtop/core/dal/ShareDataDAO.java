@@ -37,6 +37,7 @@ import com.sonicle.webtop.core.bol.OShareData;
 import static com.sonicle.webtop.core.jooq.core.Tables.*;
 import com.sonicle.webtop.core.jooq.core.tables.records.SharesDataRecord;
 import java.sql.Connection;
+import java.util.Map;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
@@ -48,6 +49,20 @@ public class ShareDataDAO extends BaseDAO {
 	private final static ShareDataDAO INSTANCE = new ShareDataDAO();
 	public static ShareDataDAO getInstance() {
 		return INSTANCE;
+	}
+	
+	public Map<String, String> mapByShare(Connection con, int shareId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				SHARES_DATA.USER_UID,
+				SHARES_DATA.VALUE
+			)
+			.from(SHARES_DATA)
+			.where(
+				SHARES_DATA.SHARE_ID.equal(shareId)
+			)
+			.fetchMap(SHARES_DATA.USER_UID, SHARES_DATA.VALUE);
 	}
 	
 	@Deprecated
@@ -88,19 +103,7 @@ public class ShareDataDAO extends BaseDAO {
 			.execute();
 	}
 	
-	@Deprecated
-	public int deleteByShareUser(Connection con, int shareId, String userUid) throws DAOException {
-		DSLContext dsl = getDSL(con);
-		return dsl
-			.delete(SHARES_DATA)
-			.where(
-				SHARES_DATA.SHARE_ID.equal(shareId)
-				.and(SHARES_DATA.USER_UID.equal(userUid))
-			)
-			.execute();
-	}
-	
-	public String selectValueByShareUser(Connection con, int shareId, String targetUserSid) throws DAOException {
+	public String selectValueByShareUser(Connection con, int shareId, String userSid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -109,27 +112,38 @@ public class ShareDataDAO extends BaseDAO {
 			.from(SHARES_DATA)
 			.where(
 				SHARES_DATA.SHARE_ID.equal(shareId)
-				.and(SHARES_DATA.USER_UID.equal(targetUserSid))
+				.and(SHARES_DATA.USER_UID.equal(userSid))
 			)
 			.fetchOne(0, String.class);
 	}
 	
-	public int insert(Connection con, int shareId, String targetUserSid, String value) throws DAOException {
+	public int insert(Connection con, int shareId, String userSid, String value) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.insertInto(SHARES_DATA, SHARES_DATA.SHARE_ID, SHARES_DATA.USER_UID, SHARES_DATA.VALUE)
-			.values(shareId, targetUserSid, value)
+			.values(shareId, userSid, value)
 			.execute();
 	}
 	
-	public int update(Connection con, int shareId, String targetUserSid, String value) throws DAOException {
+	public int update(Connection con, int shareId, String userSid, String value) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.update(SHARES_DATA)
 			.set(SHARES_DATA.VALUE, value)
 			.where(
 				SHARES_DATA.SHARE_ID.equal(shareId)
-				.and(SHARES_DATA.USER_UID.equal(targetUserSid))
+				.and(SHARES_DATA.USER_UID.equal(userSid))
+			)
+			.execute();
+	}
+	
+	public int deleteByShareUser(Connection con, int shareId, String userSid) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.delete(SHARES_DATA)
+			.where(
+				SHARES_DATA.SHARE_ID.equal(shareId)
+				.and(SHARES_DATA.USER_UID.equal(userSid))
 			)
 			.execute();
 	}

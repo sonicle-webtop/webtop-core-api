@@ -33,10 +33,12 @@
 package com.sonicle.webtop.core.app.model;
 
 import com.sonicle.commons.LangUtils;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.sf.qualitycheck.Check;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  *
@@ -44,25 +46,65 @@ import java.util.Set;
  */
 public class Sharing {
 	
-	public static class SubjectRights {
-		protected final String aclSubjectSid;
+	public static class SubjectConfiguration<T> {
+		protected final String subjectSid;
 		protected final Set<String> actions;
+		protected final Class<T> dataType;
+		protected final T data;
 		
-		public SubjectRights(String aclSubjectSid) {
-			this(aclSubjectSid, new LinkedHashSet<>(0));
+		public SubjectConfiguration(String subjectSid) {
+			this(subjectSid, new LinkedHashSet<>(0), (T)null, null);
 		}
 		
-		public SubjectRights(String aclSubjectSid, Set<String> actions) {
-			this.aclSubjectSid = aclSubjectSid;
-			this.actions = Collections.unmodifiableSet(actions);
+		public SubjectConfiguration(String subjectSid, Set<String> actions) {
+			this(subjectSid, actions, (T)null, null);
 		}
 		
-		public String getAclSubjectSid() {
-			return aclSubjectSid;
+		public SubjectConfiguration(String subjectSid, Set<String> actions, T data, Class<T> dataType) {
+			this.subjectSid = Check.notEmpty(subjectSid, "subjectSid");
+			this.actions = Collections.unmodifiableSet(Check.notNull(actions, "actions"));
+			this.dataType = Check.notNull(dataType, "dataType");
+			this.data = data;
+		}
+		
+		public SubjectConfiguration(String subjectSid, Set<String> actions, String rawData, Class<T> dataType) {
+			this.subjectSid = Check.notEmpty(subjectSid, "subjectSid");
+			this.actions = Collections.unmodifiableSet(Check.notNull(actions, "actions"));
+			this.dataType = Check.notNull(dataType, "dataType");
+			this.data = LangUtils.deserialize(rawData, null, dataType);
+		}
+		
+		public String getSubjectSid() {
+			return subjectSid;
 		}
 
 		public Set<String> getActions() {
 			return actions;
+		}
+		
+		public T getData() {
+			return data;
+		}
+		
+		public String getRawData() {
+			return LangUtils.serialize(data, dataType);
+		}
+		
+		@Override
+		public int hashCode() {
+			return new HashCodeBuilder()
+				.append(subjectSid)
+				.toHashCode();
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof SubjectConfiguration == false) return false;
+			if (this == obj) return true;
+			final SubjectConfiguration otherObject = (SubjectConfiguration)obj;
+			return new EqualsBuilder()
+				.append(subjectSid, otherObject.subjectSid)
+				.isEquals();
 		}
 	}
 }
