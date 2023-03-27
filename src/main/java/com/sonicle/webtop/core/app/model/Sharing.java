@@ -46,32 +46,27 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class Sharing {
 	
-	public static class SubjectConfiguration<T> {
+	public static class SubjectConfiguration {
 		protected final String subjectSid;
 		protected final Set<String> actions;
-		protected final Class<T> dataType;
-		protected final T data;
+		protected final Object data;
 		
 		public SubjectConfiguration(String subjectSid) {
-			this(subjectSid, new LinkedHashSet<>(0), (T)null, null);
+			this(subjectSid, new LinkedHashSet<>(0), (Object)null);
 		}
 		
 		public SubjectConfiguration(String subjectSid, Set<String> actions) {
-			this(subjectSid, actions, (T)null, null);
+			this(subjectSid, actions, (Object)null);
 		}
 		
-		public SubjectConfiguration(String subjectSid, Set<String> actions, T data, Class<T> dataType) {
+		public <T> SubjectConfiguration(String subjectSid, Set<String> actions, String rawData, Class<T> typeOfData) {
+			this(subjectSid, actions, LangUtils.deserialize(rawData, null, typeOfData));
+		}
+		
+		public SubjectConfiguration(String subjectSid, Set<String> actions, Object data) {
 			this.subjectSid = Check.notEmpty(subjectSid, "subjectSid");
 			this.actions = Collections.unmodifiableSet(Check.notNull(actions, "actions"));
-			this.dataType = Check.notNull(dataType, "dataType");
 			this.data = data;
-		}
-		
-		public SubjectConfiguration(String subjectSid, Set<String> actions, String rawData, Class<T> dataType) {
-			this.subjectSid = Check.notEmpty(subjectSid, "subjectSid");
-			this.actions = Collections.unmodifiableSet(Check.notNull(actions, "actions"));
-			this.dataType = Check.notNull(dataType, "dataType");
-			this.data = LangUtils.deserialize(rawData, null, dataType);
 		}
 		
 		public String getSubjectSid() {
@@ -82,12 +77,16 @@ public class Sharing {
 			return actions;
 		}
 		
-		public T getData() {
+		public Object getData() {
 			return data;
 		}
 		
-		public String getRawData() {
-			return LangUtils.serialize(data, dataType);
+		public <T> T getTypedData(final Class<T> typeOfData) {
+			return (T)data;
+		}
+		
+		public <T> String getRawData(final Class<T> typeOfData) {
+			return LangUtils.serialize((T)data, Check.notNull(typeOfData, "typeOfData"));
 		}
 		
 		@Override
