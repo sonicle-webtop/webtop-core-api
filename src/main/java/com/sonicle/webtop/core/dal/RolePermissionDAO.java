@@ -171,13 +171,20 @@ public class RolePermissionDAO extends BaseDAO {
 			.fetchInto(ORolePermission.class);
 	}
 	
-	public Map<String, List<ORolePermission>> groupSubjectsByByServiceKeysInstance(Connection con, String serviceId, Collection<String> keys, String instance) throws DAOException {
+	public Map<String, List<ORolePermission>> mapByServiceKeysInstanceRoles(Connection con, String serviceId, Collection<String> keys, String instance, Collection<String> roleSids) throws DAOException {
 		DSLContext dsl = getDSL(con);
+		
+		Condition rolesInCndt = DSL.trueCondition();
+		if (roleSids != null) {
+			rolesInCndt = ROLES_PERMISSIONS.ROLE_UID.in(roleSids);
+		}
+		
 		return dsl
 			.select()
 			.from(ROLES_PERMISSIONS)
 			.where(
-				ROLES_PERMISSIONS.SERVICE_ID.equal(serviceId)
+				rolesInCndt
+				.and(ROLES_PERMISSIONS.SERVICE_ID.equal(serviceId))
 				.and(ROLES_PERMISSIONS.KEY.in(keys))
 				.and(ROLES_PERMISSIONS.INSTANCE.equal(instance))
 			)
