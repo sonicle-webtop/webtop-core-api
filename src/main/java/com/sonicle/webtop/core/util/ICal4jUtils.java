@@ -543,7 +543,7 @@ public class ICal4jUtils {
 		if (start.isBefore(peStart)) peStart = start;
 		if (rangeFrom != null && rangeFrom.isAfter(peStart)) peStart = rangeFrom;
 		org.joda.time.DateTime peEnd = ifiniteDate(timezone);
-		if ((rangeTo != null) && rangeTo.isBefore(peEnd)) peEnd = rangeTo;
+		if ((rangeTo != null) && rangeTo.isBefore(peEnd) && !rangeTo.isBefore(peStart)) peEnd = rangeTo;
 		
 		// We need to use recurStart date (at event startDate time) as start 
 		// because otherwise we may lose instances on the end if the recur start
