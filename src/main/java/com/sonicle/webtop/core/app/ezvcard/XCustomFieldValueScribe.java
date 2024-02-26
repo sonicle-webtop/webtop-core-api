@@ -38,15 +38,15 @@ import ezvcard.io.scribe.StringPropertyScribe;
  *
  * @author gabriele.bulfon
  */
-public class XCustomFieldScribe extends StringPropertyScribe<XCustomField> {
+public class XCustomFieldValueScribe extends StringPropertyScribe<XCustomFieldValue> {
 
-	public XCustomFieldScribe() {
-		super(XCustomField.class, "X-WT-CUSTOMFIELDVALUE");
+	public XCustomFieldValueScribe() {
+		super(XCustomFieldValue.class, "X-WT-CUSTOMFIELDVALUE");
 	}		
 
 	@Override
-	protected XCustomField _parseValue(String value) {
-		XCustomField property = new XCustomField();
+	protected XCustomFieldValue _parseValue(String value) {
+		XCustomFieldValue property = new XCustomFieldValue();
 		property.setValue(value);
 		return property;
 	}

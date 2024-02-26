@@ -38,29 +38,29 @@ import ezvcard.property.TextProperty;
  *
  * @author gabriele.bulfon
  */
-public class XCustomField extends TextProperty {
+public class XCustomFieldValue extends TextProperty {
 
-	public XCustomField() {
-		super("X-WT-CUSTOMFIELD");
+	public XCustomFieldValue() {
+		super("X-WT-CUSTOMFIELDVALUE");
 	}
 
-	public XCustomField(String uid, String type, String value) {
-		super(uid);
+	public XCustomFieldValue(String uid, String type, String value) {
+		super(value);
+		if (uid != null) addParameter("uid", uid);
 		if (type != null) addParameter("type", type);
-		if (value != null) addParameter("value", value);
 	}
 
-	public XCustomField(XCustomField original){
+	public XCustomFieldValue(XCustomFieldValue original){
 		super(original);
+		String uid = getParameter("uid");
+		if (uid != null) addParameter("uid", uid);
 		String type = getParameter("type");
 		if (type != null) addParameter("type", type);
-		String value = getParameter("value");
-		if (value != null) addParameter("value", value);
 	}
 
 	@Override
-	public XCustomField copy() {
-		return new XCustomField(this);
+	public XCustomFieldValue copy() {
+		return new XCustomFieldValue(this);
 	}
 }
 
