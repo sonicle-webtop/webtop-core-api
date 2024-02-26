@@ -41,7 +41,7 @@ import ezvcard.io.scribe.StringPropertyScribe;
 public class XCustomFieldScribe extends StringPropertyScribe<XCustomField> {
 
 	public XCustomFieldScribe() {
-		super(XCustomField.class, "X-WT-CUSTOMFIELD");
+		super(XCustomField.class, "X-WT-CUSTOMFIELDVALUE");
 	}		
 
 	@Override
