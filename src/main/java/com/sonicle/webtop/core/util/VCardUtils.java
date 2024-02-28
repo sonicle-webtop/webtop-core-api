@@ -33,6 +33,8 @@
 package com.sonicle.webtop.core.util;
 
 import com.sonicle.commons.LangUtils;
+import com.sonicle.webtop.core.app.ezvcard.XAttachmentScribe;
+import com.sonicle.webtop.core.app.ezvcard.XCustomFieldValueScribe;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -87,6 +89,8 @@ public class VCardUtils {
 		if (vCard == null) return null;
 		return Ezvcard.write(vCard)
 				.caretEncoding(true)
+				.register(new XCustomFieldValueScribe())
+				.register(new XAttachmentScribe())
 				.go();
 	}
 	

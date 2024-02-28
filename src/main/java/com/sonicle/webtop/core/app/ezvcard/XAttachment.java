@@ -41,29 +41,26 @@ import java.io.InputStream;
  *
  * @author malbinola
  */
-public class XAttachment extends BinaryProperty<BinaryType> {
+public class XAttachment extends FileProperty<BinaryType> {
 	
-	public XAttachment(String url, BinaryType type) {
-		super(url, type);
+	public XAttachment(String url, BinaryType type, String fileName) {
+		super(url, type, fileName);
 	}
 	
-	public XAttachment(byte[] data, BinaryType type) {
-		super(data, type);
+	public XAttachment(byte[] data, BinaryType type, String fileName) {
+		super(data, type, fileName);
 	}
 	
-	public XAttachment(InputStream in, BinaryType type) throws IOException {
-		super(in, type);
+	public XAttachment(InputStream in, BinaryType type, String fileName) throws IOException {
+		super(in, type, fileName);
 	}
 	
-	public XAttachment(File file, BinaryType type) throws IOException {
-		super(file, type);
+	public XAttachment(File file, BinaryType type, String fileName) throws IOException {
+		super(file, type, fileName);
 	}
 	
 	public XAttachment(XAttachment original) {
 		super(original);
 	}
 	
-	public String getFilename() {
-		return this.getParameter("FILENAME");
-	}
 }

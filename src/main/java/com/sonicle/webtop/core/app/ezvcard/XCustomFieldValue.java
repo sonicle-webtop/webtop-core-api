@@ -39,6 +39,12 @@ import ezvcard.property.TextProperty;
  * @author gabriele.bulfon
  */
 public class XCustomFieldValue extends TextProperty {
+	
+	public static final String TYPE_TEXT = "text";
+	public static final String TYPE_STRING = "string";
+	public static final String TYPE_DATE = "date";
+	public static final String TYPE_NUMBER = "number";
+	public static final String TYPE_BOOLEAN = "boolean";
 
 	public XCustomFieldValue() {
 		super("X-WT-CUSTOMFIELDVALUE");
@@ -61,6 +67,14 @@ public class XCustomFieldValue extends TextProperty {
 	@Override
 	public XCustomFieldValue copy() {
 		return new XCustomFieldValue(this);
+	}
+	
+	public String getUid() {
+		return getParameter("uid");
+	}
+	
+	public String getType() {
+		return getParameter("type");
 	}
 }
 

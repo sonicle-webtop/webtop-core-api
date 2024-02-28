@@ -32,13 +32,11 @@
  */
 package com.sonicle.webtop.core.app.ezvcard;
 
-import ezvcard.io.scribe.BinaryPropertyScribe;
-
 /**
  *
  * @author malbinola
  */
-public class XAttachmentScribe extends BinaryPropertyScribe<XAttachment, BinaryType> {
+public class XAttachmentScribe extends FilePropertyScribe<XAttachment, BinaryType> {
 	
 	public XAttachmentScribe() {
 		super(XAttachment.class, "X-WT-ATTACHMENT");
@@ -60,12 +58,12 @@ public class XAttachmentScribe extends BinaryPropertyScribe<XAttachment, BinaryT
 	}
 
 	@Override
-	protected XAttachment _newInstance(String uri, BinaryType contentType) {
-		return new XAttachment(uri, contentType);
+	protected XAttachment _newInstance(String uri, BinaryType contentType, String fileName) {
+		return new XAttachment(uri, contentType, fileName);
 	}
 
 	@Override
-	protected XAttachment _newInstance(byte[] data, BinaryType contentType) {
-		return new XAttachment(data, contentType);
+	protected XAttachment _newInstance(byte[] data, BinaryType contentType, String fileName) {
+		return new XAttachment(data, contentType, fileName);
 	}
 }
