@@ -176,4 +176,17 @@ public class PecBridgeRelayDAO extends BaseDAO {
 			)
 			.execute();
 	}
+	
+	public int updatePasswordByWebtopProfileId(Connection con, String webtopProfileId, String password) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.update(PECBRIDGE_RELAYS)
+			.set(PECBRIDGE_RELAYS.PASSWORD, password)
+			.where(
+					PECBRIDGE_RELAYS.WEBTOP_PROFILE_ID.equal(webtopProfileId)
+			)
+			.execute();
+	}
+
+	
 }
