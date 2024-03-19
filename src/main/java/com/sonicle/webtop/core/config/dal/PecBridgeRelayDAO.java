@@ -74,7 +74,8 @@ public class PecBridgeRelayDAO extends BaseDAO {
 					PECBRIDGE_RELAYS.PASSWORD,
 					PECBRIDGE_RELAYS.DEBUG,
 					PECBRIDGE_RELAYS.WEBTOP_PROFILE_ID,
-					PECBRIDGE_RELAYS.ENABLED
+					PECBRIDGE_RELAYS.ENABLED,
+					PECBRIDGE_RELAYS.AUTH_STATE
 			).from(PECBRIDGE_RELAYS)
 			.orderBy(
 					PECBRIDGE_RELAYS.MATCHER.asc()
@@ -96,7 +97,8 @@ public class PecBridgeRelayDAO extends BaseDAO {
 					PECBRIDGE_RELAYS.PASSWORD,
 					PECBRIDGE_RELAYS.DEBUG,
 					PECBRIDGE_RELAYS.WEBTOP_PROFILE_ID,
-					PECBRIDGE_RELAYS.ENABLED
+					PECBRIDGE_RELAYS.ENABLED,
+					PECBRIDGE_RELAYS.AUTH_STATE
 			).from(PECBRIDGE_RELAYS)
 			.where(
 					PECBRIDGE_RELAYS.CONTEXT.equal(context)
@@ -121,7 +123,8 @@ public class PecBridgeRelayDAO extends BaseDAO {
 					PECBRIDGE_RELAYS.PASSWORD,
 					PECBRIDGE_RELAYS.DEBUG,
 					PECBRIDGE_RELAYS.WEBTOP_PROFILE_ID,
-					PECBRIDGE_RELAYS.ENABLED
+					PECBRIDGE_RELAYS.ENABLED,
+					PECBRIDGE_RELAYS.AUTH_STATE
 			).from(PECBRIDGE_RELAYS)
 			.where(
 					PECBRIDGE_RELAYS.RELAY_ID.equal(relayId)
@@ -150,6 +153,7 @@ public class PecBridgeRelayDAO extends BaseDAO {
 			.set(PECBRIDGE_RELAYS.PASSWORD, item.getPassword())
 			.set(PECBRIDGE_RELAYS.WEBTOP_PROFILE_ID, item.getWebtopProfileId())
 			.set(PECBRIDGE_RELAYS.ENABLED, item.getEnabled())
+			.set(PECBRIDGE_RELAYS.AUTH_STATE, item.getAuthState())
 			.where(
 					PECBRIDGE_RELAYS.RELAY_ID.equal(item.getRelayId())
 			)
@@ -182,6 +186,7 @@ public class PecBridgeRelayDAO extends BaseDAO {
 		return dsl
 			.update(PECBRIDGE_RELAYS)
 			.set(PECBRIDGE_RELAYS.PASSWORD, password)
+			.set(PECBRIDGE_RELAYS.AUTH_STATE, "UN")
 			.where(
 					PECBRIDGE_RELAYS.WEBTOP_PROFILE_ID.equal(webtopProfileId)
 			)

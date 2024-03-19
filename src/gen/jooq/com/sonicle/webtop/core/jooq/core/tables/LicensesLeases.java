@@ -111,14 +111,14 @@ public class LicensesLeases extends org.jooq.impl.TableImpl<com.sonicle.webtop.c
 
     @java.lang.Override
     public java.util.List<org.jooq.ForeignKey<com.sonicle.webtop.core.jooq.core.tables.records.LicensesLeasesRecord, ?>> getReferences() {
-        return java.util.Arrays.<org.jooq.ForeignKey<com.sonicle.webtop.core.jooq.core.tables.records.LicensesLeasesRecord, ?>>asList(com.sonicle.webtop.core.jooq.core.Keys.LICENSES_LEASES__LICENSES_LEASES_DOMAIN_ID_SERVICE_ID_PRODUCT_CODE_FKEY);
+        return java.util.Arrays.<org.jooq.ForeignKey<com.sonicle.webtop.core.jooq.core.tables.records.LicensesLeasesRecord, ?>>asList(com.sonicle.webtop.core.jooq.core.Keys.LICENSES_LEASES__LICENSES_LEASES_DOMAIN_ID_FKEY);
     }
 
     private transient com.sonicle.webtop.core.jooq.core.tables.Licenses _licenses;
 
     public com.sonicle.webtop.core.jooq.core.tables.Licenses licenses() {
         if (_licenses == null)
-            _licenses = new com.sonicle.webtop.core.jooq.core.tables.Licenses(this, com.sonicle.webtop.core.jooq.core.Keys.LICENSES_LEASES__LICENSES_LEASES_DOMAIN_ID_SERVICE_ID_PRODUCT_CODE_FKEY);
+            _licenses = new com.sonicle.webtop.core.jooq.core.tables.Licenses(this, com.sonicle.webtop.core.jooq.core.Keys.LICENSES_LEASES__LICENSES_LEASES_DOMAIN_ID_FKEY);
 
         return _licenses;
     }

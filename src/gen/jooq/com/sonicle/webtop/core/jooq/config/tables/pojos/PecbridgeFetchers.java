@@ -24,6 +24,7 @@ public class PecbridgeFetchers implements java.io.Serializable {
     private java.lang.String  password;
     private java.lang.String  webtopProfileId;
     private java.lang.Boolean enabled;
+    private java.lang.String  authState;
 
     public PecbridgeFetchers() {}
 
@@ -39,6 +40,7 @@ public class PecbridgeFetchers implements java.io.Serializable {
         this.password = value.password;
         this.webtopProfileId = value.webtopProfileId;
         this.enabled = value.enabled;
+        this.authState = value.authState;
     }
 
     public PecbridgeFetchers(
@@ -52,7 +54,8 @@ public class PecbridgeFetchers implements java.io.Serializable {
         java.lang.String  username,
         java.lang.String  password,
         java.lang.String  webtopProfileId,
-        java.lang.Boolean enabled
+        java.lang.Boolean enabled,
+        java.lang.String  authState
     ) {
         this.fetcherId = fetcherId;
         this.context = context;
@@ -65,6 +68,7 @@ public class PecbridgeFetchers implements java.io.Serializable {
         this.password = password;
         this.webtopProfileId = webtopProfileId;
         this.enabled = enabled;
+        this.authState = authState;
     }
 
     /**
@@ -221,6 +225,20 @@ public class PecbridgeFetchers implements java.io.Serializable {
         this.enabled = enabled;
     }
 
+    /**
+     * Getter for <code>config.pecbridge_fetchers.auth_state</code>.
+     */
+    public java.lang.String getAuthState() {
+        return this.authState;
+    }
+
+    /**
+     * Setter for <code>config.pecbridge_fetchers.auth_state</code>.
+     */
+    public void setAuthState(java.lang.String authState) {
+        this.authState = authState;
+    }
+
     @Override
     public String toString() {
         java.lang.StringBuilder sb = new java.lang.StringBuilder("PecbridgeFetchers (");
@@ -236,6 +254,7 @@ public class PecbridgeFetchers implements java.io.Serializable {
         sb.append(", ").append(password);
         sb.append(", ").append(webtopProfileId);
         sb.append(", ").append(enabled);
+        sb.append(", ").append(authState);
 
         sb.append(")");
         return sb.toString();

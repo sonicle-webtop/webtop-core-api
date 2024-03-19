@@ -154,44 +154,44 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<ImMessag
     }
 
     /**
-     * Setter for <code>core.im_messages.data</code>.
-     */
-    public void setData(java.lang.String value) {
-        set(10, value);
-    }
-
-    /**
-     * Getter for <code>core.im_messages.data</code>.
-     */
-    public java.lang.String getData() {
-        return (java.lang.String) get(10);
-    }
-
-    /**
      * Setter for <code>core.im_messages.message_uid</code>.
      */
     public void setMessageUid(java.lang.String value) {
-        set(11, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>core.im_messages.message_uid</code>.
      */
     public java.lang.String getMessageUid() {
-        return (java.lang.String) get(11);
+        return (java.lang.String) get(10);
     }
 
     /**
      * Setter for <code>core.im_messages.stanza_id</code>.
      */
     public void setStanzaId(java.lang.String value) {
-        set(12, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>core.im_messages.stanza_id</code>.
      */
     public java.lang.String getStanzaId() {
+        return (java.lang.String) get(11);
+    }
+
+    /**
+     * Setter for <code>core.im_messages.data</code>.
+     */
+    public void setData(java.lang.String value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>core.im_messages.data</code>.
+     */
+    public java.lang.String getData() {
         return (java.lang.String) get(12);
     }
 
@@ -270,17 +270,17 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<ImMessag
 
     @java.lang.Override
     public org.jooq.Field<java.lang.String> field11() {
-        return com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES.DATA;
-    }
-
-    @java.lang.Override
-    public org.jooq.Field<java.lang.String> field12() {
         return com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES.MESSAGE_UID;
     }
 
     @java.lang.Override
-    public org.jooq.Field<java.lang.String> field13() {
+    public org.jooq.Field<java.lang.String> field12() {
         return com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES.STANZA_ID;
+    }
+
+    @java.lang.Override
+    public org.jooq.Field<java.lang.String> field13() {
+        return com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES.DATA;
     }
 
     @java.lang.Override
@@ -335,17 +335,17 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<ImMessag
 
     @java.lang.Override
     public java.lang.String component11() {
-        return getData();
-    }
-
-    @java.lang.Override
-    public java.lang.String component12() {
         return getMessageUid();
     }
 
     @java.lang.Override
-    public java.lang.String component13() {
+    public java.lang.String component12() {
         return getStanzaId();
+    }
+
+    @java.lang.Override
+    public java.lang.String component13() {
+        return getData();
     }
 
     @java.lang.Override
@@ -400,17 +400,17 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<ImMessag
 
     @java.lang.Override
     public java.lang.String value11() {
-        return getData();
-    }
-
-    @java.lang.Override
-    public java.lang.String value12() {
         return getMessageUid();
     }
 
     @java.lang.Override
-    public java.lang.String value13() {
+    public java.lang.String value12() {
         return getStanzaId();
+    }
+
+    @java.lang.Override
+    public java.lang.String value13() {
+        return getData();
     }
 
     @java.lang.Override
@@ -475,19 +475,19 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<ImMessag
 
     @java.lang.Override
     public ImMessagesRecord value11(java.lang.String value) {
-        setData(value);
-        return this;
-    }
-
-    @java.lang.Override
-    public ImMessagesRecord value12(java.lang.String value) {
         setMessageUid(value);
         return this;
     }
 
     @java.lang.Override
-    public ImMessagesRecord value13(java.lang.String value) {
+    public ImMessagesRecord value12(java.lang.String value) {
         setStanzaId(value);
+        return this;
+    }
+
+    @java.lang.Override
+    public ImMessagesRecord value13(java.lang.String value) {
+        setData(value);
         return this;
     }
 
@@ -523,7 +523,7 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<ImMessag
     /**
      * Create a detached, initialised ImMessagesRecord
      */
-    public ImMessagesRecord(java.lang.Integer id, java.lang.String domainId, java.lang.String userId, java.lang.String chatJid, java.lang.String senderJid, java.lang.String senderResource, org.joda.time.DateTime timestamp, org.joda.time.DateTime deliveryTimestamp, java.lang.String action, java.lang.String text, java.lang.String data, java.lang.String messageUid, java.lang.String stanzaId) {
+    public ImMessagesRecord(java.lang.Integer id, java.lang.String domainId, java.lang.String userId, java.lang.String chatJid, java.lang.String senderJid, java.lang.String senderResource, org.joda.time.DateTime timestamp, org.joda.time.DateTime deliveryTimestamp, java.lang.String action, java.lang.String text, java.lang.String messageUid, java.lang.String stanzaId, java.lang.String data) {
         super(com.sonicle.webtop.core.jooq.core.tables.ImMessages.IM_MESSAGES);
 
         setId(id);
@@ -536,8 +536,8 @@ public class ImMessagesRecord extends org.jooq.impl.UpdatableRecordImpl<ImMessag
         setDeliveryTimestamp(deliveryTimestamp);
         setAction(action);
         setText(text);
-        setData(data);
         setMessageUid(messageUid);
         setStanzaId(stanzaId);
+        setData(data);
     }
 }

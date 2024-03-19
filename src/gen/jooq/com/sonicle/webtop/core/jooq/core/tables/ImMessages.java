@@ -77,11 +77,6 @@ public class ImMessages extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.
     public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord, java.lang.String> TEXT = createField(org.jooq.impl.DSL.name("text"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>core.im_messages.data</code>.
-     */
-    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord, java.lang.String> DATA = createField(org.jooq.impl.DSL.name("data"), org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
      * The column <code>core.im_messages.message_uid</code>.
      */
     public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord, java.lang.String> MESSAGE_UID = createField(org.jooq.impl.DSL.name("message_uid"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
@@ -90,6 +85,11 @@ public class ImMessages extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.
      * The column <code>core.im_messages.stanza_id</code>.
      */
     public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord, java.lang.String> STANZA_ID = createField(org.jooq.impl.DSL.name("stanza_id"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+
+    /**
+     * The column <code>core.im_messages.data</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord, java.lang.String> DATA = createField(org.jooq.impl.DSL.name("data"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     private ImMessages(org.jooq.Name alias, org.jooq.Table<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord> aliased) {
         this(alias, aliased, null);
@@ -136,12 +136,12 @@ public class ImMessages extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.
 
     @java.lang.Override
     public org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord> getPrimaryKey() {
-        return com.sonicle.webtop.core.jooq.core.Keys.IM_MESSAGES_PKEY;
+        return com.sonicle.webtop.core.jooq.core.Keys.IM_HISTORY_MESSAGES_PKEY;
     }
 
     @java.lang.Override
     public java.util.List<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord>> getKeys() {
-        return java.util.Arrays.<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord>>asList(com.sonicle.webtop.core.jooq.core.Keys.IM_MESSAGES_PKEY);
+        return java.util.Arrays.<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImMessagesRecord>>asList(com.sonicle.webtop.core.jooq.core.Keys.IM_HISTORY_MESSAGES_PKEY);
     }
 
     @java.lang.Override

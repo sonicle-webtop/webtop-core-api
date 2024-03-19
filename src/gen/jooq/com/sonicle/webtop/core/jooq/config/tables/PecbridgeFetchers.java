@@ -81,6 +81,11 @@ public class PecbridgeFetchers extends org.jooq.impl.TableImpl<com.sonicle.webto
      */
     public final org.jooq.TableField<com.sonicle.webtop.core.jooq.config.tables.records.PecbridgeFetchersRecord, java.lang.Boolean> ENABLED = createField(org.jooq.impl.DSL.name("enabled"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
+    /**
+     * The column <code>config.pecbridge_fetchers.auth_state</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.config.tables.records.PecbridgeFetchersRecord, java.lang.String> AUTH_STATE = createField(org.jooq.impl.DSL.name("auth_state"), org.jooq.impl.SQLDataType.VARCHAR(2).nullable(false).defaultValue(org.jooq.impl.DSL.field("'UN'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
     private PecbridgeFetchers(org.jooq.Name alias, org.jooq.Table<com.sonicle.webtop.core.jooq.config.tables.records.PecbridgeFetchersRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -161,11 +166,11 @@ public class PecbridgeFetchers extends org.jooq.impl.TableImpl<com.sonicle.webto
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @java.lang.Override
-    public org.jooq.Row11<java.lang.Integer, java.lang.String, java.lang.String, java.lang.Boolean, java.lang.String, java.lang.Short, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean> fieldsRow() {
-        return (org.jooq.Row11) super.fieldsRow();
+    public org.jooq.Row12<java.lang.Integer, java.lang.String, java.lang.String, java.lang.Boolean, java.lang.String, java.lang.Short, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, java.lang.String> fieldsRow() {
+        return (org.jooq.Row12) super.fieldsRow();
     }
 }

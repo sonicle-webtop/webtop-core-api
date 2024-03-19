@@ -126,12 +126,12 @@ public class ImChats extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.joo
 
     @java.lang.Override
     public org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImChatsRecord> getPrimaryKey() {
-        return com.sonicle.webtop.core.jooq.core.Keys.IM_CHATS_PKEY;
+        return com.sonicle.webtop.core.jooq.core.Keys.IM_HISTORY_CHATS_2_PKEY;
     }
 
     @java.lang.Override
     public java.util.List<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImChatsRecord>> getKeys() {
-        return java.util.Arrays.<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImChatsRecord>>asList(com.sonicle.webtop.core.jooq.core.Keys.IM_CHATS_PKEY);
+        return java.util.Arrays.<org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.ImChatsRecord>>asList(com.sonicle.webtop.core.jooq.core.Keys.IM_HISTORY_CHATS_2_PKEY);
     }
 
     @java.lang.Override
