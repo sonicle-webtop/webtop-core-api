@@ -193,4 +193,15 @@ public class PecBridgeFetcherDAO extends BaseDAO {
 			)
 			.execute();
 	}	
+
+	public int updateAuthStateByWebtopProfileId(Connection con, String webtopProfileId, String state) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.update(PECBRIDGE_FETCHERS)
+			.set(PECBRIDGE_FETCHERS.AUTH_STATE, state)
+			.where(
+					PECBRIDGE_FETCHERS.WEBTOP_PROFILE_ID.equal(webtopProfileId)
+			)
+			.execute();
+	}	
 }
