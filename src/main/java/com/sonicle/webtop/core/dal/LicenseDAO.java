@@ -197,6 +197,22 @@ public class LicenseDAO extends BaseDAO {
 			.execute();
 	}
 	
+	public int updateActivation(Connection con, String domainId, String serviceId, String productCode, String activatedString, DateTime activationTimestamp, String activationHwId, LocalDate expirationDate) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.update(LICENSES)
+			.set(LICENSES.ACTIVATED_STRING, activatedString)
+			.set(LICENSES.ACTIVATION_TIMESTAMP, activationTimestamp)
+			.set(LICENSES.ACTIVATION_HW_ID, activationHwId)
+			.set(LICENSES.EXPIRATION_DATE, expirationDate)
+			.where(
+				LICENSES.DOMAIN_ID.equal(domainId)
+				.and(LICENSES.SERVICE_ID.equal(serviceId))
+				.and(LICENSES.PRODUCT_CODE.equal(productCode))
+			)
+			.execute();
+	}
+	
 	public int updateAutoLease(Connection con, String domainId, String serviceId, String productCode, boolean autoLease) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
