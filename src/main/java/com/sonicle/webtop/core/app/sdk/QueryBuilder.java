@@ -126,6 +126,18 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 		}
 	}
 	
+	protected static String[] toConditionStringValues(final String value, final boolean stringSmartComparison) {
+		if (!stringSmartComparison || valueContainsWildcard(value)) {
+			return new String[]{value};
+		} else {
+			String[] tokens = StringUtils.split(value, " ");
+			for (int i = 0; i < tokens.length; i++) {
+				tokens[i] = "*" + tokens[i] + "*";
+			}
+			return tokens;
+		}
+	}
+	
 	protected static String asStringValue(final String value, final boolean stringSmartComparison) {
 		return stringSmartComparison ? buildSmartValue(value) : value;
 	}
@@ -211,6 +223,10 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 			this.value1 = value1;
 			this.value2 = value2;
 		}
+	}
+	
+	protected static interface QueryFieldConditionCreatorMethod<C extends QBuilder<C>, V> {
+		public Condition<C> create(V value);
 	}
 	
 	public static enum InstantType {
