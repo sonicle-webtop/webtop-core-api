@@ -30,7 +30,7 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2021 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.model;
+package com.sonicle.webtop.core.app.model;
 
 import net.sf.qualitycheck.Check;
 
@@ -44,7 +44,7 @@ public class UILayout {
 	
 	public UILayout(String id, String name) {
 		this.id = Check.notNull(id, "id");
-		this.name = name;
+		this.name = Check.notEmpty(name, "name");
 	}
 
 	public String getId() {

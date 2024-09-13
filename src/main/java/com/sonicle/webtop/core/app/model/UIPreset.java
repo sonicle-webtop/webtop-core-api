@@ -1,6 +1,5 @@
 /*
- * WebTop Services is a Web Application framework developed by Sonicle S.r.l.
- * Copyright (C) 2014 Sonicle S.r.l.
+ * Copyright (C) 2024 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -11,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
  * details.
  *
  * You should have received a copy of the GNU Affero General Public License
@@ -19,7 +18,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301 USA.
  *
- * You can contact Sonicle S.r.l. at email address sonicle@sonicle.com
+ * You can contact Sonicle S.r.l. at email address sonicle[at]sonicle[dot]com
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -29,65 +28,42 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2014 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2024 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.sdk;
+package com.sonicle.webtop.core.app.model;
 
-import com.sonicle.commons.web.json.MapItem;
-import java.util.HashMap;
-import java.util.Map;
+import net.sf.qualitycheck.Check;
 
 /**
  *
  * @author malbinola
  */
-public class ServiceMessage {
-	protected String service;
-	protected String action;
-	protected Object payload;
+public class UIPreset {
+	protected String id;
+	protected String name;
+	protected String theme;
+	protected String lookAndFeel;
 	
-	public ServiceMessage(String service, String action) {
-		super();
-		this.service = service;
-		this.action = action;
+	public UIPreset(String id, String name, String theme, String lookAndFeel) {
+		this.id = Check.notNull(id, "id");
+		this.name = Check.notEmpty(name, "name");
+		this.theme = Check.notEmpty(theme, "theme");
+		this.lookAndFeel = Check.notEmpty(lookAndFeel, "lookAndFeel");
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
 	}
 	
-	public ServiceMessage(String service, String action, Object payload) {
-		super();
-		this.service = service;
-		this.action = action;
-		this.payload = payload;
+	public String getTheme() {
+		return theme;
 	}
 	
-	public final String getService() {
-		return service;
-	}
-	
-	public final ServiceMessage setService(String value) {
-		service = value;
-		return this;
-	}
-	
-	public final String getAction() {
-		return action;
-	}
-	
-	public final ServiceMessage setAction(String value) {
-		action = value;
-		return this;
-	}
-	
-	public Object getPayload() {
-		return payload;
-	}
-	
-	protected final MapItem payloadAsMap() {
-		return (MapItem)payload;
-	}
-	
-	public synchronized final ServiceMessage setMappedPayload(String name, Object value) {
-		if ((payload == null) || !(payload instanceof Map)) payload = new HashMap<>();
-		((Map)payload).put(name, value);
-		return this;
+	public String getLookAndFeel() {
+		return lookAndFeel;
 	}
 }

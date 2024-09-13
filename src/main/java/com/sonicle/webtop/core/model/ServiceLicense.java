@@ -38,6 +38,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 /**
@@ -123,4 +124,30 @@ public class ServiceLicense extends License {
 	public void setExtendedInfo(LicenseExInfo extendedInfo) {
 		this.extendedInfo = extendedInfo;
 	}
+	
+	/*
+	 * Computes quantity based on eventual expiration date and activation
+	 */
+	public static Integer computeLicenseQuantity(ServiceLicense sl ) {
+		LocalDate expd = sl !=null ? sl.getExpirationDate() : null;
+		Integer qta = 0;
+		if (sl != null && sl.getActivationHwId() != null) qta = sl.getQuantity();
+		if (expd != null && LocalDate.now().isAfter(expd)) qta = 0;
+		return qta;
+	}
+	
+	public static final int SOFT_TIME_WINDOW_DAYS = 2;
+	
+	public static boolean isInsideSoftTimeWindow(ServiceLicense sl) {
+		if (sl == null || sl.getActivationTimestamp() == null) return false;
+		int days = Days.daysBetween(sl.getActivationTimestamp().toLocalDate(), LocalDate.now()).getDays();
+		return days < SOFT_TIME_WINDOW_DAYS;
+	}
+	
+	public static int computeSoftTimeWindowDays(ServiceLicense sl) {
+		if (sl == null || sl.getActivationTimestamp() == null) return 0;
+		int days = Days.daysBetween(sl.getActivationTimestamp().toLocalDate(), LocalDate.now()).getDays();
+		return SOFT_TIME_WINDOW_DAYS - days;
+	}
+	
 }

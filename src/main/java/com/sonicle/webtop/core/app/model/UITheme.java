@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Sonicle S.r.l.
+ * Copyright (C) 2024 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,9 +28,9 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2021 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2024 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.model;
+package com.sonicle.webtop.core.app.model;
 
 import net.sf.qualitycheck.Check;
 
@@ -38,13 +38,15 @@ import net.sf.qualitycheck.Check;
  *
  * @author malbinola
  */
-public class UILookAndFeel {
+public class UITheme {
 	protected String id;
 	protected String name;
+	protected Boolean hasTouch;
 	
-	public UILookAndFeel(String id, String name) {
+	public UITheme(String id, String name, boolean hasTouch) {
 		this.id = Check.notNull(id, "id");
 		this.name = name;
+		this.hasTouch = hasTouch;
 	}
 
 	public String getId() {
@@ -53,5 +55,9 @@ public class UILookAndFeel {
 
 	public String getName() {
 		return name;
+	}
+	
+	public Boolean getHasTouch() {
+		return hasTouch;
 	}
 }
