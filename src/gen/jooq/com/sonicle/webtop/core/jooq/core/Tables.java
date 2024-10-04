@@ -12,11 +12,6 @@ package com.sonicle.webtop.core.jooq.core;
 public class Tables {
 
     /**
-     * The table <code>core.____customers</code>.
-     */
-    public static final com.sonicle.webtop.core.jooq.core.tables.____Customers ____CUSTOMERS = com.sonicle.webtop.core.jooq.core.tables.____Customers.____CUSTOMERS;
-
-    /**
      * The table <code>core.access_log</code>.
      */
     public static final com.sonicle.webtop.core.jooq.core.tables.AccessLog ACCESS_LOG = com.sonicle.webtop.core.jooq.core.tables.AccessLog.ACCESS_LOG;
@@ -65,11 +60,6 @@ public class Tables {
      * The table <code>core.custom_panels_tags</code>.
      */
     public static final com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags CUSTOM_PANELS_TAGS = com.sonicle.webtop.core.jooq.core.tables.CustomPanelsTags.CUSTOM_PANELS_TAGS;
-
-    /**
-     * The table <code>core.customers_deprecated</code>.
-     */
-    public static final com.sonicle.webtop.core.jooq.core.tables.CustomersDeprecated CUSTOMERS_DEPRECATED = com.sonicle.webtop.core.jooq.core.tables.CustomersDeprecated.CUSTOMERS_DEPRECATED;
 
     /**
      * The table <code>core.data_sources</code>.

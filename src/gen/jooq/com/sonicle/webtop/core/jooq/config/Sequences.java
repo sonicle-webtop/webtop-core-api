@@ -12,11 +12,6 @@ package com.sonicle.webtop.core.jooq.config;
 public class Sequences {
 
     /**
-     * The sequence <code>config.seq_fetchmail_polls</code>
-     */
-    public static final org.jooq.Sequence<java.lang.Long> SEQ_FETCHMAIL_POLLS = org.jooq.impl.Internal.createSequence("seq_fetchmail_polls", com.sonicle.webtop.core.jooq.config.Config.CONFIG, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>config.seq_pecbridge_fetchers</code>
      */
     public static final org.jooq.Sequence<java.lang.Long> SEQ_PECBRIDGE_FETCHERS = org.jooq.impl.Internal.createSequence("seq_pecbridge_fetchers", com.sonicle.webtop.core.jooq.config.Config.CONFIG, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -25,14 +20,4 @@ public class Sequences {
      * The sequence <code>config.seq_pecbridge_relays</code>
      */
     public static final org.jooq.Sequence<java.lang.Long> SEQ_PECBRIDGE_RELAYS = org.jooq.impl.Internal.createSequence("seq_pecbridge_relays", com.sonicle.webtop.core.jooq.config.Config.CONFIG, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>config.seq_virtual_aliases</code>
-     */
-    public static final org.jooq.Sequence<java.lang.Long> SEQ_VIRTUAL_ALIASES = org.jooq.impl.Internal.createSequence("seq_virtual_aliases", com.sonicle.webtop.core.jooq.config.Config.CONFIG, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>config.seq_virtual_domain_names</code>
-     */
-    public static final org.jooq.Sequence<java.lang.Long> SEQ_VIRTUAL_DOMAIN_NAMES = org.jooq.impl.Internal.createSequence("seq_virtual_domain_names", com.sonicle.webtop.core.jooq.config.Config.CONFIG, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 }

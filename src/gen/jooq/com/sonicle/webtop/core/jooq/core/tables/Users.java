@@ -101,7 +101,7 @@ public class Users extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.jooq.
 
     @java.lang.Override
     public java.util.List<org.jooq.Index> getIndexes() {
-        return java.util.Arrays.<org.jooq.Index>asList(com.sonicle.webtop.core.jooq.core.Indexes.USERS_AK1, com.sonicle.webtop.core.jooq.core.Indexes.USERS_AK2, com.sonicle.webtop.core.jooq.core.Indexes.USERS_AK3, com.sonicle.webtop.core.jooq.core.Indexes.USERS_AK4);
+        return java.util.Arrays.<org.jooq.Index>asList(com.sonicle.webtop.core.jooq.core.Indexes.USERS_AK1, com.sonicle.webtop.core.jooq.core.Indexes.USERS_AK3, com.sonicle.webtop.core.jooq.core.Indexes.USERS_AK4);
     }
 
     @java.lang.Override

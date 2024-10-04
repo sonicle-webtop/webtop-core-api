@@ -26,6 +26,7 @@ public class DataSources implements java.io.Serializable {
     private java.lang.String       password;
     private java.lang.String       driverRawProps;
     private java.lang.String       poolRawProps;
+    private java.lang.String       friendlyId;
 
     public DataSources() {}
 
@@ -43,6 +44,7 @@ public class DataSources implements java.io.Serializable {
         this.password = value.password;
         this.driverRawProps = value.driverRawProps;
         this.poolRawProps = value.poolRawProps;
+        this.friendlyId = value.friendlyId;
     }
 
     public DataSources(
@@ -58,7 +60,8 @@ public class DataSources implements java.io.Serializable {
         java.lang.String       username,
         java.lang.String       password,
         java.lang.String       driverRawProps,
-        java.lang.String       poolRawProps
+        java.lang.String       poolRawProps,
+        java.lang.String       friendlyId
     ) {
         this.dataSourceId = dataSourceId;
         this.domainId = domainId;
@@ -73,6 +76,7 @@ public class DataSources implements java.io.Serializable {
         this.password = password;
         this.driverRawProps = driverRawProps;
         this.poolRawProps = poolRawProps;
+        this.friendlyId = friendlyId;
     }
 
     /**
@@ -257,6 +261,20 @@ public class DataSources implements java.io.Serializable {
         this.poolRawProps = poolRawProps;
     }
 
+    /**
+     * Getter for <code>core.data_sources.friendly_id</code>.
+     */
+    public java.lang.String getFriendlyId() {
+        return this.friendlyId;
+    }
+
+    /**
+     * Setter for <code>core.data_sources.friendly_id</code>.
+     */
+    public void setFriendlyId(java.lang.String friendlyId) {
+        this.friendlyId = friendlyId;
+    }
+
     @Override
     public String toString() {
         java.lang.StringBuilder sb = new java.lang.StringBuilder("DataSources (");
@@ -274,6 +292,7 @@ public class DataSources implements java.io.Serializable {
         sb.append(", ").append(password);
         sb.append(", ").append(driverRawProps);
         sb.append(", ").append(poolRawProps);
+        sb.append(", ").append(friendlyId);
 
         sb.append(")");
         return sb.toString();

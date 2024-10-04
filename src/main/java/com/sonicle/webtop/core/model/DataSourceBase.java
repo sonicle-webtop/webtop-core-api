@@ -44,6 +44,7 @@ import org.joda.time.DateTime;
  * @author malbinola
  */
 public class DataSourceBase {
+	protected String friendlyId;
 	protected DateTime revisionTimestamp;
 	protected String name;
 	protected String description;
@@ -55,7 +56,15 @@ public class DataSourceBase {
 	protected String password;
 	protected Map<String, String> driverProps;
 	protected Map<String, String> poolProps;
+	
+	public String getFriendlyId() {
+		return friendlyId;
+	}
 
+	public void setFriendlyId(String friendlyId) {
+		this.friendlyId = friendlyId;
+	}
+	
 	public DateTime getRevisionTimestamp() {
 		return revisionTimestamp;
 	}

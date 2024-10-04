@@ -38,6 +38,7 @@ import com.sonicle.webtop.core.jooq.core.tables.records.DataSourcesRecord;
 import java.sql.Connection;
 import java.util.List;
 import org.joda.time.DateTime;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.UpdateSetMoreStep;
 
@@ -88,13 +89,19 @@ public class DataSourceDAO extends BaseDAO {
 			.fetchOne(0, Integer.class) == 1;
 	}
 	
-	public ODataSource selectByIdDomain(Connection con, String dataSourceId, String domainId) throws DAOException {
+	public ODataSource selectByIdDomain(Connection con, String id, String domainId, boolean useFriendlyId) throws DAOException {
 		DSLContext dsl = getDSL(con);
+		Condition idCndt = null;
+		if (useFriendlyId) {
+			idCndt = DATA_SOURCES.FRIENDLY_ID.eq(id);
+		} else {
+			idCndt = DATA_SOURCES.DATA_SOURCE_ID.eq(id);
+		}
 		return dsl
 			.select()
 			.from(DATA_SOURCES)
 			.where(
-				DATA_SOURCES.DATA_SOURCE_ID.eq(dataSourceId)
+				idCndt
 				.and(DATA_SOURCES.DOMAIN_ID.eq(domainId)) // Forces domain membership
 			)
 			.fetchOneInto(ODataSource.class);
@@ -124,7 +131,8 @@ public class DataSourceDAO extends BaseDAO {
 			.set(DATA_SOURCES.DATABASE_NAME, item.getDatabaseName())
 			.set(DATA_SOURCES.USERNAME, item.getUsername())
 			.set(DATA_SOURCES.DRIVER_RAW_PROPS, item.getDriverRawProps())
-			.set(DATA_SOURCES.POOL_RAW_PROPS, item.getPoolRawProps());
+			.set(DATA_SOURCES.POOL_RAW_PROPS, item.getPoolRawProps())
+			.set(DATA_SOURCES.FRIENDLY_ID, item.getFriendlyId());
 		if (setPassword) {
 			update = update
 				.set(DATA_SOURCES.PASSWORD, item.getPassword());

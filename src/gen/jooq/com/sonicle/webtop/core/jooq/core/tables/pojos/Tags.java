@@ -15,10 +15,10 @@ public class Tags implements java.io.Serializable {
 
     private java.lang.String  tagId;
     private java.lang.String  domainId;
+    private java.lang.String  userId;
     private java.lang.Boolean builtIn;
     private java.lang.String  name;
     private java.lang.String  color;
-    private java.lang.String  userId;
     private java.lang.String  externalId;
 
     public Tags() {}
@@ -26,28 +26,28 @@ public class Tags implements java.io.Serializable {
     public Tags(Tags value) {
         this.tagId = value.tagId;
         this.domainId = value.domainId;
+        this.userId = value.userId;
         this.builtIn = value.builtIn;
         this.name = value.name;
         this.color = value.color;
-        this.userId = value.userId;
         this.externalId = value.externalId;
     }
 
     public Tags(
         java.lang.String  tagId,
         java.lang.String  domainId,
+        java.lang.String  userId,
         java.lang.Boolean builtIn,
         java.lang.String  name,
         java.lang.String  color,
-        java.lang.String  userId,
         java.lang.String  externalId
     ) {
         this.tagId = tagId;
         this.domainId = domainId;
+        this.userId = userId;
         this.builtIn = builtIn;
         this.name = name;
         this.color = color;
-        this.userId = userId;
         this.externalId = externalId;
     }
 
@@ -77,6 +77,20 @@ public class Tags implements java.io.Serializable {
      */
     public void setDomainId(java.lang.String domainId) {
         this.domainId = domainId;
+    }
+
+    /**
+     * Getter for <code>core.tags.user_id</code>.
+     */
+    public java.lang.String getUserId() {
+        return this.userId;
+    }
+
+    /**
+     * Setter for <code>core.tags.user_id</code>.
+     */
+    public void setUserId(java.lang.String userId) {
+        this.userId = userId;
     }
 
     /**
@@ -122,20 +136,6 @@ public class Tags implements java.io.Serializable {
     }
 
     /**
-     * Getter for <code>core.tags.user_id</code>.
-     */
-    public java.lang.String getUserId() {
-        return this.userId;
-    }
-
-    /**
-     * Setter for <code>core.tags.user_id</code>.
-     */
-    public void setUserId(java.lang.String userId) {
-        this.userId = userId;
-    }
-
-    /**
      * Getter for <code>core.tags.external_id</code>.
      */
     public java.lang.String getExternalId() {
@@ -155,10 +155,10 @@ public class Tags implements java.io.Serializable {
 
         sb.append(tagId);
         sb.append(", ").append(domainId);
+        sb.append(", ").append(userId);
         sb.append(", ").append(builtIn);
         sb.append(", ").append(name);
         sb.append(", ").append(color);
-        sb.append(", ").append(userId);
         sb.append(", ").append(externalId);
 
         sb.append(")");

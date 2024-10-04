@@ -81,7 +81,7 @@ public class CustomPanelsFields extends org.jooq.impl.TableImpl<com.sonicle.webt
 
     @java.lang.Override
     public java.util.List<org.jooq.Index> getIndexes() {
-        return java.util.Arrays.<org.jooq.Index>asList(com.sonicle.webtop.core.jooq.core.Indexes.CUSTOM_PANELS_FIELDS_AK1);
+        return java.util.Arrays.<org.jooq.Index>asList(com.sonicle.webtop.core.jooq.core.Indexes.CUSTOM_PANELS_FIELDS_AK1, com.sonicle.webtop.core.jooq.core.Indexes.CUSTOM_PANELS_FIELDS_AK2);
     }
 
     @java.lang.Override

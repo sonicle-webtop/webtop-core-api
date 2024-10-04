@@ -91,6 +91,11 @@ public class DataSources extends org.jooq.impl.TableImpl<com.sonicle.webtop.core
      */
     public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DataSourcesRecord, java.lang.String> POOL_RAW_PROPS = createField(org.jooq.impl.DSL.name("pool_raw_props"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
 
+    /**
+     * The column <code>core.data_sources.friendly_id</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.DataSourcesRecord, java.lang.String> FRIENDLY_ID = createField(org.jooq.impl.DSL.name("friendly_id"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+
     private DataSources(org.jooq.Name alias, org.jooq.Table<com.sonicle.webtop.core.jooq.core.tables.records.DataSourcesRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -130,11 +135,6 @@ public class DataSources extends org.jooq.impl.TableImpl<com.sonicle.webtop.core
     }
 
     @java.lang.Override
-    public java.util.List<org.jooq.Index> getIndexes() {
-        return java.util.Arrays.<org.jooq.Index>asList(com.sonicle.webtop.core.jooq.core.Indexes.DATA_SOURCES_AK1);
-    }
-
-    @java.lang.Override
     public org.jooq.UniqueKey<com.sonicle.webtop.core.jooq.core.tables.records.DataSourcesRecord> getPrimaryKey() {
         return com.sonicle.webtop.core.jooq.core.Keys.DATA_SOURCES_PKEY;
     }
@@ -171,11 +171,11 @@ public class DataSources extends org.jooq.impl.TableImpl<com.sonicle.webtop.core
     }
 
     // -------------------------------------------------------------------------
-    // Row13 type methods
+    // Row14 type methods
     // -------------------------------------------------------------------------
 
     @java.lang.Override
-    public org.jooq.Row13<java.lang.String, java.lang.String, org.joda.time.DateTime, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Integer, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String> fieldsRow() {
-        return (org.jooq.Row13) super.fieldsRow();
+    public org.jooq.Row14<java.lang.String, java.lang.String, org.joda.time.DateTime, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Integer, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String> fieldsRow() {
+        return (org.jooq.Row14) super.fieldsRow();
     }
 }
