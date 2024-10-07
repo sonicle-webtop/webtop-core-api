@@ -33,8 +33,12 @@
 package com.sonicle.webtop.core.bol;
 
 import com.sonicle.commons.LangUtils;
+import com.sonicle.commons.RegexUtils;
+import com.sonicle.webtop.core.dal.BaseDAO;
 import com.sonicle.webtop.core.jooq.core.tables.pojos.DataSources;
 import java.util.Map;
+import net.sf.qualitycheck.Check;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -48,5 +52,17 @@ public class ODataSource extends DataSources {
 	
 	public Map<String, String> getPoolPropsMap() {
 		return LangUtils.parseStringAsKeyValueMap(getPoolRawProps());
+	}
+	
+	public static void validate(ODataSource tgt) {
+		if (!StringUtils.isBlank(tgt.getFriendlyId())) Check.matchesPattern(RegexUtils.match(RegexUtils.MATCH_USERNAME_CHARS), tgt.getFriendlyId(), "friendlyId");
+		Check.notNull(tgt.getName(), "name");
+	}
+	
+	public static ODataSource fillDefaultsForInsert(ODataSource tgt) {
+		if (tgt != null) {
+			if (tgt.getRevisionTimestamp() == null) tgt.setRevisionTimestamp(BaseDAO.createRevisionTimestamp());
+		}
+		return tgt;
 	}
 }
