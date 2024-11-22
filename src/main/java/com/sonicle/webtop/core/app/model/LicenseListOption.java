@@ -40,7 +40,7 @@ import com.sonicle.commons.flags.BitFlagsEnum;
  * @author malbinola
  */
 public enum LicenseListOption implements BitFlagsEnum<LicenseListOption> {
-	INCLUDE_BUILTIN(1 << 0), EXTENDED_INFO(1 << 1);
+	INCLUDE_BUILTIN(1<<0), EXTENDED_INFO(1<<1);
 	
 	private long mask = 0;
 	private LicenseListOption(long mask) { this.mask = mask; }

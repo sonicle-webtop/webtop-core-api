@@ -40,7 +40,7 @@ import com.sonicle.commons.flags.BitFlagsEnum;
  * @author malbinola
  */
 public enum RoleUpdateOption implements BitFlagsEnum<RoleUpdateOption> {
-	SUBJECTS_AS_SID(1 << 0), SUBJECT_ASSOCIATIONS(1 << 1), PERMISSIONS(1 << 3), SERVICE_PERMISSIONS(1 << 4);
+	SUBJECTS_AS_SID(1<<0), SUBJECT_ASSOCIATIONS(1<<1), PERMISSIONS(1<<3), SERVICE_PERMISSIONS(1<<4);
 	
 	private long mask = 0;
 	private RoleUpdateOption(long mask) { this.mask = mask; }
@@ -49,14 +49,5 @@ public enum RoleUpdateOption implements BitFlagsEnum<RoleUpdateOption> {
 	
 	public static BitFlags<RoleUpdateOption> internalDefaultFlags() {
 		return BitFlags.with(SUBJECTS_AS_SID, PERMISSIONS, SERVICE_PERMISSIONS);
-	}
-	
-	public static void main(String[] args) {
-		System.out.println("0: " + (1 << 0));
-		System.out.println("1: " + (1 << 1));
-		System.out.println("2: " + (1 << 2));
-		System.out.println("3: " + (1 << 3));
-		System.out.println("4: " + (1 << 4));
-		System.out.println("5: " + (1 << 5));
 	}
 }

@@ -150,7 +150,7 @@ public class FolderShare {
 	}
 	
 	public static enum FolderRight implements BitFlagsEnum<FolderRight> {
-		READ(1 << 0), UPDATE(1 << 2), DELETE(1 << 3), MANAGE(1 << 4);
+		READ(1<<0), UPDATE(1<<2), DELETE(1<<3), MANAGE(1<<4);
 		
 		private long mask = 0;
 		private FolderRight(long mask) { this.mask = mask; }
@@ -201,7 +201,7 @@ public class FolderShare {
 	}
 	
 	public static enum ItemsRight implements BitFlagsEnum<ItemsRight> {
-		CREATE(1 << 1), UPDATE(1 << 2), DELETE(1 << 3);
+		CREATE(1<<1), UPDATE(1<<2), DELETE(1<<3);
 		
 		private long mask = 0;
 		private ItemsRight(long mask) { this.mask = mask; }

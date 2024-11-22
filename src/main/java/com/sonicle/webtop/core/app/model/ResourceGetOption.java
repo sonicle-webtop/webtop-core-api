@@ -40,7 +40,7 @@ import com.sonicle.commons.flags.BitFlagsEnum;
  * @author malbinola
  */
 public enum ResourceGetOption implements BitFlagsEnum<ResourceGetOption> {
-	SUBJECTS_AS_SID(1 << 0), PERMISSIONS(1 << 1);
+	SUBJECTS_AS_SID(1<<0), PERMISSIONS(1<<1);
 	
 	private long mask = 0;
 	private ResourceGetOption(long mask) { this.mask = mask; }

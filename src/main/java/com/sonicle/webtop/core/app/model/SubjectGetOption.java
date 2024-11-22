@@ -39,7 +39,7 @@ import com.sonicle.commons.flags.BitFlagsEnum;
  * @author malbinola
  */
 public enum SubjectGetOption implements BitFlagsEnum<SubjectGetOption> {
-	USERS(1 << 0), RESOURCES(1 << 2), GROUPS(1 << 3), ROLES(1 << 4), PID_AS_KEY(1 << 16);
+	USERS(1<<0), RESOURCES(1<<2), GROUPS(1<<3), ROLES(1<<4), PID_AS_KEY(1<<16);
 	
 	private long mask = 0;
 	private SubjectGetOption(long mask) { this.mask = mask; }

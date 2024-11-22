@@ -40,7 +40,7 @@ import com.sonicle.commons.flags.BitFlagsEnum;
  * @author malbinola
  */
 public enum DomainUpdateOption implements BitFlagsEnum<DomainUpdateOption> {
-	DIRECTORY_PASSWORD(1 << 0), DIRECTORY_DATA(1 << 1);
+	DIRECTORY_PASSWORD(1<<0), DIRECTORY_DATA(1<<1);
 	
 	private long mask = 0;
 	private DomainUpdateOption(long mask) { this.mask = mask; }

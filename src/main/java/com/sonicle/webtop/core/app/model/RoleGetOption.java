@@ -40,7 +40,7 @@ import com.sonicle.commons.flags.BitFlagsEnum;
  * @author malbinola
  */
 public enum RoleGetOption implements BitFlagsEnum<RoleGetOption> {
-	SUBJECTS_AS_SID(1 << 0), SUBJECT_ASSOCIATIONS(1 << 1), PERMISSIONS(1 << 3), SERVICE_PERMISSIONS(1 << 4);
+	SUBJECTS_AS_SID(1<<0), SUBJECT_ASSOCIATIONS(1<<1), PERMISSIONS(1<<3), SERVICE_PERMISSIONS(1<<4);
 	
 	private long mask = 0;
 	private RoleGetOption(long mask) { this.mask = mask; }

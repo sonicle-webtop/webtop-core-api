@@ -40,7 +40,7 @@ import com.sonicle.commons.flags.BitFlagsEnum;
  * @author malbinola
  */
 public enum DomainGetOption implements BitFlagsEnum<DomainGetOption> {
-	DIRECTORY_DATA(1 << 1);
+	DIRECTORY_DATA(1<<1);
 	
 	private long mask = 0;
 	private DomainGetOption(long mask) { this.mask = mask; }

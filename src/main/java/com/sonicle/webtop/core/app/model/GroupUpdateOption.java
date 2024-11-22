@@ -40,7 +40,7 @@ import com.sonicle.commons.flags.BitFlagsEnum;
  * @author malbinola
  */
 public enum GroupUpdateOption implements BitFlagsEnum<GroupUpdateOption> {
-	SUBJECTS_AS_SID(1 << 0), USER_ASSOCIATIONS(1 << 1), ROLE_ASSOCIATIONS(1 << 2), PERMISSIONS(1 << 3), SERVICE_PERMISSIONS(1 << 4);
+	SUBJECTS_AS_SID(1<<0), USER_ASSOCIATIONS(1<<1), ROLE_ASSOCIATIONS(1<<2), PERMISSIONS(1<<3), SERVICE_PERMISSIONS(1<<4);
 	
 	private long mask = 0;
 	private GroupUpdateOption(long mask) { this.mask = mask; }
