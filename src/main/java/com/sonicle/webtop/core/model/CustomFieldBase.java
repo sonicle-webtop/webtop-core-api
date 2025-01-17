@@ -166,6 +166,46 @@ public class CustomFieldBase {
 		@SerializedName("D") DELETED;
 	}
 	
+	public static RawValueType toRawValueType(final CustomField.Type customFieldType) {
+		if (CustomField.Type.TEXT.equals(customFieldType)) {
+			return RawValueType.CVSTRING;
+			
+		} else if (CustomField.Type.TEXTAREA.equals(customFieldType)) {
+			return RawValueType.CVTEXT;
+		
+		} else if (CustomField.Type.NUMBER.equals(customFieldType)) {
+			return RawValueType.CVNUMBER;
+			
+		} else if (CustomField.Type.DATE.equals(customFieldType)) {
+			return RawValueType.CVDATE;
+			
+		} else if (CustomField.Type.TIME.equals(customFieldType)) {
+			return RawValueType.CVDATE;
+			
+		} else if (CustomField.Type.DATE_TIME.equals(customFieldType)) {
+			return RawValueType.CVDATE;
+			
+		} else if (CustomField.Type.CHECKBOX.equals(customFieldType)) {
+			return RawValueType.CVBOOL;
+		
+		} else if (CustomField.Type.COMBOBOX.equals(customFieldType) || CustomField.Type.COMBOBOX_DATASOURCE.equals(customFieldType)) {
+			return RawValueType.CVSTRING;
+			
+		} else if (CustomField.Type.TAG.equals(customFieldType) || CustomField.Type.TAG_DATASOURCE.equals(customFieldType)) {
+			return RawValueType.CVSTRINGARRAY;
+			
+		} else if (CustomField.Type.CONTACT_PICKER.equals(customFieldType)) {
+			return RawValueType.CVSTRING;
+			
+		} else {
+			return null;
+		}
+	}
+	
+	public static enum RawValueType {
+		CVSTRING, CVSTRINGARRAY, CVNUMBER, CVBOOL, CVDATE, CVTEXT
+	}
+	
 	public static class Props extends HashMap<String, String> {
 	
 		public Props() {

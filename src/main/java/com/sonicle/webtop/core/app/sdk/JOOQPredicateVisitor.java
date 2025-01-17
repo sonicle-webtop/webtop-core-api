@@ -32,6 +32,8 @@
  */
 package com.sonicle.webtop.core.app.sdk;
 
+import com.sonicle.commons.flags.BitFlags;
+import com.sonicle.commons.flags.BitFlagsEnum;
 import com.sonicle.commons.qbuilders.nodes.AbstractNode;
 import com.sonicle.commons.qbuilders.nodes.AndNode;
 import com.sonicle.commons.qbuilders.nodes.ComparisonNode;
@@ -52,12 +54,13 @@ import org.jooq.impl.DSL;
 import org.jooq.util.postgres.PostgresDSL;
 
 /**
- *
+ * @deprecated use JOOQConditionBuildingVisitor instead
  * @author malbinola
  */
+@Deprecated
 public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisitor<Condition> {
 	protected final Function<Object, Object> normalizer;
-	protected boolean ignoreCase = false;
+	protected boolean globalIgnoreCase = false;
 	protected boolean forceStringLikeComparison = false;
 	
 	public JOOQPredicateVisitor() {
@@ -69,7 +72,7 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 	}
 	
 	public <T extends JOOQPredicateVisitor> T withIgnoreCase(boolean ignoreCase) {
-		this.ignoreCase = ignoreCase;
+		this.globalIgnoreCase = ignoreCase;
 		return (T)this;
 	}
 	
@@ -117,12 +120,19 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 	}
 	
 	protected <T> Condition defaultCondition(Field<T> field, ComparisonOperator operator, Collection<?> values) {
-		return defaultCondition(field, false, operator, values);
+		return defaultCondition(field, operator, values, BitFlags.noneOf(ConditionOption.class));
 	}
 	
 	protected <T> Condition defaultCondition(Field<T> field, boolean fieldModeArray, ComparisonOperator operator, Collection<?> values) {
+		return defaultCondition(field, operator, values, fieldModeArray ? BitFlags.with(ConditionOption.STRING_FIELDMODE_ARRAY) : BitFlags.noneOf(ConditionOption.class));
+	}
+	
+	protected <T> Condition defaultCondition(Field<T> field, ComparisonOperator operator, Collection<?> values, final BitFlags<ConditionOption> opts) {
+		final boolean ignoreCase = opts.has(ConditionOption.STRING_ICASE_COMP);
+		final boolean useLike = opts.has(ConditionOption.STRING_LIKE_COMP);
 		// When fieldModeArray is `true`, DB field value will be a String of values separated by a colon (,).
 		// In this situation, the only operators suitable are EQ and NOT EQ.
+		final boolean fieldModeArray = opts.has(ConditionOption.STRING_FIELDMODE_ARRAY);
 		if (fieldModeArray && (!ComparisonOperator.EQ.equals(operator) && !ComparisonOperator.NE.equals(operator))) {
 			throw new UnsupportedOperationException("Operator not supported in array mode: " + operator.toString());
 		}
@@ -133,9 +143,9 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 					return DSL.value((String)value).equal(DSL.any(PostgresDSL.stringToArray((Field<String>) field, ",")));
 					
 				} else {
-					if (forceStringLikeComparison || valueContainsWildcard(value)) {
-						return ignoreCase ? field.likeIgnoreCase(valueToLikePattern(value)) : field.like(valueToLikePattern(value));
-					} else if (ignoreCase) {
+					if (forceStringLikeComparison || useLike || valueContainsWildcard(value)) {
+						return (globalIgnoreCase || ignoreCase) ? field.likeIgnoreCase(valueToLikePattern(value)) : field.like(valueToLikePattern(value));
+					} else if (globalIgnoreCase || ignoreCase) {
 						return field.equalIgnoreCase(value);
 					}
 				}
@@ -242,5 +252,14 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 			}
 			return o;
 		}
+	}
+	
+	public static enum ConditionOption implements BitFlagsEnum<ConditionOption> {
+		STRING_ICASE_COMP(1<<0), STRING_LIKE_COMP(1<<1), STRING_FIELDMODE_ARRAY(1<<2);
+		
+		private int mask = 0;
+		private ConditionOption(int mask) { this.mask = mask; }
+		@Override
+		public long mask() { return this.mask; }
 	}
 }

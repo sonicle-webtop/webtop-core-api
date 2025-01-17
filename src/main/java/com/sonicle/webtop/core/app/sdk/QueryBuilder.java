@@ -126,8 +126,15 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 		}
 	}
 	
-	protected static String[] toConditionStringValues(final String value, final boolean stringSmartComparison) {
-		if (!stringSmartComparison || valueContainsWildcard(value)) {
+	/**
+	 * Transforms and formats passed value into a suitable String object array for 
+	 * condition clauses by splitting source string by *space* char.
+	 * @param value
+	 * @param useWildcardMatch Set to `true` to wrap value into wildcard notation (only if are not already used).
+	 * @return 
+	 */
+	protected static String[] asStringValues(final String value, final boolean useWildcardMatch) {
+		if (!useWildcardMatch || valueContainsWildcard(value)) {
 			return new String[]{value};
 		} else {
 			String[] tokens = StringUtils.split(value, " ");
@@ -138,10 +145,23 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 		}
 	}
 	
-	protected static String asStringValue(final String value, final boolean stringSmartComparison) {
-		return stringSmartComparison ? buildSmartValue(value) : value;
+	/**
+	 * Formats passed value into a suitable String object for condition clauses.
+	 * @param value The source value.
+	 * @param useWildcardMatch Set to `true` to wrap value into wildcard notation (only if are not already used).
+	 * @return 
+	 */
+	protected static String asStringValue(final String value, final boolean useWildcardMatch) {
+		return useWildcardMatch ? buildWildcardValue(value) : value;
 	}
 	
+	/**
+	 * Formats passed value into a suitable Instant object for condition clauses.
+	 * @param value The source value.
+	 * @param type
+	 * @param timezone
+	 * @return 
+	 */
 	protected static Instant asInstantValue(final String value, final InstantType type, final DateTimeZone timezone) {
 		if (InstantType.DATE.equals(type)) {
 			return DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(value), DateTimeUtils.toZoneId(timezone));
@@ -158,7 +178,7 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 	 * @param value
 	 * @return 
 	 */
-	protected static String buildSmartValue(final String value) {
+	protected static String buildWildcardValue(final String value) {
 		if (valueContainsWildcard(value)) {
 			return value;
 		} else {
@@ -235,5 +255,23 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 	
 	public static enum ValueOperator {
 		GT, GTE, LT, LTE, BETWEEN
+	}
+	
+	/**
+	 * @deprecated use asStringValues instead
+	 * @param value
+	 * @param stringSmartComparison
+	 * @return 
+	 */
+	@Deprecated protected static String[] toConditionStringValues(final String value, final boolean stringSmartComparison) {
+		if (!stringSmartComparison || valueContainsWildcard(value)) {
+			return new String[]{value};
+		} else {
+			String[] tokens = StringUtils.split(value, " ");
+			for (int i = 0; i < tokens.length; i++) {
+				tokens[i] = "*" + tokens[i] + "*";
+			}
+			return tokens;
+		}
 	}
 }

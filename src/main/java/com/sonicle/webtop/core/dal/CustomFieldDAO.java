@@ -111,6 +111,35 @@ public class CustomFieldDAO extends BaseDAO {
 			.fetchMap(CUSTOM_FIELDS.CUSTOM_FIELD_ID, CUSTOM_FIELDS.TYPE);
 	}
 	
+	public Map<String, String> mapOnlineNamesByDomainServiceSearchable(Connection con, String domainId, String serviceId, Boolean searchable) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		
+		Condition searchableCndt = DSL.trueCondition();
+		if (searchable != null) {
+			searchableCndt = (searchable == true) ? CUSTOM_FIELDS.SEARCHABLE.isTrue() : CUSTOM_FIELDS.SEARCHABLE.isFalse();
+		}
+		
+		return dsl
+			.select(
+				CUSTOM_FIELDS.CUSTOM_FIELD_ID,
+				CUSTOM_FIELDS.NAME
+			)
+			.from(CUSTOM_FIELDS)
+			.where(
+				CUSTOM_FIELDS.DOMAIN_ID.equal(domainId)
+				.and(CUSTOM_FIELDS.SERVICE_ID.equal(serviceId))
+				.and(
+					CUSTOM_FIELDS.REVISION_STATUS.equal(EnumUtils.toSerializedName(CustomField.RevisionStatus.NEW))
+					.or(CUSTOM_FIELDS.REVISION_STATUS.equal(EnumUtils.toSerializedName(CustomField.RevisionStatus.MODIFIED)))
+				)
+				.and(searchableCndt)
+			)
+			.orderBy(
+				CUSTOM_FIELDS.CUSTOM_FIELD_ID.asc()
+			)
+			.fetchMap(CUSTOM_FIELDS.NAME, CUSTOM_FIELDS.CUSTOM_FIELD_ID);
+	}
+	
 	public Map<String, VCustomField> viewOnlineByDomainService(Connection con, String domainId, String serviceId, int limit) throws DAOException {
 		return viewOnlineByDomainServiceSearchablePreviewable(con, domainId, serviceId, null, null, limit);
 	}

@@ -33,10 +33,18 @@
  */
 package com.sonicle.webtop.core.dal;
 
+import com.sonicle.commons.beans.SortInfo;
 import com.sonicle.commons.db.DbUtils;
+import com.sonicle.commons.rsql.parser.Operator;
+import com.sonicle.commons.rsql.parser.RSQLParser;
+import com.sonicle.commons.rsql.parser.ast.ComparisonOperator;
+import com.sonicle.commons.rsql.parser.ast.Node;
+import com.sonicle.commons.rsql.parser.ast.RSQLOperators;
+import com.sonicle.webtop.core.app.sdk.JOOQConditionBuildingVisitor;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jooq.Condition;
@@ -46,6 +54,7 @@ import org.jooq.ExecuteContext;
 import org.jooq.Field;
 import org.jooq.RecordMapperProvider;
 import org.jooq.SQLDialect;
+import org.jooq.SortField;
 import org.jooq.conf.MappedSchema;
 import org.jooq.conf.RenderMapping;
 import org.jooq.conf.Settings;
@@ -59,6 +68,9 @@ import org.jooq.impl.DefaultExecuteListenerProvider;
  * @author malbinola
  */
 public class BaseDAO {
+	public static final String CHANGE_TYPE_CREATION = "C";
+	public static final String CHANGE_TYPE_UPDATE = "U";
+	public static final String CHANGE_TYPE_DELETION = "D";
 	
 	public Configuration createConfiguration(Connection con) {
 		return createConfiguration(con, null, null);
@@ -119,6 +131,25 @@ public class BaseDAO {
 	public static Condition createCondition(com.sonicle.commons.qbuilders.conditions.Condition<?> conditionPredicate, com.sonicle.commons.qbuilders.visitors.ContextualNodeVisitor<? extends Condition, Void> visitor) {
 		return (conditionPredicate != null) ? conditionPredicate.query(visitor) : DSL.trueCondition();
 	}
+	
+	public static Condition createCondition(final String rsqlQuery, JOOQConditionBuildingVisitor visitor) {
+		return StringUtils.isBlank(rsqlQuery) ? null : parseRSQL(rsqlQuery).accept(visitor);
+	}
+	
+	private static Node parseRSQL(final String s) {
+		java.util.Set<ComparisonOperator> ops = new java.util.HashSet<>();
+		ops.addAll(RSQLOperators.defaultOperators());
+		ops.addAll(Operator.extendedOperators());
+		return new RSQLParser(ops).parse(s);
+	}
+	
+	public static SortField<?> toSortField(final Field<?> field, final SortInfo sortInfo) {
+		return toSortField(field, sortInfo.getDirection());
+	}
+	
+	public static SortField<?> toSortField(final Field<?> field, final SortInfo.Direction direction) {
+		return SortInfo.Direction.DESC.equals(direction) ? field.desc() : field.asc();
+	} 
 	
 	public static class FieldsMap extends HashMap<Field<?>, Object> {
 		

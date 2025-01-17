@@ -50,9 +50,10 @@ import static org.jooq.impl.DSL.exists;
 import static org.jooq.impl.DSL.selectOne;
 
 /**
- *
+ * @deprecated use JOOQConditionBuildingVisitorWithCFields instead
  * @author malbinola
  */
+@Deprecated
 public abstract class JOOQPredicateVisitorWithCValues extends JOOQPredicateVisitor {
 	protected final boolean negatedEqualityIsStrict;
 	

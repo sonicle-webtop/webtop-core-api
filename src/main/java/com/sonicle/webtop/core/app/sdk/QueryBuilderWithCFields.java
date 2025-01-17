@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Sonicle S.r.l.
+ * Copyright (C) 2025 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,57 +28,56 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2020 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2025 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.core.app.sdk;
 
+import com.sonicle.commons.EnumUtils;
 import com.sonicle.commons.qbuilders.conditions.Condition;
 import com.sonicle.commons.qbuilders.properties.concrete.BooleanProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.DoubleProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.InstantProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.StringProperty;
-import com.sonicle.commons.EnumUtils;
 import com.sonicle.commons.web.json.CId;
+import static com.sonicle.webtop.core.app.sdk.QueryBuilder.asStringValue;
+import static com.sonicle.webtop.core.app.sdk.QueryBuilder.splitOperator;
 import com.sonicle.webtop.core.model.CustomField;
+import com.sonicle.webtop.core.model.CustomFieldBase;
+import net.sf.qualitycheck.Check;
 import org.joda.time.DateTimeZone;
 
 /**
- * @deprecated use QueryBuilderWithCFields instead
+ *
  * @author malbinola
  * @param <T>
  */
-@Deprecated
-public abstract class QueryBuilderWithCValues<T extends QueryBuilder<T>> extends QueryBuilder<T> {
+public class QueryBuilderWithCFields<T extends QueryBuilder<T>> extends QueryBuilder<T> {
 	
-	public static enum Type {
-		CVSTRING, CVSTRINGARRAY, CVNUMBER, CVBOOL, CVDATE, CVTEXT
+	protected StringProperty<T> customValueString(final String fieldId) {
+		return string(CId.build(EnumUtils.getName(CustomFieldBase.RawValueType.CVSTRING), fieldId).toString());
 	}
 	
-	public StringProperty<T> customValueString(final String fieldId) {
-		return string(CId.build(EnumUtils.getName(Type.CVSTRING), fieldId).toString());
+	protected StringProperty<T> customValueStringArray(final String fieldId) {
+		return string(CId.build(EnumUtils.getName(CustomFieldBase.RawValueType.CVSTRINGARRAY), fieldId).toString());
 	}
 	
-	public StringProperty<T> customValueStringArray(final String fieldId) {
-		return string(CId.build(EnumUtils.getName(Type.CVSTRINGARRAY), fieldId).toString());
+	protected DoubleProperty<T> customValueNumber(final String fieldId) {
+		return doubleNum(CId.build(EnumUtils.getName(CustomFieldBase.RawValueType.CVNUMBER), fieldId).toString());
 	}
 	
-	public DoubleProperty<T> customValueNumber(final String fieldId) {
-		return doubleNum(CId.build(EnumUtils.getName(Type.CVNUMBER), fieldId).toString());
+	protected BooleanProperty<T> customValueBoolean(final String fieldId) {
+		return bool(CId.build(EnumUtils.getName(CustomFieldBase.RawValueType.CVBOOL), fieldId).toString());
 	}
 	
-	public BooleanProperty<T> customValueBoolean(final String fieldId) {
-		return bool(CId.build(EnumUtils.getName(Type.CVBOOL), fieldId).toString());
+	protected InstantProperty<T> customValueDate(final String fieldId) {
+		return instant(CId.build(EnumUtils.getName(CustomFieldBase.RawValueType.CVDATE), fieldId).toString());
 	}
 	
-	public InstantProperty<T> customValueDate(final String fieldId) {
-		return instant(CId.build(EnumUtils.getName(Type.CVDATE), fieldId).toString());
+	protected StringProperty<T> customValueText(final String fieldId) {
+		return string(CId.build(EnumUtils.getName(CustomFieldBase.RawValueType.CVTEXT), fieldId).toString());
 	}
 	
-	public StringProperty<T> customValueText(final String fieldId) {
-		return string(CId.build(EnumUtils.getName(Type.CVTEXT), fieldId).toString());
-	}
-	
-	protected Condition<T> customValueCondition(final String customFieldId, final CustomField.Type customFieldType, final String value, final boolean negated, final boolean smartStringComparison, final DateTimeZone timezone) {
+	protected Condition<T> customFieldCondition(final String customFieldId, final CustomField.Type customFieldType, final String value, final boolean negated, final boolean smartStringComparison, final DateTimeZone timezone) {
 		if (CustomField.Type.TEXT.equals(customFieldType)) {
 			return condition(customValueString(customFieldId), asStringValue(value, smartStringComparison), negated);
 			
@@ -111,6 +110,64 @@ public abstract class QueryBuilderWithCValues<T extends QueryBuilder<T>> extends
 			
 		} else {
 			throw new UnsupportedOperationException("CustomField type not supported: " + customFieldType);
+		}
+	}
+	
+	public static final class StringCField extends CField {
+		public StringCField(String id) {
+			super(id, CustomFieldBase.RawValueType.CVSTRING);
+		}
+	}
+	
+	public static final class StringArrayCField extends CField {
+		public StringArrayCField(String id) {
+			super(id, CustomFieldBase.RawValueType.CVSTRING);
+		}
+	}
+	
+	public static final class NumberCField extends CField {
+		public NumberCField(String id) {
+			super(id, CustomFieldBase.RawValueType.CVNUMBER);
+		}
+	}
+	
+	public static final class BoolCField extends CField {
+		public BoolCField(String id) {
+			super(id, CustomFieldBase.RawValueType.CVBOOL);
+		}
+	}
+	
+	public static final class DateCField extends CField {
+		public DateCField(String id) {
+			super(id, CustomFieldBase.RawValueType.CVDATE);
+		}
+	}
+	
+	public static final class TextCField extends CField {
+		public TextCField(String id) {
+			super(id, CustomFieldBase.RawValueType.CVTEXT);
+		}
+	}
+	
+	public static abstract class CField {
+		private final String id;
+		private final CustomFieldBase.RawValueType valueType;
+		
+		public CField(String id, CustomFieldBase.RawValueType valueType) {
+			this.id = Check.notNull(id, "id");
+			this.valueType = Check.notNull(valueType, "valueType");
+		}
+		
+		public String getId() {
+			return id;
+		}
+		
+		public CustomFieldBase.RawValueType getValueType() {
+			return valueType;
+		}
+		
+		public String buildName() {
+			return CId.build(EnumUtils.getName(getValueType()), getId()).toString();
 		}
 	}
 }
