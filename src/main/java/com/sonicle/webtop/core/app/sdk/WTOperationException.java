@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Sonicle S.r.l.
+ * Copyright (C) 2024 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,35 +28,35 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2022 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2024 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.core.app.sdk;
 
 import com.sonicle.webtop.core.sdk.WTException;
 
 /**
- * @deprecated use WTOperationException instead
+ *
  * @author malbinola
  */
-public class WTOperationalException extends WTException {
+public class WTOperationException extends WTException {
 	protected final String operationId;
 	
-	public WTOperationalException(String operationId) {
+	public WTOperationException(String operationId) {
 		super();
 		this.operationId = operationId;
 	}
 	
-	public WTOperationalException(String operationId, Throwable cause) {
+	public WTOperationException(String operationId, Throwable cause) {
 		super(cause);
 		this.operationId = operationId;
 	}
 	
-	public WTOperationalException(String operationId, String message, Object... arguments) {
+	public WTOperationException(String operationId, String message, Object... arguments) {
 		super(message, arguments);
 		this.operationId = operationId;
 	}
 	
-	public WTOperationalException(String operationId, Throwable cause, String message, Object... arguments) {
+	public WTOperationException(String operationId, Throwable cause, String message, Object... arguments) {
 		super(cause, message, arguments);
 		this.operationId = operationId;
 	}
