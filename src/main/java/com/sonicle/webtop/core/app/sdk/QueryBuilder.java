@@ -49,9 +49,9 @@ import org.joda.time.DateTimeZone;
  * @param <T>
  */
 public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
-	public static final String FIELD_DUMMY_TRUE = "DUMMY_TRUE";
+	@Deprecated public static final String FIELD_DUMMY_TRUE = "DUMMY_TRUE";
 	
-	public Condition<T> trueCondition() {
+	@Deprecated public Condition<T> trueCondition() {
 		return string(FIELD_DUMMY_TRUE).eq(FIELD_DUMMY_TRUE);
 	}
 	
@@ -174,7 +174,7 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 	
 	/**
 	 * Transform passed String value in a wildcard form only if there aren't any
-	 * previous '*' chars in text, in order to not alterate attended behavoiur.
+	 * previous '*' chars in text, in order to not alterate attended behaviour.
 	 * @param value
 	 * @return 
 	 */

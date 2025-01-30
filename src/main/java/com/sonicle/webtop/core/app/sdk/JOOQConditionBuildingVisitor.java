@@ -45,6 +45,7 @@ import com.sonicle.commons.time.DateTimeUtils;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -57,6 +58,7 @@ import org.jooq.util.postgres.PostgresDSL;
  */
 public abstract class JOOQConditionBuildingVisitor extends NoArgRSQLVisitorAdapter<Condition> {
 	protected final Function<Object, Object> normalizer;
+	protected BitFlags<DefaultConditionOption> defaultConditionOpts = BitFlags.noneOf(DefaultConditionOption.class);
 	
 	public JOOQConditionBuildingVisitor() {
 		this(new DefaultNormalizer());
@@ -64,6 +66,11 @@ public abstract class JOOQConditionBuildingVisitor extends NoArgRSQLVisitorAdapt
 	
 	public JOOQConditionBuildingVisitor(Function<Object, Object> normalizer) {
 		this.normalizer = normalizer;
+	}
+	
+	public <T extends JOOQConditionBuildingVisitor> T withDefaultConditionOpts(BitFlags<DefaultConditionOption> defaultConditionOpts) {
+		this.defaultConditionOpts = Check.notNull(defaultConditionOpts, "defaultConditionOpts");
+		return (T)this;
 	}
 	
 	abstract protected Condition buildCondition(final String fieldName, final Operator operator, final Collection<?> values);
@@ -105,7 +112,7 @@ public abstract class JOOQConditionBuildingVisitor extends NoArgRSQLVisitorAdapt
 	}
 	
 	protected <T> Condition defaultCondition(final Field<T> field, final Operator operator, final Collection<?> values) {
-		return defaultCondition(field, operator, values, BitFlags.noneOf(DefaultConditionOption.class));
+		return defaultCondition(field, operator, values, defaultConditionOpts);
 	}
 	
 	protected <T> Condition defaultCondition(final Field<T> field, final Operator operator, final Collection<?> values, final BitFlags<DefaultConditionOption> opts) {
@@ -132,7 +139,7 @@ public abstract class JOOQConditionBuildingVisitor extends NoArgRSQLVisitorAdapt
 			}
 			return field.equal(field.getDataType().convert(singleValue(values)));
 			
-		} else if (Operator.NEQ.equals(operator)) {
+		} else if (Operator.NE.equals(operator)) {
 			if (fieldHasStringType(field)) {
 				final String value = singleValueAsString(values);
 				if (opts.has(DefaultConditionOption.STRING_ANYOF_COMP)) {

@@ -242,7 +242,7 @@ public abstract class JOOQConditionBuildingVisitorWithCFields extends JOOQCondit
 	}
 	
 	protected Operator toStraightOperator(Operator operator) {
-		if (Operator.NEQ.equals(operator)) {
+		if (Operator.NE.equals(operator)) {
 			return Operator.EQ;
 		} else if (Operator.NIN.equals(operator)) {
 			return Operator.IN;
