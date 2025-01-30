@@ -58,7 +58,7 @@ import org.jooq.util.postgres.PostgresDSL;
  */
 public abstract class JOOQConditionBuildingVisitor extends NoArgRSQLVisitorAdapter<Condition> {
 	protected final Function<Object, Object> normalizer;
-	protected BitFlags<DefaultConditionOption> defaultConditionOpts = BitFlags.noneOf(DefaultConditionOption.class);
+	protected BitFlags<DefaultConditionOption> defaultConditionOpts = BitFlags.with(DefaultConditionOption.STRING_LIKE_ICASE_COMP);
 	
 	public JOOQConditionBuildingVisitor() {
 		this(new DefaultNormalizer());
@@ -123,13 +123,8 @@ public abstract class JOOQConditionBuildingVisitor extends NoArgRSQLVisitorAdapt
 					return DSL.value((String)value).equal(DSL.any(PostgresDSL.stringToArray((Field<String>) field, ",")));
 					
 				} else {
-					final boolean ignoreCase = opts.has(DefaultConditionOption.STRING_ICASE_COMP);
-					if (opts.has(DefaultConditionOption.STRING_LIKE_COMP) || opts.has(DefaultConditionOption.STRING_LIKE_AUTO_COMP) && valueContainsWildcard(value)) {
-						return ignoreCase ? field.likeIgnoreCase(valueToLikePattern(value)) : field.like(valueToLikePattern(value));
-					
-					} else if (ignoreCase) {
-						return field.equalIgnoreCase(value);
-					}
+					final boolean ignoreCase = opts.has(DefaultConditionOption.STRING_EQ_ICASE_COMP);
+					return ignoreCase ? field.equalIgnoreCase(value) : ((Field<String>)field).equal(value);
 				}
 				
 			} else if (fieldHasBooleanType(field)) {
@@ -146,13 +141,8 @@ public abstract class JOOQConditionBuildingVisitor extends NoArgRSQLVisitorAdapt
 					return DSL.value((String)value).notEqual(DSL.any(PostgresDSL.stringToArray((Field<String>) field, ",")));
 					
 				} else {
-					final boolean ignoreCase = opts.has(DefaultConditionOption.STRING_ICASE_COMP);
-					if (opts.has(DefaultConditionOption.STRING_LIKE_COMP) || opts.has(DefaultConditionOption.STRING_LIKE_AUTO_COMP) && valueContainsWildcard(value)) {
-						return ignoreCase ? field.notLikeIgnoreCase(valueToLikePattern(value)) : field.notLike(valueToLikePattern(value));
-						
-					} else if (ignoreCase) {
-						return field.notEqualIgnoreCase(value);
-					}
+					final boolean ignoreCase = opts.has(DefaultConditionOption.STRING_EQ_ICASE_COMP);
+					return ignoreCase ? field.notEqualIgnoreCase(value) : ((Field<String>)field).notEqual(value);
 				}
 				
 			} else if (fieldHasBooleanType(field)) {
@@ -164,12 +154,12 @@ public abstract class JOOQConditionBuildingVisitor extends NoArgRSQLVisitorAdapt
 			
 		} else if (Operator.LIKE.equals(operator)) {
 			final String value = singleValueAsString(values);
-			final boolean ignoreCase = opts.has(DefaultConditionOption.STRING_ICASE_COMP);
+			final boolean ignoreCase = opts.has(DefaultConditionOption.STRING_LIKE_ICASE_COMP);
 			return ignoreCase ? field.likeIgnoreCase(valueToLikePattern(value)) : field.like(valueToLikePattern(value));
 			
 		} else if (Operator.NLIKE.equals(operator)) {
 			final String value = singleValueAsString(values);
-			final boolean ignoreCase = opts.has(DefaultConditionOption.STRING_ICASE_COMP);
+			final boolean ignoreCase = opts.has(DefaultConditionOption.STRING_LIKE_ICASE_COMP);
 			return ignoreCase ? field.notLikeIgnoreCase(valueToLikePattern(value)) : field.notLike(valueToLikePattern(value));
 			
 		} else if (Operator.GT.equals(operator)) {
@@ -270,11 +260,15 @@ public abstract class JOOQConditionBuildingVisitor extends NoArgRSQLVisitorAdapt
 	}
 	
 	public static enum DefaultConditionOption implements BitFlagsEnum<DefaultConditionOption> {
-		STRING_ICASE_COMP(1<<0), STRING_LIKE_COMP(1<<1), STRING_LIKE_AUTO_COMP(1<<2), STRING_ANYOF_COMP(1<<3);
+		STRING_EQ_ICASE_COMP(1<<0), STRING_LIKE_ICASE_COMP(1<<1), STRING_ANYOF_COMP(1<<2);
 		
 		private int mask = 0;
 		private DefaultConditionOption(int mask) { this.mask = mask; }
 		@Override
 		public long mask() { return this.mask; }
+		
+		public static BitFlags<DefaultConditionOption> stringICaseComparison() {
+			return BitFlags.with(DefaultConditionOption.STRING_EQ_ICASE_COMP, DefaultConditionOption.STRING_LIKE_ICASE_COMP);
+		}
 	}
 }
