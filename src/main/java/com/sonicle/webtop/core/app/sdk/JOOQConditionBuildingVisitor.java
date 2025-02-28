@@ -90,7 +90,9 @@ public abstract class JOOQConditionBuildingVisitor extends NoArgRSQLVisitorAdapt
 	public Condition visit(ComparisonNode node) {
 		String fieldName = node.getSelector();
 		Collection<?> values = node.getArguments().stream().map(normalizer).collect(Collectors.toList());
-		return buildCondition(fieldName, Operator.toOperator(node.getOperator()), values/*, node*/);
+		Condition ret = buildCondition(fieldName, Operator.toOperator(node.getOperator()), values/*, node*/);
+		if (ret == null) throw new UnsupportedOperationException("Field not supported: " + fieldName);
+		return ret;
 	}
 	
 	private Condition visitAny(Node node) {
