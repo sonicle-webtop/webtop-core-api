@@ -91,8 +91,8 @@ public abstract class JOOQConditionBuildingVisitorWithCFields extends JOOQCondit
 	abstract protected Field<String> getFieldTagIdOfTableTags();
 	abstract protected Condition getConditionTagsForCurrentEntity();
 	abstract protected TableLike<?> getTableCustomValues();
-	abstract protected Field<?> getTableCustomValuesTypeTableField(final CustomFieldBase.RawValueType cvalueType);
 	abstract protected Condition getConditionCustomValuesForCurrentEntityAndField(final String fieldId);
+	abstract protected Field<?> getTableCustomValuesTypeTableField(final CustomFieldBase.RawValueType cvalueType);
 	
 	public FieldNameMode getFieldNameMode() {
 		return this.fieldNameMode;

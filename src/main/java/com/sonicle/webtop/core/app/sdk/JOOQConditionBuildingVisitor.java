@@ -47,6 +47,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
@@ -205,6 +207,14 @@ public abstract class JOOQConditionBuildingVisitor extends NoArgRSQLVisitorAdapt
 	protected Boolean singleValueAsBoolean(Collection<?> values) {
 		Object value = singleValue(values);
 		return (value instanceof String) ? Boolean.parseBoolean((String)value) : (Boolean)value;
+	}
+	
+	protected LocalDate singleValueAsLocalDate(Collection<?> values) {
+		return DateTimeUtils.parseLocalDate(DateTimeUtils.ISO_LOCALDATE_FMT, singleValueAsString(values));
+	}
+	
+	protected DateTime singleValueAsDateTime(Collection<?> values) {
+		return DateTimeUtils.parseDateTime(DateTimeUtils.ISO_DATEDIME_FMT, singleValueAsString(values));
 	}
 	
 	protected Object singleValue(Collection<?> values) {
