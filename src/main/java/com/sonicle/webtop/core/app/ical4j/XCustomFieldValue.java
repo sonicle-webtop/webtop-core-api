@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Sonicle S.r.l.
+ * Copyright (C) 2025 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,52 +28,58 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2024 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2025 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.app.ezvcard;
+package com.sonicle.webtop.core.app.ical4j;
 
-import ezvcard.property.TextProperty;
+import com.sonicle.commons.time.JodaTimeUtils;
+import java.net.URISyntaxException;
+import net.fortuna.ical4j.model.ParameterFactoryImpl;
+import net.fortuna.ical4j.model.ParameterList;
+import net.fortuna.ical4j.model.property.XProperty;
+import net.sf.qualitycheck.Check;
+import org.joda.time.DateTime;
 
 /**
  *
- * @author gabriele.bulfon
+ * @author malbinola
  */
-public class XCustomFieldValue extends TextProperty {
+public class XCustomFieldValue {
+	public static final String PROPERTY_NAME = "X-WT-CUSTOMFIELDVALUE";
 	public static final String TYPE_STRING = "string";
 	public static final String TYPE_NUMBER = "number";
 	public static final String TYPE_BOOLEAN = "boolean";
 	public static final String TYPE_DATE = "date";
 	public static final String TYPE_TEXT = "text";
-
-	public XCustomFieldValue() {
-		super("X-WT-CUSTOMFIELDVALUE");
-	}
-
-	public XCustomFieldValue(String uid, String type, String value) {
-		super(value);
-		if (uid != null) addParameter("uid", uid);
-		if (type != null) addParameter("type", type);
-	}
-
-	public XCustomFieldValue(XCustomFieldValue original){
-		super(original);
-		String uid = getParameter("uid");
-		if (uid != null) addParameter("uid", uid);
-		String type = getParameter("type");
-		if (type != null) addParameter("type", type);
-	}
-
-	@Override
-	public XCustomFieldValue copy() {
-		return new XCustomFieldValue(this);
+	
+	public static XProperty toProperty(final String uid, final String value, final boolean isText) throws URISyntaxException {
+		return toProperty(uid, isText ? TYPE_TEXT : TYPE_STRING, value);
 	}
 	
-	public String getUid() {
-		return getParameter("uid");
+	public static XProperty toProperty(final String uid, final Double value) throws URISyntaxException {
+		return toProperty(uid, TYPE_NUMBER, String.valueOf(value));
 	}
 	
-	public String getType() {
-		return getParameter("type");
+	public static XProperty toProperty(final String uid, final Boolean value) throws URISyntaxException {
+		return toProperty(uid, TYPE_BOOLEAN, String.valueOf(value));
+	}
+	
+	public static XProperty toProperty(final String uid, final DateTime value) throws URISyntaxException {
+		return toProperty(uid, TYPE_DATE, JodaTimeUtils.printISO(value));
+	}
+	
+	public static XProperty toProperty(final String uid, final String type, final String value) throws URISyntaxException {
+		Check.notNull(value, "value");
+		return new XProperty(PROPERTY_NAME, toParameters(uid, type), value);
+	}
+	
+	public static ParameterList toParameters(final String uid, final String type) throws URISyntaxException {
+		Check.notEmpty(uid, "uid");
+		Check.notEmpty(type, "type");
+		ParameterFactoryImpl pfi = ParameterFactoryImpl.getInstance();
+		ParameterList pl = new ParameterList();
+		pl.add(pfi.createParameter("UID", uid));
+		pl.add(pfi.createParameter("TYPE", type));
+		return pl;
 	}
 }
-
