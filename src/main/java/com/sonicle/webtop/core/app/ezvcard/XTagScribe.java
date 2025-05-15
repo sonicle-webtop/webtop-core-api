@@ -41,7 +41,7 @@ import ezvcard.io.scribe.StringPropertyScribe;
 public class XTagScribe extends StringPropertyScribe<XTag> {
 
 	public XTagScribe() {
-		super(XTag.class, "X-WT-TAG");
+		super(XTag.class, XTag.PROPERTY_NAME);
 	}		
 
 	@Override

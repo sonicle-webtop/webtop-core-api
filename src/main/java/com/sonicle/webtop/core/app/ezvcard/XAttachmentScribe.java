@@ -39,7 +39,7 @@ package com.sonicle.webtop.core.app.ezvcard;
 public class XAttachmentScribe extends FilePropertyScribe<XAttachment, BinaryType> {
 	
 	public XAttachmentScribe() {
-		super(XAttachment.class, "X-WT-ATTACHMENT");
+		super(XAttachment.class, XAttachment.PROPERTY_NAME);
 	}
 
 	@Override

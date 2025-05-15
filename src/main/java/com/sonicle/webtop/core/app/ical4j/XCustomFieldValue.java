@@ -33,7 +33,9 @@
 package com.sonicle.webtop.core.app.ical4j;
 
 import com.sonicle.commons.time.JodaTimeUtils;
+import static com.sonicle.webtop.core.app.ezvcard.XCustomFieldValue.PARAM_ID;
 import java.net.URISyntaxException;
+import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterFactoryImpl;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.property.XProperty;
@@ -46,40 +48,56 @@ import org.joda.time.DateTime;
  */
 public class XCustomFieldValue {
 	public static final String PROPERTY_NAME = "X-WT-CUSTOMFIELDVALUE";
+	public static final String PARAM_ID = "UID";
+	public static final String PARAM_TYPE = "TYPE";
 	public static final String TYPE_STRING = "string";
 	public static final String TYPE_NUMBER = "number";
 	public static final String TYPE_BOOLEAN = "boolean";
 	public static final String TYPE_DATE = "date";
 	public static final String TYPE_TEXT = "text";
 	
-	public static XProperty toProperty(final String uid, final String value, final boolean isText) throws URISyntaxException {
-		return toProperty(uid, isText ? TYPE_TEXT : TYPE_STRING, value);
+	public static XProperty toProperty(final String fieldId, final String fieldValue, final boolean isText) throws URISyntaxException {
+		return toProperty(fieldId, isText ? TYPE_TEXT : TYPE_STRING, fieldValue);
 	}
 	
-	public static XProperty toProperty(final String uid, final Double value) throws URISyntaxException {
-		return toProperty(uid, TYPE_NUMBER, String.valueOf(value));
+	public static XProperty toProperty(final String fieldId, final Double fieldValue) throws URISyntaxException {
+		return toProperty(fieldId, TYPE_NUMBER, String.valueOf(fieldValue));
 	}
 	
-	public static XProperty toProperty(final String uid, final Boolean value) throws URISyntaxException {
-		return toProperty(uid, TYPE_BOOLEAN, String.valueOf(value));
+	public static XProperty toProperty(final String fieldId, final Boolean fieldValue) throws URISyntaxException {
+		return toProperty(fieldId, TYPE_BOOLEAN, String.valueOf(fieldValue));
 	}
 	
-	public static XProperty toProperty(final String uid, final DateTime value) throws URISyntaxException {
-		return toProperty(uid, TYPE_DATE, JodaTimeUtils.printISO(value));
+	public static XProperty toProperty(final String fieldId, final DateTime fieldValue) throws URISyntaxException {
+		return toProperty(fieldId, TYPE_DATE, JodaTimeUtils.printISO(fieldValue));
 	}
 	
-	public static XProperty toProperty(final String uid, final String type, final String value) throws URISyntaxException {
-		Check.notNull(value, "value");
-		return new XProperty(PROPERTY_NAME, toParameters(uid, type), value);
+	public static XProperty toProperty(final String fieldId, final String fieldType, final String fieldValue) throws URISyntaxException {
+		Check.notNull(fieldValue, "fieldValue");
+		return new XProperty(PROPERTY_NAME, toParameters(fieldId, fieldType), fieldValue);
 	}
 	
-	public static ParameterList toParameters(final String uid, final String type) throws URISyntaxException {
-		Check.notEmpty(uid, "uid");
-		Check.notEmpty(type, "type");
+	public static ParameterList toParameters(final String fieldId, final String fieldType) throws URISyntaxException {
+		Check.notEmpty(fieldId, "fieldId");
+		Check.notEmpty(fieldType, "fieldType");
 		ParameterFactoryImpl pfi = ParameterFactoryImpl.getInstance();
 		ParameterList pl = new ParameterList();
-		pl.add(pfi.createParameter("UID", uid));
-		pl.add(pfi.createParameter("TYPE", type));
+		pl.add(pfi.createParameter(PARAM_ID, fieldId));
+		pl.add(pfi.createParameter(PARAM_TYPE, fieldType));
 		return pl;
+	}
+	
+	public static String getFieldId(final XProperty property) {
+		Parameter param = property.getParameter(PARAM_ID);
+		return param != null ? param.getValue() : null;
+	}
+	
+	public static String getFieldType(final XProperty property) {
+		Parameter param = property.getParameter(PARAM_TYPE);
+		return param != null ? param.getValue() : null;
+	}
+	
+	public static String getFieldValue(final XProperty property) {
+		return property.getValue();
 	}
 }

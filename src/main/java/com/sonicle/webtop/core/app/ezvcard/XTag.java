@@ -33,26 +33,29 @@
 package com.sonicle.webtop.core.app.ezvcard;
 
 import ezvcard.property.TextProperty;
+import net.sf.qualitycheck.Check;
 
 /**
  *
  * @author gabriele.bulfon
  */
 public class XTag extends TextProperty {
-	
+	public static final String PROPERTY_NAME = "X-WT-TAG";
+	public static final String PARAM_UID = "UID";
+
 	public XTag() {
-		super("X-WT-TAG");
+		super((String)null);
 	}
-
-	public XTag(String uid, String name) {
-		super(name);
-		if (uid != null) addParameter("uid", uid);
-	}
-
+	
 	public XTag(XTag original){
 		super(original);
-		String uid = getParameter("uid");
-		if (uid != null) addParameter("uid", uid);
+		this.addParameter(PARAM_UID, original.getTagId());
+	}
+	
+	public XTag(final String tagId, final String tagName) {
+		super(tagName);
+		Check.notEmpty(tagId, "tagId");
+		this.addParameter(PARAM_UID, tagId);
 	}
 
 	@Override
@@ -60,9 +63,12 @@ public class XTag extends TextProperty {
 		return new XTag(this);
 	}
 	
-	public String getUid() {
-		return getParameter("uid");
+	public String getTagId() {
+		return this.getParameter(PARAM_UID);
 	}
 	
+	public String getTagName() {
+		return this.getValue();
+	}
 }
 

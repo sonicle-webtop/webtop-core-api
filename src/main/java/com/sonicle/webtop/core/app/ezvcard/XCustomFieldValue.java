@@ -32,35 +32,58 @@
  */
 package com.sonicle.webtop.core.app.ezvcard;
 
+import com.sonicle.commons.time.JodaTimeUtils;
 import ezvcard.property.TextProperty;
+import net.sf.qualitycheck.Check;
+import org.joda.time.DateTime;
 
 /**
  *
  * @author gabriele.bulfon
  */
 public class XCustomFieldValue extends TextProperty {
+	public static final String PROPERTY_NAME = "X-WT-CUSTOMFIELDVALUE";
+	public static final String PARAM_ID = "UID";
+	public static final String PARAM_TYPE = "TYPE";
 	public static final String TYPE_STRING = "string";
 	public static final String TYPE_NUMBER = "number";
 	public static final String TYPE_BOOLEAN = "boolean";
 	public static final String TYPE_DATE = "date";
 	public static final String TYPE_TEXT = "text";
-
+	
 	public XCustomFieldValue() {
-		super("X-WT-CUSTOMFIELDVALUE");
+		super((String)null);
 	}
-
-	public XCustomFieldValue(String uid, String type, String value) {
-		super(value);
-		if (uid != null) addParameter("uid", uid);
-		if (type != null) addParameter("type", type);
-	}
-
-	public XCustomFieldValue(XCustomFieldValue original){
+	
+	public XCustomFieldValue(final XCustomFieldValue original){
 		super(original);
-		String uid = getParameter("uid");
-		if (uid != null) addParameter("uid", uid);
-		String type = getParameter("type");
-		if (type != null) addParameter("type", type);
+		this.addParameter(PARAM_ID, original.getFieldId());
+		this.addParameter(PARAM_TYPE, original.getFieldType());
+	}
+	
+	public XCustomFieldValue(final String fieldId, final String fieldValue, final boolean isText) {
+		this(fieldId, isText ? TYPE_TEXT : TYPE_STRING, fieldValue);
+	}
+	
+	public XCustomFieldValue(final String fieldId, final Double fieldValue) {
+		this(fieldId, TYPE_NUMBER, String.valueOf(fieldValue));
+	}
+	
+	public XCustomFieldValue(final String fieldId, final Boolean fieldValue) {
+		this(fieldId, TYPE_BOOLEAN, String.valueOf(fieldValue));
+	}
+	
+	public XCustomFieldValue(final String fieldId, final DateTime fieldValue) {
+		this(fieldId, TYPE_DATE, JodaTimeUtils.printISO(fieldValue));
+	}
+	
+	public XCustomFieldValue(final String fieldId, final String fieldType, final String fieldValue) {
+		super(fieldValue);
+		Check.notEmpty(fieldId, "fieldId");
+		Check.notEmpty(fieldType, "fieldType");
+		Check.notNull(fieldValue, "fieldValue");
+		this.addParameter(PARAM_ID, fieldId);
+		this.addParameter(PARAM_TYPE, fieldType);
 	}
 
 	@Override
@@ -68,12 +91,16 @@ public class XCustomFieldValue extends TextProperty {
 		return new XCustomFieldValue(this);
 	}
 	
-	public String getUid() {
-		return getParameter("uid");
+	public String getFieldId() {
+		return this.getParameter(PARAM_ID);
 	}
 	
-	public String getType() {
-		return getParameter("type");
+	public String getFieldType() {
+		return this.getParameter(PARAM_TYPE);
+	}
+	
+	public String getFieldValue() {
+		return this.getValue();
 	}
 }
 

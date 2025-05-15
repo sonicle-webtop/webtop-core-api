@@ -52,6 +52,10 @@ public class CustomFieldValue {
 	protected DateTime dateValue;
 	
 	public CustomFieldValue() {}
+	
+	public CustomFieldValue(String fieldId) {
+		this.fieldId = fieldId;
+	}
 
 	public String getFieldId() {
 		return fieldId;

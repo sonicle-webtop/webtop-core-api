@@ -32,7 +32,6 @@
  */
 package com.sonicle.webtop.core.app.ezvcard;
 
-import ezvcard.property.BinaryProperty;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,6 +41,7 @@ import java.io.InputStream;
  * @author malbinola
  */
 public class XAttachment extends FileProperty<BinaryType> {
+	public static final String PROPERTY_NAME = "X-WT-ATTACHMENT";
 	
 	public XAttachment(String url, BinaryType type, String fileName) {
 		super(url, type, fileName);
@@ -62,5 +62,4 @@ public class XAttachment extends FileProperty<BinaryType> {
 	public XAttachment(XAttachment original) {
 		super(original);
 	}
-	
 }
