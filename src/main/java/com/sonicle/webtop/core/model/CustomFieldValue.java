@@ -46,15 +46,24 @@ import org.joda.time.LocalTime;
 public class CustomFieldValue {
 	protected String fieldId;
 	protected String stringValue;
-	protected String textValue;
 	protected Double numberValue;
 	protected Boolean booleanValue;
 	protected DateTime dateValue;
+	protected String textValue;
 	
 	public CustomFieldValue() {}
 	
 	public CustomFieldValue(String fieldId) {
 		this.fieldId = fieldId;
+	}
+	
+	public CustomFieldValue(CustomFieldValueCandidate candidate) {
+		this.fieldId = candidate.getFieldId();
+		this.stringValue = candidate.getStringValue();
+		this.numberValue = candidate.getNumberValue();
+		this.booleanValue = candidate.getBooleanValue();
+		this.dateValue = candidate.getDateValue();
+		this.textValue = candidate.getTextValue();
 	}
 
 	public String getFieldId() {
@@ -71,14 +80,6 @@ public class CustomFieldValue {
 
 	public void setStringValue(String stringValue) {
 		this.stringValue = stringValue;
-	}
-	
-	public String getTextValue() {
-		return textValue;
-	}
-
-	public void setTextValue(String textValue) {
-		this.textValue = textValue;
 	}
 
 	public Double getNumberValue() {
@@ -103,6 +104,14 @@ public class CustomFieldValue {
 
 	public void setDateValue(DateTime dateValue) {
 		this.dateValue = dateValue;
+	}
+	
+	public String getTextValue() {
+		return textValue;
+	}
+
+	public void setTextValue(String textValue) {
+		this.textValue = textValue;
 	}
 	
 	public Object getValue(CustomField.Type type) {
