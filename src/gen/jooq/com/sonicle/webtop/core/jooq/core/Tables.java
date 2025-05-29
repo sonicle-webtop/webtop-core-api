@@ -22,6 +22,11 @@ public class Tables {
     public static final com.sonicle.webtop.core.jooq.core.tables.Activities ACTIVITIES = com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES;
 
     /**
+     * The table <code>core.api_keys</code>.
+     */
+    public static final com.sonicle.webtop.core.jooq.core.tables.ApiKeys API_KEYS = com.sonicle.webtop.core.jooq.core.tables.ApiKeys.API_KEYS;
+
+    /**
      * The table <code>core.audit_known_devices</code>.
      */
     public static final com.sonicle.webtop.core.jooq.core.tables.AuditKnownDevices AUDIT_KNOWN_DEVICES = com.sonicle.webtop.core.jooq.core.tables.AuditKnownDevices.AUDIT_KNOWN_DEVICES;

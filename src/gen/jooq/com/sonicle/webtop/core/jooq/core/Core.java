@@ -29,6 +29,11 @@ public class Core extends org.jooq.impl.SchemaImpl {
     public final com.sonicle.webtop.core.jooq.core.tables.Activities ACTIVITIES = com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES;
 
     /**
+     * The table <code>core.api_keys</code>.
+     */
+    public final com.sonicle.webtop.core.jooq.core.tables.ApiKeys API_KEYS = com.sonicle.webtop.core.jooq.core.tables.ApiKeys.API_KEYS;
+
+    /**
      * The table <code>core.audit_known_devices</code>.
      */
     public final com.sonicle.webtop.core.jooq.core.tables.AuditKnownDevices AUDIT_KNOWN_DEVICES = com.sonicle.webtop.core.jooq.core.tables.AuditKnownDevices.AUDIT_KNOWN_DEVICES;
@@ -312,6 +317,7 @@ public class Core extends org.jooq.impl.SchemaImpl {
         return java.util.Arrays.<org.jooq.Table<?>>asList(
             com.sonicle.webtop.core.jooq.core.tables.AccessLog.ACCESS_LOG,
             com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES,
+            com.sonicle.webtop.core.jooq.core.tables.ApiKeys.API_KEYS,
             com.sonicle.webtop.core.jooq.core.tables.AuditKnownDevices.AUDIT_KNOWN_DEVICES,
             com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG,
             com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE,
