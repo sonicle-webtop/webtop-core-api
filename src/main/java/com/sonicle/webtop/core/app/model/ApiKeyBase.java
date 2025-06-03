@@ -46,6 +46,7 @@ import org.joda.time.DateTime;
  */
 public class ApiKeyBase {
 	protected DateTime creationTimestamp;
+	protected DateTime revisionTimestamp;
 	protected String name;
 	protected String description;
 	protected String shortToken;
@@ -59,6 +60,14 @@ public class ApiKeyBase {
 
 	public void setCreationTimestamp(DateTime creationTimestamp) {
 		this.creationTimestamp = creationTimestamp;
+	}
+
+	public DateTime getRevisionTimestamp() {
+		return revisionTimestamp;
+	}
+
+	public void setRevisionTimestamp(DateTime revisionTimestamp) {
+		this.revisionTimestamp = revisionTimestamp;
 	}
 	
 	public String getName() {
