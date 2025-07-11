@@ -35,7 +35,7 @@ package com.sonicle.webtop.core.util;
 
 import com.sonicle.commons.InternetAddressUtils;
 import com.sonicle.commons.MailUtils;
-import com.sonicle.commons.time.DateTimeUtils;
+import com.sonicle.commons.time.JodaTimeUtils;
 import com.sonicle.webtop.core.app.ical4j.LazyCalendarBuilder;
 import com.sonicle.webtop.core.app.ical4j.LazyCalendarComponentConsumer;
 import com.sonicle.webtop.core.app.sdk.WTParseException;
@@ -663,7 +663,7 @@ public class ICalendarUtils {
 		props.remove(props.getProperty(Property.CREATED));
 		props.remove(props.getProperty(Property.LOCATION));
 		props.remove(props.getProperty(Property.STATUS));
-		props.add(new LastModified(ICal4jUtils.createDateTime(DateTimeUtils.now(true))));
+		props.add(new LastModified(ICal4jUtils.createDateTime(JodaTimeUtils.now(true))));
 
 		// Iterates over attendees...
 		PropertyList atts = ve.getProperties(Property.ATTENDEE);

@@ -34,17 +34,15 @@ package com.sonicle.webtop.core.app.sdk;
 
 import com.sonicle.commons.flags.BitFlags;
 import com.sonicle.commons.flags.BitFlagsEnum;
-import com.sonicle.commons.qbuilders.nodes.AbstractNode;
 import com.sonicle.commons.qbuilders.nodes.AndNode;
 import com.sonicle.commons.qbuilders.nodes.ComparisonNode;
-import com.sonicle.commons.qbuilders.nodes.LogicalNode;
 import com.sonicle.commons.qbuilders.nodes.OrNode;
 import com.sonicle.commons.qbuilders.operators.ComparisonOperator;
 import com.sonicle.commons.qbuilders.visitors.AbstractVoidContextNodeVisitor;
-import com.sonicle.commons.time.DateTimeUtils;
+import com.sonicle.commons.time.JavaTimeUtils;
+import com.sonicle.commons.time.JodaTimeUtils;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -248,7 +246,7 @@ public abstract class JOOQPredicateVisitor extends AbstractVoidContextNodeVisito
 		@Override
 		public Object apply(Object o) {
 			if (o instanceof java.time.Instant) {
-				return DateTimeUtils.toDateTime(DateTimeUtils.toZonedDateTime((java.time.Instant)o, java.time.ZoneOffset.UTC));
+				return JodaTimeUtils.toDateTime(JavaTimeUtils.toZonedDateTime((java.time.Instant)o, java.time.ZoneOffset.UTC));
 			}
 			return o;
 		}

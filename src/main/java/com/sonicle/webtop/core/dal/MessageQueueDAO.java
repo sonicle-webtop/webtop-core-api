@@ -33,11 +33,10 @@
  */
 package com.sonicle.webtop.core.dal;
 
-import com.sonicle.commons.time.DateTimeUtils;
+import com.sonicle.commons.time.JodaTimeUtils;
 import com.sonicle.webtop.core.bol.OMessageQueue;
 import static com.sonicle.webtop.core.jooq.core.Sequences.SEQ_MESSAGES_QUEUE;
 import static com.sonicle.webtop.core.jooq.core.Tables.*;
-import com.sonicle.webtop.core.jooq.core.tables.records.MessagesQueueRecord;
 import java.sql.Connection;
 import java.util.Collection;
 import java.util.List;
@@ -75,7 +74,7 @@ public class MessageQueueDAO extends BaseDAO {
 	public int[] batchInsert(Connection con, Collection<OMessageQueue> messages) throws DAOException {
 		if (messages.isEmpty()) return new int[0];
 		DSLContext dsl = getDSL(con);
-		DateTime queuedOn = DateTimeUtils.now();
+		DateTime queuedOn = JodaTimeUtils.now();
 		BatchBindStep batch = dsl.batch(
 			dsl.insertInto(MESSAGES_QUEUE,
 				MESSAGES_QUEUE.DOMAIN_ID,

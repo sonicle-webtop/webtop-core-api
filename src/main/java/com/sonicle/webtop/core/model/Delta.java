@@ -32,14 +32,12 @@
  */
 package com.sonicle.webtop.core.model;
 
-import com.sonicle.commons.time.DateTimeUtils;
+import com.sonicle.commons.time.JodaTimeUtils;
 import com.sonicle.webtop.core.app.sdk.WTParseException;
 import java.util.ArrayList;
 import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormatter;
 
 /**
  *
@@ -47,7 +45,6 @@ import org.joda.time.format.DateTimeFormatter;
  * @param <T>
  */
 public class Delta<T> {
-	public static final DateTimeFormatter SYNCTOKEN_FMT = DateTimeUtils.createFormatter("yyyyMMddHHmmssSSS", DateTimeZone.UTC);
 	private final String nextSyncToken;
 	private final ArrayList<ChangedItem<T>> items;
 	
@@ -69,7 +66,7 @@ public class Delta<T> {
 	}
 	
 	public static DateTime parseSyncToken(final String syncToken, final boolean silent) throws WTParseException {
-		final DateTime datetime = !StringUtils.isBlank(syncToken) ? SYNCTOKEN_FMT.parseDateTime(syncToken) : null;
+		final DateTime datetime = !StringUtils.isBlank(syncToken) ? JodaTimeUtils.SYNCTAG_FMT.parseDateTime(syncToken) : null;
 		if (datetime == null && !silent) {
 			throw new WTParseException("Unable to parse '{}' as syncToken", syncToken);
 		}
@@ -77,6 +74,6 @@ public class Delta<T> {
 	}
 	
 	public static String printSyncToken(final DateTime timestamp) {
-		return timestamp != null ? SYNCTOKEN_FMT.print(timestamp) : null;
+		return timestamp != null ? JodaTimeUtils.SYNCTAG_FMT.print(timestamp) : null;
 	}
 }

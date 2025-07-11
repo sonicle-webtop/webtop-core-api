@@ -37,7 +37,7 @@ import com.sonicle.commons.qbuilders.properties.concrete.BooleanProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.DoubleProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.InstantProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.StringProperty;
-import com.sonicle.commons.time.DateTimeUtils;
+import com.sonicle.commons.time.JavaTimeUtils;
 import com.sonicle.commons.web.json.bean.QueryObj;
 import com.sonicle.webtop.core.app.sdk.QueryBuilderWithCValues;
 import com.sonicle.webtop.core.app.sdk.WTUnsupportedOperationException;
@@ -129,11 +129,11 @@ public class DomainAccessLogQuery extends QueryBuilderWithCValues<DomainAccessLo
 
 		} else if ("dateFrom".equals(condition.keyword)) {
 			String dateFrom = StringUtils.replace(value, "/", "-");
-			return new DomainAccessLogQuery().dateFrom().eq(DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(dateFrom), DateTimeUtils.toZoneId(timezone)));
+			return new DomainAccessLogQuery().dateFrom().eq(JavaTimeUtils.toInstant(JavaTimeUtils.parseLocalDateYMD(dateFrom), JavaTimeUtils.toZoneId(timezone)));
 
 		} else if ("dateTo".equals(condition.keyword)) {
 			String dateTo = StringUtils.replace(value, "/", "-");
-			return new DomainAccessLogQuery().dateTo().eq(DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(dateTo), DateTimeUtils.toZoneId(timezone)));
+			return new DomainAccessLogQuery().dateTo().eq(JavaTimeUtils.toInstant(JavaTimeUtils.parseLocalDateYMD(dateTo), JavaTimeUtils.toZoneId(timezone)));
 
 		} else if ("minDuration".equals(condition.keyword)) {
 			return new DomainAccessLogQuery().minDuration().eq(Double.parseDouble(value));

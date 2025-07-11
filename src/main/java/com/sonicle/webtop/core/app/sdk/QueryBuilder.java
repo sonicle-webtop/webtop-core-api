@@ -38,7 +38,7 @@ import com.sonicle.commons.qbuilders.properties.concrete.BooleanProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.DoubleProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.InstantProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.StringProperty;
-import com.sonicle.commons.time.DateTimeUtils;
+import com.sonicle.commons.time.JavaTimeUtils;
 import java.time.Instant;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
@@ -164,11 +164,11 @@ public class QueryBuilder<T extends QBuilder<T>> extends QBuilder<T> {
 	 */
 	protected static Instant asInstantValue(final String value, final InstantType type, final DateTimeZone timezone) {
 		if (InstantType.DATE.equals(type)) {
-			return DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(value), DateTimeUtils.toZoneId(timezone));
+			return JavaTimeUtils.toInstant(JavaTimeUtils.parseLocalDateYMD(value), JavaTimeUtils.toZoneId(timezone));
 		} else if (InstantType.TIME.equals(type)) {
-			return DateTimeUtils.toInstant(DateTimeUtils.parseLocalTime(value), DateTimeUtils.toZoneId(timezone));
+			return JavaTimeUtils.toInstant(JavaTimeUtils.parseLocalTimeHMS(false, value), JavaTimeUtils.toZoneId(timezone));
 		} else {
-			return DateTimeUtils.toInstant(DateTimeUtils.parseDateTime(value, DateTimeUtils.toZoneId(timezone)));
+			return JavaTimeUtils.toInstant(JavaTimeUtils.parseDateTimeYMDHMS(JavaTimeUtils.toZoneId(timezone), value));
 		}
 	}
 	

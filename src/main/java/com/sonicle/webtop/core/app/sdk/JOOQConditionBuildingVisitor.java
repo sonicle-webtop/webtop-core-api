@@ -41,7 +41,8 @@ import com.sonicle.commons.rsql.parser.ast.LogicalNode;
 import com.sonicle.commons.rsql.parser.ast.NoArgRSQLVisitorAdapter;
 import com.sonicle.commons.rsql.parser.ast.Node;
 import com.sonicle.commons.rsql.parser.ast.OrNode;
-import com.sonicle.commons.time.DateTimeUtils;
+import com.sonicle.commons.time.JavaTimeUtils;
+import com.sonicle.commons.time.JodaTimeUtils;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -210,11 +211,11 @@ public abstract class JOOQConditionBuildingVisitor extends NoArgRSQLVisitorAdapt
 	}
 	
 	protected LocalDate singleValueAsLocalDate(Collection<?> values) {
-		return DateTimeUtils.parseLocalDate(DateTimeUtils.ISO_LOCALDATE_FMT, singleValueAsString(values));
+		return JodaTimeUtils.parseLocalDate(JodaTimeUtils.ISO_LOCALDATE_FMT, singleValueAsString(values));
 	}
 	
 	protected DateTime singleValueAsDateTime(Collection<?> values) {
-		return DateTimeUtils.parseDateTime(DateTimeUtils.ISO_DATEDIME_FMT, singleValueAsString(values));
+		return JodaTimeUtils.parseDateTime(JodaTimeUtils.ISO_DATETIME_FMT, singleValueAsString(values));
 	}
 	
 	protected Object singleValue(Collection<?> values) {
@@ -265,7 +266,7 @@ public abstract class JOOQConditionBuildingVisitor extends NoArgRSQLVisitorAdapt
 		@Override
 		public Object apply(Object o) {
 			if (o instanceof java.time.Instant) {
-				return DateTimeUtils.toDateTime(DateTimeUtils.toZonedDateTime((java.time.Instant)o, java.time.ZoneOffset.UTC));
+				return JodaTimeUtils.toDateTime(JavaTimeUtils.toZonedDateTime((java.time.Instant)o, java.time.ZoneOffset.UTC));
 			}
 			return o;
 		}

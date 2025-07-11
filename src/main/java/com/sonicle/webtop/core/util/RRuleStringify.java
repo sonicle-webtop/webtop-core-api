@@ -32,7 +32,8 @@
  */
 package com.sonicle.webtop.core.util;
 
-import com.sonicle.commons.time.DateTimeUtils;
+import com.sonicle.commons.time.JavaTimeUtils;
+import com.sonicle.commons.time.JodaTimeUtils;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Locale;
@@ -355,7 +356,7 @@ public class RRuleStringify {
 	}
 	
 	private void stringifyUntil(StringBuilder sb, Date until) {
-		DateTimeFormatter fmt = DateTimeUtils.createFormatter(dateFormat, timezone);
+		DateTimeFormatter fmt = JodaTimeUtils.createFormatter(dateFormat, timezone);
 		sb.append(strings.endsBy);
 		sb.append(" ");
 		sb.append(fmt.print(ICal4jUtils.toJodaDateTime(until, DateTimeZone.UTC)));
@@ -564,7 +565,7 @@ public class RRuleStringify {
 		public String nth4th;
 		
 		public Strings(Locale locale) {
-			String[] shortDayNames = DateTimeUtils.getDayNamesShort(locale);
+			String[] shortDayNames = JavaTimeUtils.getDayNamesShort(locale);
 			dayNameShortMO = shortDayNames[Calendar.MONDAY];
 			dayNameShortTU = shortDayNames[Calendar.TUESDAY];
 			dayNameShortWE = shortDayNames[Calendar.WEDNESDAY];
@@ -572,7 +573,7 @@ public class RRuleStringify {
 			dayNameShortFR = shortDayNames[Calendar.FRIDAY];
 			dayNameShortSA = shortDayNames[Calendar.SATURDAY];
 			dayNameShortSU = shortDayNames[Calendar.SUNDAY];
-			String[] longDayNames = DateTimeUtils.getDayNamesLong(locale);
+			String[] longDayNames = JavaTimeUtils.getDayNamesLong(locale);
 			dayNameLongMO = longDayNames[Calendar.MONDAY];
 			dayNameLongTU = longDayNames[Calendar.TUESDAY];
 			dayNameLongWE = longDayNames[Calendar.WEDNESDAY];
@@ -580,7 +581,7 @@ public class RRuleStringify {
 			dayNameLongFR = longDayNames[Calendar.FRIDAY];
 			dayNameLongSA = longDayNames[Calendar.SATURDAY];
 			dayNameLongSU = longDayNames[Calendar.SUNDAY];
-			String[] longMonthNames = DateTimeUtils.getMonthNamesLong(locale);
+			String[] longMonthNames = JavaTimeUtils.getMonthNamesLong(locale);
 			monthNameLongJan = longMonthNames[Calendar.JANUARY];
 			monthNameLongFeb = longMonthNames[Calendar.FEBRUARY];
 			monthNameLongMar = longMonthNames[Calendar.MARCH];
