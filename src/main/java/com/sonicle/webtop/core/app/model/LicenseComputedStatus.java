@@ -39,7 +39,7 @@ import com.sonicle.commons.flags.BitFlagsEnum;
  * @author malbinola
  */
 public enum LicenseComputedStatus implements BitFlagsEnum<LicenseComputedStatus> {
-	VALID(1<<0), ACTIVATED(1<<1), PENDING_ACTIVATION(1<<2), EXPIRED(1<<3), EXPIRE_SOON(1<<4);
+	VALID(1<<0), ACTIVATED(1<<1), PENDING_ACTIVATION(1<<2), EXPIRED(1<<3), EXPIRE_SOON(1<<4), VALIDATION_ERROR(1<<5);
 	
 	private long mask = 0;
 	private LicenseComputedStatus(long mask) { this.mask = mask; }
