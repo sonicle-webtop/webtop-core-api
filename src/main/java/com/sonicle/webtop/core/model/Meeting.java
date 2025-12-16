@@ -102,12 +102,14 @@ public class Meeting {
 	public static class ShareEmbedTexts {
 		public final String info;
 		public final String subject;
+		public final String location;
 		public final String unschedDescription;
 		public final String schedDescription;
 		
-		public ShareEmbedTexts(String info, String subject, String unschedDescription, String schedDescription) {
+		public ShareEmbedTexts(String info, String subject, String location, String unschedDescription, String schedDescription) {
 			this.info = info;
 			this.subject = subject;
+			this.location = location;
 			this.unschedDescription = unschedDescription;
 			this.schedDescription = schedDescription;
 		}
