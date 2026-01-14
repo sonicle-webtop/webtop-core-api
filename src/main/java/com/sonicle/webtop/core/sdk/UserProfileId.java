@@ -33,6 +33,8 @@
 package com.sonicle.webtop.core.sdk;
 
 import com.sonicle.security.DomainAccount;
+import com.sonicle.security.Principal;
+import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -83,5 +85,9 @@ public class UserProfileId extends DomainAccount {
 		} catch (Exception ex) {
 			return null;
 		}
+	}
+	
+	public static UserProfileId from(final Principal principal) {
+		return new UserProfileId(Check.notNull(principal, "principal").getID());
 	}
 }
