@@ -19,6 +19,10 @@ public class AuditKnownDevices implements java.io.Serializable {
     private java.lang.String       deviceId;
     private org.joda.time.DateTime firstSeen;
     private org.joda.time.DateTime lastSeen;
+    private java.lang.String       firstClientIpAddress;
+    private java.lang.String       lastClientIpAddress;
+    private java.lang.String       firstClientUserAgent;
+    private java.lang.String       lastClientUserAgent;
 
     public AuditKnownDevices() {}
 
@@ -29,6 +33,10 @@ public class AuditKnownDevices implements java.io.Serializable {
         this.deviceId = value.deviceId;
         this.firstSeen = value.firstSeen;
         this.lastSeen = value.lastSeen;
+        this.firstClientIpAddress = value.firstClientIpAddress;
+        this.lastClientIpAddress = value.lastClientIpAddress;
+        this.firstClientUserAgent = value.firstClientUserAgent;
+        this.lastClientUserAgent = value.lastClientUserAgent;
     }
 
     public AuditKnownDevices(
@@ -37,7 +45,11 @@ public class AuditKnownDevices implements java.io.Serializable {
         java.lang.String       userId,
         java.lang.String       deviceId,
         org.joda.time.DateTime firstSeen,
-        org.joda.time.DateTime lastSeen
+        org.joda.time.DateTime lastSeen,
+        java.lang.String       firstClientIpAddress,
+        java.lang.String       lastClientIpAddress,
+        java.lang.String       firstClientUserAgent,
+        java.lang.String       lastClientUserAgent
     ) {
         this.auditKnownDeviceId = auditKnownDeviceId;
         this.domainId = domainId;
@@ -45,6 +57,10 @@ public class AuditKnownDevices implements java.io.Serializable {
         this.deviceId = deviceId;
         this.firstSeen = firstSeen;
         this.lastSeen = lastSeen;
+        this.firstClientIpAddress = firstClientIpAddress;
+        this.lastClientIpAddress = lastClientIpAddress;
+        this.firstClientUserAgent = firstClientUserAgent;
+        this.lastClientUserAgent = lastClientUserAgent;
     }
 
     /**
@@ -131,6 +147,62 @@ public class AuditKnownDevices implements java.io.Serializable {
         this.lastSeen = lastSeen;
     }
 
+    /**
+     * Getter for <code>core.audit_known_devices.first_client_ip_address</code>.
+     */
+    public java.lang.String getFirstClientIpAddress() {
+        return this.firstClientIpAddress;
+    }
+
+    /**
+     * Setter for <code>core.audit_known_devices.first_client_ip_address</code>.
+     */
+    public void setFirstClientIpAddress(java.lang.String firstClientIpAddress) {
+        this.firstClientIpAddress = firstClientIpAddress;
+    }
+
+    /**
+     * Getter for <code>core.audit_known_devices.last_client_ip_address</code>.
+     */
+    public java.lang.String getLastClientIpAddress() {
+        return this.lastClientIpAddress;
+    }
+
+    /**
+     * Setter for <code>core.audit_known_devices.last_client_ip_address</code>.
+     */
+    public void setLastClientIpAddress(java.lang.String lastClientIpAddress) {
+        this.lastClientIpAddress = lastClientIpAddress;
+    }
+
+    /**
+     * Getter for <code>core.audit_known_devices.first_client_user_agent</code>.
+     */
+    public java.lang.String getFirstClientUserAgent() {
+        return this.firstClientUserAgent;
+    }
+
+    /**
+     * Setter for <code>core.audit_known_devices.first_client_user_agent</code>.
+     */
+    public void setFirstClientUserAgent(java.lang.String firstClientUserAgent) {
+        this.firstClientUserAgent = firstClientUserAgent;
+    }
+
+    /**
+     * Getter for <code>core.audit_known_devices.last_client_user_agent</code>.
+     */
+    public java.lang.String getLastClientUserAgent() {
+        return this.lastClientUserAgent;
+    }
+
+    /**
+     * Setter for <code>core.audit_known_devices.last_client_user_agent</code>.
+     */
+    public void setLastClientUserAgent(java.lang.String lastClientUserAgent) {
+        this.lastClientUserAgent = lastClientUserAgent;
+    }
+
     @Override
     public String toString() {
         java.lang.StringBuilder sb = new java.lang.StringBuilder("AuditKnownDevices (");
@@ -141,6 +213,10 @@ public class AuditKnownDevices implements java.io.Serializable {
         sb.append(", ").append(deviceId);
         sb.append(", ").append(firstSeen);
         sb.append(", ").append(lastSeen);
+        sb.append(", ").append(firstClientIpAddress);
+        sb.append(", ").append(lastClientIpAddress);
+        sb.append(", ").append(firstClientUserAgent);
+        sb.append(", ").append(lastClientUserAgent);
 
         sb.append(")");
         return sb.toString();

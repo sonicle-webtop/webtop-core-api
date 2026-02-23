@@ -59,7 +59,7 @@ public class ApiKeys extends org.jooq.impl.TableImpl<com.sonicle.webtop.core.joo
     /**
      * The column <code>core.api_keys.short_token</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.ApiKeysRecord, java.lang.String> SHORT_TOKEN = createField(org.jooq.impl.DSL.name("short_token"), org.jooq.impl.SQLDataType.VARCHAR(7), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.ApiKeysRecord, java.lang.String> SHORT_TOKEN = createField(org.jooq.impl.DSL.name("short_token"), org.jooq.impl.SQLDataType.VARCHAR(8), this, "");
 
     /**
      * The column <code>core.api_keys.long_token</code>.

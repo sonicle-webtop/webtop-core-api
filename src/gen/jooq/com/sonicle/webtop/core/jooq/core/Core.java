@@ -200,6 +200,11 @@ public class Core extends org.jooq.impl.SchemaImpl {
     public final com.sonicle.webtop.core.jooq.core.tables.MessagesQueue MESSAGES_QUEUE = com.sonicle.webtop.core.jooq.core.tables.MessagesQueue.MESSAGES_QUEUE;
 
     /**
+     * The table <code>core.rememberme_tokens</code>.
+     */
+    public final com.sonicle.webtop.core.jooq.core.tables.RemembermeTokens REMEMBERME_TOKENS = com.sonicle.webtop.core.jooq.core.tables.RemembermeTokens.REMEMBERME_TOKENS;
+
+    /**
      * The table <code>core.roles</code>.
      */
     public final com.sonicle.webtop.core.jooq.core.tables.Roles ROLES = com.sonicle.webtop.core.jooq.core.tables.Roles.ROLES;
@@ -255,6 +260,11 @@ public class Core extends org.jooq.impl.SchemaImpl {
     public final com.sonicle.webtop.core.jooq.core.tables.Tags TAGS = com.sonicle.webtop.core.jooq.core.tables.Tags.TAGS;
 
     /**
+     * The table <code>core.trusted_devices</code>.
+     */
+    public final com.sonicle.webtop.core.jooq.core.tables.TrustedDevices TRUSTED_DEVICES = com.sonicle.webtop.core.jooq.core.tables.TrustedDevices.TRUSTED_DEVICES;
+
+    /**
      * The table <code>core.upgrade_statements</code>.
      */
     public final com.sonicle.webtop.core.jooq.core.tables.UpgradeStatements UPGRADE_STATEMENTS = com.sonicle.webtop.core.jooq.core.tables.UpgradeStatements.UPGRADE_STATEMENTS;
@@ -303,11 +313,13 @@ public class Core extends org.jooq.impl.SchemaImpl {
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_IM_CHATS,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_IM_MESSAGES,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_MESSAGES_QUEUE,
+            com.sonicle.webtop.core.jooq.core.Sequences.SEQ_REMEMBERME_TOKENS,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_ROLES_ASSOCIATIONS,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_ROLES_PERMISSIONS,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_SHARES,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_SNOOZED_REMINDERS,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_SYSLOG,
+            com.sonicle.webtop.core.jooq.core.Sequences.SEQ_TRUSTED_DEVICES,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_UPGRADE_STATEMENTS,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_USERS_ASSOCIATIONS);
     }
@@ -342,6 +354,7 @@ public class Core extends org.jooq.impl.SchemaImpl {
             com.sonicle.webtop.core.jooq.core.tables.MasterData.MASTER_DATA,
             com.sonicle.webtop.core.jooq.core.tables.MediaTypes.MEDIA_TYPES,
             com.sonicle.webtop.core.jooq.core.tables.MessagesQueue.MESSAGES_QUEUE,
+            com.sonicle.webtop.core.jooq.core.tables.RemembermeTokens.REMEMBERME_TOKENS,
             com.sonicle.webtop.core.jooq.core.tables.Roles.ROLES,
             com.sonicle.webtop.core.jooq.core.tables.RolesAssociations.ROLES_ASSOCIATIONS,
             com.sonicle.webtop.core.jooq.core.tables.RolesPermissions.ROLES_PERMISSIONS,
@@ -353,6 +366,7 @@ public class Core extends org.jooq.impl.SchemaImpl {
             com.sonicle.webtop.core.jooq.core.tables.SnoozedReminders.SNOOZED_REMINDERS,
             com.sonicle.webtop.core.jooq.core.tables.Syslog.SYSLOG,
             com.sonicle.webtop.core.jooq.core.tables.Tags.TAGS,
+            com.sonicle.webtop.core.jooq.core.tables.TrustedDevices.TRUSTED_DEVICES,
             com.sonicle.webtop.core.jooq.core.tables.UpgradeStatements.UPGRADE_STATEMENTS,
             com.sonicle.webtop.core.jooq.core.tables.UserSettings.USER_SETTINGS,
             com.sonicle.webtop.core.jooq.core.tables.Users.USERS,

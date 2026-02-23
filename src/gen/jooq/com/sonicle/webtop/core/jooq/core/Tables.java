@@ -193,6 +193,11 @@ public class Tables {
     public static final com.sonicle.webtop.core.jooq.core.tables.MessagesQueue MESSAGES_QUEUE = com.sonicle.webtop.core.jooq.core.tables.MessagesQueue.MESSAGES_QUEUE;
 
     /**
+     * The table <code>core.rememberme_tokens</code>.
+     */
+    public static final com.sonicle.webtop.core.jooq.core.tables.RemembermeTokens REMEMBERME_TOKENS = com.sonicle.webtop.core.jooq.core.tables.RemembermeTokens.REMEMBERME_TOKENS;
+
+    /**
      * The table <code>core.roles</code>.
      */
     public static final com.sonicle.webtop.core.jooq.core.tables.Roles ROLES = com.sonicle.webtop.core.jooq.core.tables.Roles.ROLES;
@@ -246,6 +251,11 @@ public class Tables {
      * The table <code>core.tags</code>.
      */
     public static final com.sonicle.webtop.core.jooq.core.tables.Tags TAGS = com.sonicle.webtop.core.jooq.core.tables.Tags.TAGS;
+
+    /**
+     * The table <code>core.trusted_devices</code>.
+     */
+    public static final com.sonicle.webtop.core.jooq.core.tables.TrustedDevices TRUSTED_DEVICES = com.sonicle.webtop.core.jooq.core.tables.TrustedDevices.TRUSTED_DEVICES;
 
     /**
      * The table <code>core.upgrade_statements</code>.

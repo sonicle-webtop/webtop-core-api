@@ -56,27 +56,33 @@ public class AuditKnownDeviceDAO extends BaseDAO {
 		return nextID;
 	}
 	
-	public int insert(Connection con, String domainId, String userId, String deviceId, DateTime revisionTimestamp) throws DAOException {
+	public int insert(Connection con, String domainId, String userId, String clientIdentifier, String clientIpAddress, String clientUserAgent, DateTime seenTimestamp) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.insertInto(AUDIT_KNOWN_DEVICES)
 			.set(AUDIT_KNOWN_DEVICES.DOMAIN_ID, domainId)
 			.set(AUDIT_KNOWN_DEVICES.USER_ID, userId)
-			.set(AUDIT_KNOWN_DEVICES.DEVICE_ID, deviceId)
-			.set(AUDIT_KNOWN_DEVICES.FIRST_SEEN, revisionTimestamp)
-			.set(AUDIT_KNOWN_DEVICES.LAST_SEEN, revisionTimestamp)
+			.set(AUDIT_KNOWN_DEVICES.DEVICE_ID, clientIdentifier)
+			.set(AUDIT_KNOWN_DEVICES.FIRST_SEEN, seenTimestamp)
+			.set(AUDIT_KNOWN_DEVICES.LAST_SEEN, seenTimestamp)
+			.set(AUDIT_KNOWN_DEVICES.FIRST_CLIENT_IP_ADDRESS, clientIpAddress)
+			.set(AUDIT_KNOWN_DEVICES.LAST_CLIENT_IP_ADDRESS, clientIpAddress)
+			.set(AUDIT_KNOWN_DEVICES.FIRST_CLIENT_USER_AGENT, clientUserAgent)
+			.set(AUDIT_KNOWN_DEVICES.LAST_CLIENT_USER_AGENT, clientUserAgent)
 			.execute();
 	}
 	
-	public int updateLastSeenByProfileDevice(Connection con, String domainId, String userId, String deviceId, DateTime revisionTimestamp) throws DAOException {
+	public int updateLastSeenByProfileDevice(Connection con, String domainId, String userId, String clientIdentifier, String clientIpAddress, String clientUserAgent, DateTime seenTimestamp) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.update(AUDIT_KNOWN_DEVICES)
-			.set(AUDIT_KNOWN_DEVICES.LAST_SEEN, revisionTimestamp)
+			.set(AUDIT_KNOWN_DEVICES.LAST_SEEN, seenTimestamp)
+			.set(AUDIT_KNOWN_DEVICES.LAST_CLIENT_IP_ADDRESS, clientIpAddress)
+			.set(AUDIT_KNOWN_DEVICES.LAST_CLIENT_USER_AGENT, clientUserAgent)
 			.where(
 				AUDIT_KNOWN_DEVICES.DOMAIN_ID.equal(domainId)
 				.and(AUDIT_KNOWN_DEVICES.USER_ID.equal(userId))
-				.and(AUDIT_KNOWN_DEVICES.DEVICE_ID.equal(deviceId))
+				.and(AUDIT_KNOWN_DEVICES.DEVICE_ID.equal(clientIdentifier))
 			)
 			.execute();
 	}

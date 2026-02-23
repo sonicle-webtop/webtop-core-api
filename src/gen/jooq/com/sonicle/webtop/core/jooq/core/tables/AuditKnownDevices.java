@@ -44,7 +44,7 @@ public class AuditKnownDevices extends org.jooq.impl.TableImpl<com.sonicle.webto
     /**
      * The column <code>core.audit_known_devices.device_id</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.String> DEVICE_ID = createField(org.jooq.impl.DSL.name("device_id"), org.jooq.impl.SQLDataType.VARCHAR(40).nullable(false), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.String> DEVICE_ID = createField(org.jooq.impl.DSL.name("device_id"), org.jooq.impl.SQLDataType.VARCHAR(43).nullable(false), this, "");
 
     /**
      * The column <code>core.audit_known_devices.first_seen</code>.
@@ -55,6 +55,26 @@ public class AuditKnownDevices extends org.jooq.impl.TableImpl<com.sonicle.webto
      * The column <code>core.audit_known_devices.last_seen</code>.
      */
     public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, org.joda.time.DateTime> LAST_SEEN = createField(org.jooq.impl.DSL.name("last_seen"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "", new com.sonicle.jooq.jsr310.OffsetDateTimeJodaConverter());
+
+    /**
+     * The column <code>core.audit_known_devices.first_client_ip_address</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.String> FIRST_CLIENT_IP_ADDRESS = createField(org.jooq.impl.DSL.name("first_client_ip_address"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+
+    /**
+     * The column <code>core.audit_known_devices.last_client_ip_address</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.String> LAST_CLIENT_IP_ADDRESS = createField(org.jooq.impl.DSL.name("last_client_ip_address"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+
+    /**
+     * The column <code>core.audit_known_devices.first_client_user_agent</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.String> FIRST_CLIENT_USER_AGENT = createField(org.jooq.impl.DSL.name("first_client_user_agent"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+
+    /**
+     * The column <code>core.audit_known_devices.last_client_user_agent</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.String> LAST_CLIENT_USER_AGENT = createField(org.jooq.impl.DSL.name("last_client_user_agent"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
 
     private AuditKnownDevices(org.jooq.Name alias, org.jooq.Table<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord> aliased) {
         this(alias, aliased, null);
@@ -136,11 +156,11 @@ public class AuditKnownDevices extends org.jooq.impl.TableImpl<com.sonicle.webto
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @java.lang.Override
-    public org.jooq.Row6<java.lang.Long, java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime> fieldsRow() {
-        return (org.jooq.Row6) super.fieldsRow();
+    public org.jooq.Row10<java.lang.Long, java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime, java.lang.String, java.lang.String, java.lang.String, java.lang.String> fieldsRow() {
+        return (org.jooq.Row10) super.fieldsRow();
     }
 }

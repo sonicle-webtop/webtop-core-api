@@ -52,6 +52,11 @@ public class Sequences {
     public static final org.jooq.Sequence<java.lang.Long> SEQ_MESSAGES_QUEUE = org.jooq.impl.Internal.createSequence("seq_messages_queue", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>core.seq_rememberme_tokens</code>
+     */
+    public static final org.jooq.Sequence<java.lang.Long> SEQ_REMEMBERME_TOKENS = org.jooq.impl.Internal.createSequence("seq_rememberme_tokens", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>core.seq_roles_associations</code>
      */
     public static final org.jooq.Sequence<java.lang.Long> SEQ_ROLES_ASSOCIATIONS = org.jooq.impl.Internal.createSequence("seq_roles_associations", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -75,6 +80,11 @@ public class Sequences {
      * The sequence <code>core.seq_syslog</code>
      */
     public static final org.jooq.Sequence<java.lang.Long> SEQ_SYSLOG = org.jooq.impl.Internal.createSequence("seq_syslog", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>core.seq_trusted_devices</code>
+     */
+    public static final org.jooq.Sequence<java.lang.Long> SEQ_TRUSTED_DEVICES = org.jooq.impl.Internal.createSequence("seq_trusted_devices", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>core.seq_upgrade_statements</code>

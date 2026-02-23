@@ -239,6 +239,21 @@ public class UserDAO extends BaseDAO {
 			.fetchOneInto(OUser.class);
 	}
 	
+	public Boolean selectEnabledStatusByProfile(Connection con, String domainId, String userId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.select(
+				USERS.ENABLED
+			)
+			.from(USERS)
+			.where(
+				USERS.DOMAIN_ID.equal(domainId)
+				.and(USERS.USER_ID.equal(userId))
+				.and(USERS.TYPE.equal(OUser.TYPE_USER))
+			)
+			.fetchOneInto(Boolean.class);
+	}
+	
 	public boolean existByDomainUser(Connection con, String domainId, String userId) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
