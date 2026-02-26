@@ -38,6 +38,7 @@ import java.sql.Connection;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 /**
  *
@@ -54,6 +55,19 @@ public class AuditKnownDeviceDAO extends BaseDAO {
 		DSLContext dsl = getDSL(con);
 		Long nextID = dsl.nextval(Sequences.SEQ_AUDIT_KNOWN_DEVICES);
 		return nextID;
+	}
+	
+	public int countByProfile(Connection con, String domainId, String userId) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.selectCount()
+			.from(AUDIT_KNOWN_DEVICES)
+			.where(
+				AUDIT_KNOWN_DEVICES.DOMAIN_ID.equal(domainId)
+				.and(AUDIT_KNOWN_DEVICES.USER_ID.equal(userId))
+				.and(DSL.length(AUDIT_KNOWN_DEVICES.DEVICE_ID).equal(32))
+			)
+			.fetchOneInto(int.class);
 	}
 	
 	public int insert(Connection con, String domainId, String userId, String clientIdentifier, String clientIpAddress, String clientUserAgent, DateTime seenTimestamp) throws DAOException {
