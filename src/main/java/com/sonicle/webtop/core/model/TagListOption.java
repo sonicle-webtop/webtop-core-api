@@ -32,27 +32,17 @@
  */
 package com.sonicle.webtop.core.model;
 
+import com.sonicle.commons.flags.BitFlagsEnum;
+
 /**
  *
  * @author malbinola
  */
-public class Tag extends TagBase {
-	protected String tagId;
-	protected String domainId;
-	
-	public String getTagId() {
-		return tagId;
-	}
+public enum TagListOption implements BitFlagsEnum<TagListOption> {
+	VISIBILITY_SHARED(1<<0), VISIBILITY_PRIVATE(1<<1);
 
-	public void setTagId(String tagId) {
-		this.tagId = tagId;
-	}
-	
-	public String getDomainId() {
-		return domainId;
-	}
-
-	public void setDomainId(String domainId) {
-		this.domainId = domainId;
-	}
+	private int mask = 0;
+	private TagListOption(int mask) { this.mask = mask; }
+	@Override
+	public long mask() { return this.mask; }
 }

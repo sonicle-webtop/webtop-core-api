@@ -1,6 +1,5 @@
 /*
- * WebTop Services is a Web Application framework developed by Sonicle S.r.l.
- * Copyright (C) 2014 Sonicle S.r.l.
+ * Copyright (C) 2026 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -11,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
  * details.
  *
  * You should have received a copy of the GNU Affero General Public License
@@ -19,7 +18,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301 USA.
  *
- * You can contact Sonicle S.r.l. at email address sonicle@sonicle.com
+ * You can contact Sonicle S.r.l. at email address sonicle[at]sonicle[dot]com
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -29,7 +28,7 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2014 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2026 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.core.model;
 
@@ -40,103 +39,66 @@ import com.google.gson.annotations.SerializedName;
  * @author malbinola
  */
 public class Recipient {
-	private String source;
-	private String sourceName;
-	private String origin;
-	private String personal;
-	private String address;
-	private Type type;
-	private String recipientId;
+	private final String source; // Do NOT change, its directly serialized client-side!
+	private final String sourceName; // Do NOT change, its directly serialized client-side!
+	private final String origin;
+	private final String recipientId; // Do NOT change, its directly serialized client-side!
+	//private final RecipientFieldType addressType; //TODO: Maybe add address type!
+	private String address; // Do NOT change, its directly serialized client-side!
+	private final String personal; // Do NOT change, its directly serialized client-side!
+	private final RecipientType type; // Do NOT change, its directly serialized client-side!
 	
-	public Recipient() {
-		this.type = Type.TO;
+	public Recipient(String sourceId, String sourceName, String origin, String recipientId, String address, String personal) {
+		this(sourceId, sourceName, origin, recipientId, address, personal, null);
 	}
 	
-	public Recipient(String source, String sourceName, String origin, String personal, String address) {
-		this.source = source;
-		this.sourceName = sourceName;
+	public Recipient(String sourceId, String sourceName, String origin, String recipientId, String address, String personal, RecipientType type) {
+		this.source = sourceId; // The provider ID
+		this.sourceName = sourceName; // The name associated to the provider
 		this.origin = origin;
-		this.personal = personal;
+		this.recipientId = recipientId;
+		//this.addressType = addressType;
 		this.address = address;
-		this.type = Type.TO;
+		this.personal = personal;
+		this.type = type;
 	}
 
-	public Recipient(String source, String sourceName, String origin, String personal, String address, Type type) {
-		this.source = source;
-		this.sourceName = sourceName;
-		this.origin = origin;
-		this.personal = personal;
-		this.address = address;
-		this.type = type;
-	}
-	
-	public Recipient(String source, String sourceName, String origin, String personal, String address, Type type, String recipientId) {
-		this.source = source;
-		this.sourceName = sourceName;
-		this.origin = origin;
-		this.personal = personal;
-		this.address = address;
-		this.type = type;
-		this.recipientId = recipientId;
-	}
-	
-	public String getSource() {
+	public String getProviderId() {
 		return source;
 	}
 
-	public void setSource(String source) {
-		this.source = source;
-	}
-
-	public String getSourceName() {
+	public String getProviderName() {
 		return sourceName;
-	}
-
-	public void setSourceName(String sourceName) {
-		this.sourceName = sourceName;
 	}
 
 	public String getOrigin() {
 		return origin;
-	}
-
-	public void setOrigin(String origin) {
-		this.origin = origin;
-	}
-
-	public String getPersonal() {
-		return personal;
-	}
-
-	public void setPersonal(String personal) {
-		this.personal = personal;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	
-	public Type getType() {
-		return type;
-	}
-	
-	public void setType(Type type) {
-		this.type = type;
 	}
 	
 	public String getRecipientId() {
 		return recipientId;
 	}
 	
-	public void setRecipientId(String id) {
-		this.recipientId=id;
+	public String getAddress() {
+		return address;
 	}
 	
-	public static enum Type {
+	/**
+	 * @deprecated Why is this necessary?
+	 */
+	@Deprecated public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getPersonal() {
+		return personal;
+	}
+
+	public RecipientType getRcptType() {
+		return type;
+	}
+	
+	public static enum RecipientType {
 		@SerializedName("to") TO,
 		@SerializedName("cc") CC,
 		@SerializedName("bcc") BCC;

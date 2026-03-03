@@ -32,27 +32,66 @@
  */
 package com.sonicle.webtop.core.model;
 
+import com.google.gson.annotations.SerializedName;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  *
  * @author malbinola
  */
-public class Tag extends TagBase {
-	protected String tagId;
-	protected String domainId;
+public class TagBase {
+	protected Visibility visibility;
+	protected Boolean builtIn;
+	protected String name;
+	protected String color;
+	protected String externalId;
 	
-	public String getTagId() {
-		return tagId;
+	public Visibility getVisibility() {
+		return visibility;
 	}
 
-	public void setTagId(String tagId) {
-		this.tagId = tagId;
+	public void setVisibility(Visibility visibility) {
+		this.visibility = visibility;
 	}
 	
-	public String getDomainId() {
-		return domainId;
+	public Boolean getBuiltIn() {
+		return builtIn;
 	}
 
-	public void setDomainId(String domainId) {
-		this.domainId = domainId;
+	public void setBuiltIn(Boolean builtIn) {
+		this.builtIn = builtIn;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+	
+	public static String getHexColor(String color) {
+		return (StringUtils.indexOf(color, "#") == 0) ? StringUtils.substring(color, 1) : color;
+	}
+	
+	public String getExternalId() {
+		return externalId;
+	}
+
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
+	}
+	
+	public static enum Visibility {
+		@SerializedName("private") PRIVATE,
+		@SerializedName("shared") SHARED
 	}
 }
