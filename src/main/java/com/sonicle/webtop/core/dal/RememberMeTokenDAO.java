@@ -108,6 +108,18 @@ public class RememberMeTokenDAO extends BaseDAO {
 			.execute();
 	}
 	
+	public int updateUsageById(Connection con, long id, DateTime expiresAt, DateTime lastUsedAt) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.update(REMEMBERME_TOKENS)
+			.set(REMEMBERME_TOKENS.EXPIRES_AT, expiresAt)
+			.set(REMEMBERME_TOKENS.LAST_USED_AT, lastUsedAt)
+			.where(
+				REMEMBERME_TOKENS.REMEMBERME_TOKEN_ID.equal(id)
+			)
+			.execute();
+	}
+	
 	public int updateUsageById(Connection con, long id, DateTime lastUsedAt) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl

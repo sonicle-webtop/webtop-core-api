@@ -41,15 +41,15 @@ import org.joda.time.Duration;
  *
  * @author malbinola
  */
-public class RMeTokenIssued extends RMeTokenConsumed {
-	private final String validatorPlain;
+public class RMeTokenConsumed extends RMeTokenInfo {
+	private final Duration ttl;
 	
-	public RMeTokenIssued(UserProfileId profileId, String selector, String validatorHash, String validatorPlain, DateTime issued, DateTime expiry, Duration ttl) {
-		super(profileId, selector, validatorHash, null, issued, expiry, ttl);
-		this.validatorPlain = Check.notEmpty(validatorPlain, "validatorPlain");
+	public RMeTokenConsumed(UserProfileId profileId, String selector, String validatorHash, String validatorHashPrev, DateTime issued, DateTime expiry, Duration ttl) {
+		super(profileId, selector, validatorHash, validatorHashPrev, issued, expiry);
+		this.ttl = Check.notNull(ttl, "ttl");
 	}
 	
-	public String getValidatorPlain() {
-		return validatorPlain;
+	public Duration getTTL() {
+		return ttl;
 	}
 }
