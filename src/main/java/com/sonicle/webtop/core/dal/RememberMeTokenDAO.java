@@ -37,8 +37,12 @@ import static com.sonicle.webtop.core.jooq.core.Sequences.SEQ_REMEMBERME_TOKENS;
 import static com.sonicle.webtop.core.jooq.core.tables.RemembermeTokens.REMEMBERME_TOKENS;
 import com.sonicle.webtop.core.jooq.core.tables.records.RemembermeTokensRecord;
 import java.sql.Connection;
+import java.util.List;
+import java.util.Optional;
 import org.joda.time.DateTime;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 /**
  *
@@ -56,6 +60,35 @@ public class RememberMeTokenDAO extends BaseDAO {
 		return nextID;
 	}
 	
+	public List<ORememberMeToken> selectByProfileRevoked(Connection con, String domainId, String userId, Optional<Boolean> revoked) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		Condition cndtEnabled = DSL.trueCondition();
+		if (revoked.isPresent()) cndtEnabled = REMEMBERME_TOKENS.REVOKED.equal(revoked.get());
+		return dsl
+			.select(
+				REMEMBERME_TOKENS.REMEMBERME_TOKEN_ID,
+				REMEMBERME_TOKENS.DOMAIN_ID,
+				REMEMBERME_TOKENS.USER_ID,
+				REMEMBERME_TOKENS.SELECTOR,
+				REMEMBERME_TOKENS.VALIDATOR,
+				REMEMBERME_TOKENS.VALIDATOR_PREV,
+				REMEMBERME_TOKENS.ISSUED_AT,
+				REMEMBERME_TOKENS.EXPIRES_AT,
+				REMEMBERME_TOKENS.LAST_USED_AT,
+				REMEMBERME_TOKENS.REVOKED,
+				REMEMBERME_TOKENS.CLIENT_IDENTIFIER,
+				REMEMBERME_TOKENS.CLIENT_IP_ADDRESS,
+				REMEMBERME_TOKENS.CLIENT_USER_AGENT
+			)
+			.from(REMEMBERME_TOKENS)
+			.where(
+				REMEMBERME_TOKENS.DOMAIN_ID.equal(domainId)
+				.and(REMEMBERME_TOKENS.USER_ID.equal(userId))
+				.and(cndtEnabled)
+			)
+			.fetchInto(ORememberMeToken.class);
+	}
+	
 	public ORememberMeToken selectBySelector(Connection con, String selector) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -68,6 +101,7 @@ public class RememberMeTokenDAO extends BaseDAO {
 				REMEMBERME_TOKENS.VALIDATOR_PREV,
 				REMEMBERME_TOKENS.ISSUED_AT,
 				REMEMBERME_TOKENS.EXPIRES_AT,
+				REMEMBERME_TOKENS.LAST_USED_AT,
 				REMEMBERME_TOKENS.REVOKED,
 				REMEMBERME_TOKENS.CLIENT_IDENTIFIER,
 				REMEMBERME_TOKENS.CLIENT_IP_ADDRESS,
@@ -131,19 +165,6 @@ public class RememberMeTokenDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int revokeByPid(Connection con, String domainId, String userId, DateTime revisionTimestamp) throws DAOException {
-		DSLContext dsl = getDSL(con);
-		return dsl
-			.update(REMEMBERME_TOKENS)
-				.set(REMEMBERME_TOKENS.REVISION_TIMESTAMP, revisionTimestamp)
-				.set(REMEMBERME_TOKENS.REVOKED, true)
-			.where(
-				REMEMBERME_TOKENS.DOMAIN_ID.equal(domainId)
-				.and(REMEMBERME_TOKENS.USER_ID.equal(userId))
-			)
-			.execute();
-	}
-	
 	public int revokeById(Connection con, long tokenId, DateTime revisionTimestamp) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
@@ -164,6 +185,33 @@ public class RememberMeTokenDAO extends BaseDAO {
 				.set(REMEMBERME_TOKENS.REVOKED, true)
 			.where(
 				REMEMBERME_TOKENS.SELECTOR.equal(selector)
+			)
+			.execute();
+	}
+	
+	public int revokeByProfile(Connection con, String domainId, String userId, DateTime revisionTimestamp) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.update(REMEMBERME_TOKENS)
+				.set(REMEMBERME_TOKENS.REVISION_TIMESTAMP, revisionTimestamp)
+				.set(REMEMBERME_TOKENS.REVOKED, true)
+			.where(
+				REMEMBERME_TOKENS.DOMAIN_ID.equal(domainId)
+				.and(REMEMBERME_TOKENS.USER_ID.equal(userId))
+			)
+			.execute();
+	}
+	
+	public int revokeByProfileSelector(Connection con, String domainId, String userId, String selector, DateTime revisionTimestamp) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.update(REMEMBERME_TOKENS)
+				.set(REMEMBERME_TOKENS.REVISION_TIMESTAMP, revisionTimestamp)
+				.set(REMEMBERME_TOKENS.REVOKED, true)
+			.where(
+				REMEMBERME_TOKENS.SELECTOR.equal(selector)
+				.and(REMEMBERME_TOKENS.DOMAIN_ID.equal(domainId))
+				.and(REMEMBERME_TOKENS.USER_ID.equal(userId))
 			)
 			.execute();
 	}
