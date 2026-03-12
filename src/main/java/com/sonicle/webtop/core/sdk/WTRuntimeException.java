@@ -33,10 +33,7 @@
  */
 package com.sonicle.webtop.core.sdk;
 
-import com.sonicle.commons.LangUtils;
-import java.text.MessageFormat;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.helpers.MessageFormatter;
+import com.sonicle.webtop.core.app.util.ExceptionUtils;
 
 /**
  *
@@ -57,18 +54,10 @@ public class WTRuntimeException extends RuntimeException {
 	}
 	
 	public WTRuntimeException(String message, Object... arguments) {
-		super(LangUtils.escapeSingleQuote(formatMessage(message, arguments)));
+		super(ExceptionUtils.msg(message, arguments));
 	}
 	
 	public WTRuntimeException(Throwable cause, String message, Object... arguments) {
-		super(LangUtils.escapeSingleQuote(formatMessage(message, arguments)), cause);
-	}
-	
-	private static String formatMessage(String message, Object... arguments) {
-		if (StringUtils.contains(message, "{0}")) {
-			return MessageFormat.format(LangUtils.escapeMessageFormat(message), arguments);
-		} else {
-			return MessageFormatter.arrayFormat(message, arguments).getMessage();
-		}
+		super(ExceptionUtils.msg(message, arguments), cause);
 	}
 }

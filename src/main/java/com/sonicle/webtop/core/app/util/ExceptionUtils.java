@@ -38,7 +38,10 @@ import com.sonicle.webtop.core.dal.DAOException;
 import com.sonicle.webtop.core.dal.DAOIntegrityViolationException;
 import com.sonicle.webtop.core.sdk.WTException;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  *
@@ -46,7 +49,27 @@ import org.apache.commons.lang3.ClassUtils;
  */
 public class ExceptionUtils {
 	
-	public static WTException wrapThrowable(Throwable t) {
+	public static String msg(final String message, final Object... arguments) {
+		if (StringUtils.contains(message, "{0}")) {
+			return LangUtils.escapeSingleQuote(MessageFormat.format(LangUtils.escapeMessageFormat(message), arguments));
+		} else {
+			return MessageFormatter.arrayFormat(message, arguments).getMessage();
+		}
+	}
+	
+	public RuntimeException newRuntime(final String message) {
+		return new RuntimeException(msg(message));
+	}
+	
+	public RuntimeException newRuntime(final String message, final Object... arguments) {
+		return new RuntimeException(msg(message));
+	}
+	
+	public RuntimeException newRuntime(final Throwable cause, final String message, final Object... arguments) {
+		return new RuntimeException(msg(message), cause);
+	}
+	
+	public static WTException wrapThrowable(final Throwable t) {
 		if (t instanceof WTException) {
 			return (WTException)t;
 		} else if (t instanceof DAOIntegrityViolationException) {
