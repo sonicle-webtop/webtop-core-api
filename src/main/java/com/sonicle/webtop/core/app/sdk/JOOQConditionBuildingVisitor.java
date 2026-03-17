@@ -201,6 +201,23 @@ public abstract class JOOQConditionBuildingVisitor extends NoArgRSQLVisitorAdapt
 		}
 	}
 	
+	/*
+	protected Condition fuzzyCondition(final Collection<Field<String>> fields, final Operator operator, final Collection<?> values) {
+		return fuzzyCondition(fields, operator, values, defaultConditionOpts);
+	}
+	
+	protected Condition fuzzyCondition(final Collection<Field<String>> fields, final Operator operator, final Collection<?> values, final BitFlags<DefaultConditionOption> opts) {
+		final org.jooq.Param param = org.jooq.impl.DSL.val(singleValueAsString(values));
+		org.jooq.Field<Integer> distanceField = null;
+		for (Field<String> field : fields) {
+			final org.jooq.Field<Integer> levField = com.sonicle.webtop.core.jooq.public_.Routines.levenshtein1(field, param);
+			distanceField = (distanceField == null) ? levField : distanceField.add(levField);
+		}
+		if (distanceField == null) throw new UnsupportedOperationException("NO string fields provided");
+		return distanceField.lessOrEqual(4 * fields.size());
+	}
+	*/
+	
 	protected String singleValueAsString(Collection<?> values) {
 		return (String)singleValue(values);
 	}

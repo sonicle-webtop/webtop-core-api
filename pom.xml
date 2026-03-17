@@ -294,7 +294,7 @@
 									<generator>
 										<database>
 											<name>org.jooq.meta.postgres.PostgresDatabase</name>
-											<includes>rrule_event_overlaps</includes>
+											<includes>rrule_event_overlaps</includes><!-- |levenshtein|levenshtein_less_equal -->
 											<excludes>.*(\.old|_old)</excludes>
 											<schemata>
 												<schema>
