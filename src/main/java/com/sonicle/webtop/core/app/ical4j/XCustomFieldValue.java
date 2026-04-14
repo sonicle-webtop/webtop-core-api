@@ -33,7 +33,6 @@
 package com.sonicle.webtop.core.app.ical4j;
 
 import com.sonicle.commons.time.JodaTimeUtils;
-import static com.sonicle.webtop.core.app.ezvcard.XCustomFieldValue.PARAM_ID;
 import java.net.URISyntaxException;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterFactoryImpl;

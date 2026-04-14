@@ -305,37 +305,37 @@ public class ICalendarUtils {
 	}
 	
 	/**
-	 * Extracts the Uid from the passed VEvent object.
-	 * @param ve The VEvent object
+	 * Extracts the Uid from the passed Calendar component.
+	 * @param comp The Calendar component.
 	 * @return Uid property value
 	 */
-	public static String getUidValue(VEvent ve) {
-		Check.notNull(ve, "ve");
-		return ICal4jUtils.getPropertyValue(ve.getProperty(Property.UID));
+	public static String getUidValue(final CalendarComponent comp) {
+		Check.notNull(comp, "comp");
+		return ICal4jUtils.getPropertyValue(comp.getProperty(Property.UID));
 	}
 	
 	/**
-	 * Extracts the Summary from the passed VEvent object.
-	 * @param ve The VEvent object
+	 * Extracts the Summary from the passed Calendar component.
+	 * @param comp The Calendar component.
 	 * @return Summary property value
 	 */
-	public static String getSummary(VEvent ve) {
-		Check.notNull(ve, "ve");
-		return ICal4jUtils.getPropertyValue(ve.getProperty(Property.SUMMARY));
+	public static String getSummary(final CalendarComponent comp) {
+		Check.notNull(comp, "comp");
+		return ICal4jUtils.getPropertyValue(comp.getProperty(Property.SUMMARY));
 	}
 	
 	/**
-	 * Extracts the first  the Organizer of the VEvent object.
-	 * @param ve The VEvent object
-	 * @return Summary property value
-	 * @throws com.sonicle.webtop.core.app.sdk.WTParseException
+	 * Extracts the first Organizer of the Calendar component.
+	 * @param comp The Calendar component.
+	 * @return
+	 * @throws WTParseException 
 	 */
-	public static InternetAddress getOrganizerAddress(VEvent ve) throws WTParseException {
-		Check.notNull(ve, "ve");
+	public static InternetAddress getOrganizerAddress(final CalendarComponent comp) throws WTParseException {
+		Check.notNull(comp, "comp");
 		// See http://www.kanzaki.com/docs/ical/organizer.html
 		
 		InternetAddress ia = null;
-		final Organizer org = (Organizer)ve.getProperty(Property.ORGANIZER);
+		final Organizer org = (Organizer)comp.getProperty(Property.ORGANIZER);
 		if (org != null) {
 			// Evaluates organizer details
 			// Extract email and common name (CN)
@@ -346,7 +346,7 @@ public class ICalendarUtils {
 				String address = uri.getSchemeSpecificPart();
 				ia = InternetAddressUtils.toInternetAddress(address, (cn == null) ? address : cn.getValue());
 			} else {
-				throw new WTParseException("Organizer not valid [{0}]", org.toString());
+				throw new WTParseException("Organizer value invalid [{}]", org.toString());
 			}
 		}
 		return ia;

@@ -45,6 +45,7 @@ import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Dur;
+import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.PeriodList;
 import net.fortuna.ical4j.model.Property;
@@ -123,6 +124,15 @@ public class ICal4jUtils {
 		Property oldProp = component.getProperties().getProperty(property.getName());
 		if (oldProp != null) component.getProperties().remove(oldProp);
 		addProperty(component, property);
+	}
+	
+	/**
+	 * Returns the value of passed Parameter, if provided, or null otherwise.
+	 * @param param Parameter object
+	 * @return The corresponding String value
+	 */
+	public static String getParameterValue(Parameter param) {
+		return (param != null) ? param.getValue() : null;
 	}
 	
 	public static boolean isAllDay(VEvent event) {

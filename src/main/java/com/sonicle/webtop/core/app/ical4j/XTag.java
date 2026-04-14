@@ -32,7 +32,9 @@
  */
 package com.sonicle.webtop.core.app.ical4j;
 
+import static com.sonicle.webtop.core.app.ical4j.XCustomFieldValue.PARAM_ID;
 import java.net.URISyntaxException;
+import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterFactoryImpl;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.property.XProperty;
@@ -44,6 +46,7 @@ import net.sf.qualitycheck.Check;
  */
 public class XTag {
 	public static final String PROPERTY_NAME = "X-WT-TAG";
+	public static final String PARAM_ID = "UID";
 	
 	public static XProperty toProperty(final String uid, final String name) throws URISyntaxException {
 		Check.notNull(name, "name");
@@ -54,7 +57,16 @@ public class XTag {
 		Check.notEmpty(uid, "uid");
 		ParameterFactoryImpl pfi = ParameterFactoryImpl.getInstance();
 		ParameterList pl = new ParameterList();
-		pl.add(pfi.createParameter("UID", uid));
+		pl.add(pfi.createParameter(PARAM_ID, uid));
 		return pl;
+	}
+	
+	public static String getParamTagId(final XProperty property) {
+		Parameter param = property.getParameter(PARAM_ID);
+		return param != null ? param.getValue() : null;
+	}
+	
+	public static String getTagName(final XProperty property) {
+		return property.getValue();
 	}
 }
