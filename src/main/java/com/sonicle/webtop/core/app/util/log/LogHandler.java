@@ -54,4 +54,30 @@ public abstract class LogHandler {
 	public void handleMessage(int depth, LogEntry.Level level, String message, Object... arguments) {
 		handle(new LogMessage(depth, level, message, arguments));
 	}
+	
+	public static void log(LogHandler logHandler, LogEntry entry) {
+		if (logHandler != null) {
+			try {
+				logHandler.handle(entry);
+			} catch(Throwable t) {} 
+		}
+	}
+	
+	public static void log(LogHandler logHandler, LogEntry... entries) {
+		if (logHandler != null) {
+			try {
+				logHandler.handle(entries);
+			} catch(Throwable t) {} 
+		}
+	}
+	
+	public static void log(LogHandler logHandler, int depth, LogEntry.Level level, String message, Object... arguments) {
+		if (logHandler != null) {
+			try {
+				logHandler.handleMessage(depth, level, message, arguments);
+			} catch(Throwable t) {} 
+		}
+	}
+	
+	
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Sonicle S.r.l.
+ * Copyright (C) 2026 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,62 +28,31 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2021 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2026 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.core.app.util.log;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  *
  * @author malbinola
  */
-public class LogReport {
-	private final Map<String, String> messageByResourceKeyMap;
-	private final ArrayList<LogEntry> entries = new ArrayList<>();
+public class MemoryLogHandler extends LogHandler {
+	private final StringBuilder sb;
 	
-	public LogReport() {
-		this(null);
+	public MemoryLogHandler() {
+		this.sb = new StringBuilder();
 	}
 	
-	public LogReport(Map<String, String> messageByResourceKeyMap) {
-		this.messageByResourceKeyMap = messageByResourceKeyMap;
-	}
-	
-	public boolean isEmpty() {
-		return this.entries.isEmpty();
-	}
-	
-	public LogReport insert(LogEntry entry) {
-		this.entries.add(0, entry);
-		return this;
-	}
-	
-	public LogReport append(LogEntry entry) {
-		this.entries.add(entry);
-		return this;
-	}
-	
-	public LogReport appendAll(Collection<LogEntry> entries) {
-		this.entries.addAll(entries);
-		return this;
+	@Override
+	public void handle(Collection<LogEntry> entries) {
+		for (LogEntry entry : entries) {
+			sb.append(entry.toString());
+		}
 	}
 	
 	public String print() {
-		StringBuilder sb = new StringBuilder();
-		for (LogEntry entry : entries) {
-			if (entry == null) continue;
-			if (entry instanceof LogI18nMessage && messageByResourceKeyMap != null) {
-				LogI18nMessage i18nEntry = (LogI18nMessage)entry;
-				sb.append(i18nEntry.toLocalizedString(StringUtils.defaultString(messageByResourceKeyMap.get(i18nEntry.getResourceKey()), i18nEntry.getResourceKey())));
-			} else {
-				sb.append(entry.toString());
-			}
-			sb.append("\n");
-		}
 		return sb.toString();
 	}
 }
