@@ -44,6 +44,11 @@ public class Core extends org.jooq.impl.SchemaImpl {
     public final com.sonicle.webtop.core.jooq.core.tables.AuditLog AUDIT_LOG = com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG;
 
     /**
+     * The table <code>core.auth_tokens</code>.
+     */
+    public final com.sonicle.webtop.core.jooq.core.tables.AuthTokens AUTH_TOKENS = com.sonicle.webtop.core.jooq.core.tables.AuthTokens.AUTH_TOKENS;
+
+    /**
      * The table <code>core.autosave</code>.
      */
     public final com.sonicle.webtop.core.jooq.core.tables.Autosave AUTOSAVE = com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE;
@@ -309,6 +314,7 @@ public class Core extends org.jooq.impl.SchemaImpl {
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_ACTIVITIES,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_AUDIT_KNOWN_DEVICES,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_AUDIT_LOG,
+            com.sonicle.webtop.core.jooq.core.Sequences.SEQ_AUTH_TOKENS,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_CAUSALS,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_IM_CHATS,
             com.sonicle.webtop.core.jooq.core.Sequences.SEQ_IM_MESSAGES,
@@ -332,6 +338,7 @@ public class Core extends org.jooq.impl.SchemaImpl {
             com.sonicle.webtop.core.jooq.core.tables.ApiKeys.API_KEYS,
             com.sonicle.webtop.core.jooq.core.tables.AuditKnownDevices.AUDIT_KNOWN_DEVICES,
             com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG,
+            com.sonicle.webtop.core.jooq.core.tables.AuthTokens.AUTH_TOKENS,
             com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE,
             com.sonicle.webtop.core.jooq.core.tables.Causals.CAUSALS,
             com.sonicle.webtop.core.jooq.core.tables.CustomFields.CUSTOM_FIELDS,

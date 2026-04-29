@@ -132,7 +132,13 @@ public class BaseDAO {
 		return (conditionPredicate != null) ? conditionPredicate.query(visitor) : DSL.trueCondition();
 	}
 	
-	public static Condition createCondition(final String rsqlQuery, JOOQConditionBuildingVisitor visitor) {
+	/*
+	public static Condition createCondition(final com.sonicle.commons.qbuilders.conditions.Condition<?> conditionPredicate, final JOOQConditionBuildingVisitor visitor) {
+		return (conditionPredicate != null) ? conditionPredicate.query(visitor) : DSL.trueCondition();
+	}
+	*/
+	
+	public static Condition createCondition(final String rsqlQuery, final JOOQConditionBuildingVisitor visitor) {
 		return StringUtils.isBlank(rsqlQuery) ? null : parseRSQL(rsqlQuery).accept(visitor);
 	}
 	

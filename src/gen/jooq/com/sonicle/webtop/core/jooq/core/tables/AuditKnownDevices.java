@@ -59,22 +59,22 @@ public class AuditKnownDevices extends org.jooq.impl.TableImpl<com.sonicle.webto
     /**
      * The column <code>core.audit_known_devices.first_client_ip_address</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.String> FIRST_CLIENT_IP_ADDRESS = createField(org.jooq.impl.DSL.name("first_client_ip_address"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.String> FIRST_CLIENT_IP_ADDRESS = createField(org.jooq.impl.DSL.name("first_client_ip_address"), org.jooq.impl.SQLDataType.VARCHAR(45), this, "");
 
     /**
      * The column <code>core.audit_known_devices.last_client_ip_address</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.String> LAST_CLIENT_IP_ADDRESS = createField(org.jooq.impl.DSL.name("last_client_ip_address"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.String> LAST_CLIENT_IP_ADDRESS = createField(org.jooq.impl.DSL.name("last_client_ip_address"), org.jooq.impl.SQLDataType.VARCHAR(45), this, "");
 
     /**
      * The column <code>core.audit_known_devices.first_client_user_agent</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.String> FIRST_CLIENT_USER_AGENT = createField(org.jooq.impl.DSL.name("first_client_user_agent"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.String> FIRST_CLIENT_USER_AGENT = createField(org.jooq.impl.DSL.name("first_client_user_agent"), org.jooq.impl.SQLDataType.VARCHAR(512), this, "");
 
     /**
      * The column <code>core.audit_known_devices.last_client_user_agent</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.String> LAST_CLIENT_USER_AGENT = createField(org.jooq.impl.DSL.name("last_client_user_agent"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord, java.lang.String> LAST_CLIENT_USER_AGENT = createField(org.jooq.impl.DSL.name("last_client_user_agent"), org.jooq.impl.SQLDataType.VARCHAR(512), this, "");
 
     private AuditKnownDevices(org.jooq.Name alias, org.jooq.Table<com.sonicle.webtop.core.jooq.core.tables.records.AuditKnownDevicesRecord> aliased) {
         this(alias, aliased, null);

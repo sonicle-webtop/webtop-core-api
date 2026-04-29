@@ -32,6 +32,11 @@ public class Sequences {
     public static final org.jooq.Sequence<java.lang.Long> SEQ_AUDIT_LOG = org.jooq.impl.Internal.createSequence("seq_audit_log", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>core.seq_auth_tokens</code>
+     */
+    public static final org.jooq.Sequence<java.lang.Long> SEQ_AUTH_TOKENS = org.jooq.impl.Internal.createSequence("seq_auth_tokens", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>core.seq_causals</code>
      */
     public static final org.jooq.Sequence<java.lang.Long> SEQ_CAUSALS = org.jooq.impl.Internal.createSequence("seq_causals", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

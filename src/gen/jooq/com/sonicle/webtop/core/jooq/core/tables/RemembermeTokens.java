@@ -89,17 +89,17 @@ public class RemembermeTokens extends org.jooq.impl.TableImpl<com.sonicle.webtop
     /**
      * The column <code>core.rememberme_tokens.client_identifier</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.RemembermeTokensRecord, java.lang.String> CLIENT_IDENTIFIER = createField(org.jooq.impl.DSL.name("client_identifier"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.RemembermeTokensRecord, java.lang.String> CLIENT_IDENTIFIER = createField(org.jooq.impl.DSL.name("client_identifier"), org.jooq.impl.SQLDataType.VARCHAR(43), this, "");
 
     /**
      * The column <code>core.rememberme_tokens.client_ip_address</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.RemembermeTokensRecord, java.lang.String> CLIENT_IP_ADDRESS = createField(org.jooq.impl.DSL.name("client_ip_address"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.RemembermeTokensRecord, java.lang.String> CLIENT_IP_ADDRESS = createField(org.jooq.impl.DSL.name("client_ip_address"), org.jooq.impl.SQLDataType.VARCHAR(45), this, "");
 
     /**
      * The column <code>core.rememberme_tokens.client_user_agent</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.RemembermeTokensRecord, java.lang.String> CLIENT_USER_AGENT = createField(org.jooq.impl.DSL.name("client_user_agent"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.core.jooq.core.tables.records.RemembermeTokensRecord, java.lang.String> CLIENT_USER_AGENT = createField(org.jooq.impl.DSL.name("client_user_agent"), org.jooq.impl.SQLDataType.VARCHAR(512), this, "");
 
     private RemembermeTokens(org.jooq.Name alias, org.jooq.Table<com.sonicle.webtop.core.jooq.core.tables.records.RemembermeTokensRecord> aliased) {
         this(alias, aliased, null);

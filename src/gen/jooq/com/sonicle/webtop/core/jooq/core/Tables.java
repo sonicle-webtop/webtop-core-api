@@ -37,6 +37,11 @@ public class Tables {
     public static final com.sonicle.webtop.core.jooq.core.tables.AuditLog AUDIT_LOG = com.sonicle.webtop.core.jooq.core.tables.AuditLog.AUDIT_LOG;
 
     /**
+     * The table <code>core.auth_tokens</code>.
+     */
+    public static final com.sonicle.webtop.core.jooq.core.tables.AuthTokens AUTH_TOKENS = com.sonicle.webtop.core.jooq.core.tables.AuthTokens.AUTH_TOKENS;
+
+    /**
      * The table <code>core.autosave</code>.
      */
     public static final com.sonicle.webtop.core.jooq.core.tables.Autosave AUTOSAVE = com.sonicle.webtop.core.jooq.core.tables.Autosave.AUTOSAVE;
