@@ -471,7 +471,7 @@ public class ICal4jUtils {
 	
 	/**
 	 * Updates, if necessary, the until-date setting it to the event start time in event timezone.
-	 * @param recur Recurrence rule.
+	 * @param recur The Recur object.
 	 * @param eventStartTime Event start time.
 	 * @param eventTimezone Event timezone.
 	 * @return True if an update was performed, false otherwise.
@@ -488,15 +488,41 @@ public class ICal4jUtils {
 	
 	/**
 	 * Sets the specified date-time as new until-date in recurrence rule.
-	 * @param recur Recurrence rule.
-	 * @param untilDate Date-time to set.
+	 * @param recur The Recur object.
+	 * @param untilDate Date-time to set or <code>null</null> to reset.
+	 * @return the Recur object itself
 	 */
-	public static void setRecurUntilDate(Recur recur, org.joda.time.DateTime untilDate) {
+	public static Recur setRecurUntilDate(final Recur recur, final org.joda.time.DateTime untilDate) {
 		if (untilDate != null) {
 			recur.setUntil(toIC4jDateTimeUTC(untilDate.withZone(org.joda.time.DateTimeZone.UTC)));
 		} else {
 			recur.setUntil(null);
 		}
+		return recur;
+	}
+	
+	/**
+	 * Sets the specified integer as new count parameter in recurrence rule.
+	 * @param recur The Recur object.
+	 * @param count The value to set or <code>null</null> to reset.
+	 * @return the Recur object itself
+	 */
+	public static Recur setRecurCount(final Recur recur, final Integer count) {
+		if (count != null && count > 0) {
+			recur.setCount(count);
+		} else {
+			recur.setCount(-1);
+		}
+		return recur;
+	}
+	
+	/**
+	 * Clones passed Recur object.
+	 * @param origRecur The source Recur object.
+	 * @return the cloned Recur object instance
+	 */
+	public static Recur cloneRecur(final Recur origRecur) {
+		return parseRRule(origRecur.toString());
 	}
 	
 	/**
@@ -516,8 +542,8 @@ public class ICal4jUtils {
 	
 	/**
 	 * Checks if passed recurrence rules are equals or not.
-	 * @param recur1 First recurrence object.
-	 * @param recur2 Second recurrence object.
+	 * @param recur1 First Recur object.
+	 * @param recur2 Second Recur object.
 	 * @return True if rules are equal, false otherwise
 	 */
 	public static boolean equals(Recur recur1, Recur recur2) {
@@ -529,7 +555,7 @@ public class ICal4jUtils {
 	/**
 	 * Computes date instances substained by the passed recurrence rule.
 	 * NB: returned dates are obtained by instant in target timezone.
-	 * @param recur Recurrence object instance.
+	 * @param recur The Recur object.
 	 * @param recurStart Recurrence start instant.
 	 * @param recurExcludeStartNotMatching Set to `true` to skip any date before computed (hope real) recur's first instance instant.
 	 * @param recurExcludedDates List of dates to exclude from the final result.
@@ -734,7 +760,7 @@ public class ICal4jUtils {
 	
 	/**
 	 * Returns the highest possible start-date.
-	 * Heavly inspired by: https://github.com/Bedework/bw-calendar-engine/blob/master/bw-calendar-engine-ical/src/main/java/org/bedework/icalendar/RecurUtil.java
+	 * Heavly inspired by: https://github.com/Bedework/bw-calendar-engine/blob/bw-calendar-engine-3.12.0/bw-calendar-engine-ical/src/main/java/org/bedework/icalendar/RecurUtil.java
 	 * @param recur
 	 * @param start
 	 * @param maxRangeEnd
