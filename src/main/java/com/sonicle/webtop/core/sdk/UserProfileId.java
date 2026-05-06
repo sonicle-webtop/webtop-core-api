@@ -32,9 +32,9 @@
  */
 package com.sonicle.webtop.core.sdk;
 
+import com.sonicle.commons.Check;
 import com.sonicle.security.DomainAccount;
 import com.sonicle.security.Principal;
-import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.StringUtils;
 
 /**

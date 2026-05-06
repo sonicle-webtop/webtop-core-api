@@ -32,8 +32,8 @@
  */
 package com.sonicle.webtop.core.app.model;
 
+import com.sonicle.commons.Check;
 import com.sonicle.webtop.core.sdk.UserProfileId;
-import net.sf.qualitycheck.Check;
 import org.joda.time.DateTime;
 
 /**

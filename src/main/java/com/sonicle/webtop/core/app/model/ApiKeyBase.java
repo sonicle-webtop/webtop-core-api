@@ -33,10 +33,10 @@
 package com.sonicle.webtop.core.app.model;
 
 import com.sonicle.commons.Base58;
+import com.sonicle.commons.Check;
 import com.sonicle.security.CryptoUtils;
 import com.sonicle.security.DigestAlgorithm;
 import java.security.NoSuchAlgorithmException;
-import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 

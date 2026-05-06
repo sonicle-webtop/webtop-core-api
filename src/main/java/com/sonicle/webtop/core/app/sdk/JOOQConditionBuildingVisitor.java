@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.core.app.sdk;
 
+import com.sonicle.commons.Check;
 import com.sonicle.commons.flags.BitFlags;
 import com.sonicle.commons.flags.BitFlagsEnum;
 import com.sonicle.commons.rsql.parser.Operator;
@@ -46,7 +47,6 @@ import com.sonicle.commons.time.JodaTimeUtils;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;

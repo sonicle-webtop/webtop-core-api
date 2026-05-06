@@ -32,7 +32,7 @@
  */
 package com.sonicle.webtop.core.app.util.log;
 
-import net.sf.qualitycheck.Check;
+import com.sonicle.commons.Check;
 import org.slf4j.helpers.MessageFormatter;
 
 /**

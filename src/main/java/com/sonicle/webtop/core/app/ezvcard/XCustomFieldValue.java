@@ -32,9 +32,9 @@
  */
 package com.sonicle.webtop.core.app.ezvcard;
 
+import com.sonicle.commons.Check;
 import com.sonicle.commons.time.JodaTimeUtils;
 import ezvcard.property.TextProperty;
-import net.sf.qualitycheck.Check;
 import org.joda.time.DateTime;
 
 /**
