@@ -33,11 +33,11 @@
  */
 package com.sonicle.webtop.core.bol;
 
+import com.sonicle.commons.Check;
 import com.sonicle.commons.IdentifierUtils;
 import com.sonicle.commons.RegexUtils;
 import com.sonicle.webtop.core.jooq.core.tables.pojos.Users;
 import com.sonicle.webtop.core.sdk.UserProfileId;
-import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 

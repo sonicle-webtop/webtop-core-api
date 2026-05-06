@@ -32,8 +32,8 @@
  */
 package com.sonicle.webtop.core.app.ezvcard;
 
+import com.sonicle.commons.Check;
 import ezvcard.property.TextProperty;
-import net.sf.qualitycheck.Check;
 
 /**
  *

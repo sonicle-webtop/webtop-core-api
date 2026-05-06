@@ -32,12 +32,12 @@
  */
 package com.sonicle.webtop.core.bol;
 
+import com.sonicle.commons.Check;
 import com.sonicle.commons.LangUtils;
 import com.sonicle.commons.RegexUtils;
 import com.sonicle.webtop.core.dal.BaseDAO;
 import com.sonicle.webtop.core.jooq.core.tables.pojos.DataSources;
 import java.util.Map;
-import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.StringUtils;
 
 /**

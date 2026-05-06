@@ -32,10 +32,10 @@
  */
 package com.sonicle.webtop.core.model;
 
+import com.sonicle.commons.Check;
 import com.sonicle.commons.time.JodaTimeUtils;
 import com.sonicle.webtop.core.app.sdk.WTParseException;
 import java.util.ArrayList;
-import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 

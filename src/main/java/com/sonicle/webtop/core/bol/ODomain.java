@@ -33,9 +33,9 @@
  */
 package com.sonicle.webtop.core.bol;
 
+import com.sonicle.commons.Check;
 import com.sonicle.commons.RegexUtils;
 import com.sonicle.webtop.core.jooq.core.tables.pojos.Domains;
-import net.sf.qualitycheck.Check;
 import org.jooq.tools.StringUtils;
 
 /**

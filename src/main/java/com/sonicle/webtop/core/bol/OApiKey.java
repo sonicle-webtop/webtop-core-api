@@ -32,8 +32,8 @@
  */
 package com.sonicle.webtop.core.bol;
 
+import com.sonicle.commons.Check;
 import com.sonicle.webtop.core.jooq.core.tables.pojos.ApiKeys;
-import net.sf.qualitycheck.Check;
 
 /**
  *

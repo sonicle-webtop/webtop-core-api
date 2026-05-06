@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.core.app.sdk;
 
+import com.sonicle.commons.Check;
 import com.sonicle.commons.EnumUtils;
 import com.sonicle.commons.qbuilders.conditions.Condition;
 import com.sonicle.commons.qbuilders.properties.concrete.BooleanProperty;
@@ -43,7 +44,6 @@ import static com.sonicle.webtop.core.app.sdk.QueryBuilder.asStringValue;
 import static com.sonicle.webtop.core.app.sdk.QueryBuilder.splitOperator;
 import com.sonicle.webtop.core.model.CustomField;
 import com.sonicle.webtop.core.model.CustomFieldBase;
-import net.sf.qualitycheck.Check;
 import org.joda.time.DateTimeZone;
 
 /**

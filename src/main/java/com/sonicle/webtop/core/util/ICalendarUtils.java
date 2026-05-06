@@ -33,6 +33,7 @@
  */
 package com.sonicle.webtop.core.util;
 
+import com.sonicle.commons.Check;
 import com.sonicle.commons.InternetAddressUtils;
 import com.sonicle.commons.MailUtils;
 import com.sonicle.commons.time.JodaTimeUtils;
@@ -92,7 +93,6 @@ import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.RecurrenceId;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.validate.ValidationException;
-import net.sf.qualitycheck.Check;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;

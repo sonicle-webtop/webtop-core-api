@@ -32,11 +32,11 @@
  */
 package com.sonicle.webtop.core.model;
 
+import com.sonicle.commons.Check;
 import com.sonicle.webtop.core.app.model.GenericSubject;
 import com.sonicle.webtop.core.bol.ORole;
 import com.sonicle.webtop.core.bol.OUser;
 import com.sonicle.webtop.core.sdk.UserProfileId;
-import net.sf.qualitycheck.Check;
 
 /**
  *

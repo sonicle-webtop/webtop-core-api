@@ -32,12 +32,12 @@
  */
 package com.sonicle.webtop.core.bol;
 
+import com.sonicle.commons.Check;
 import com.sonicle.commons.EnumUtils;
 import com.sonicle.commons.IdentifierUtils;
 import com.sonicle.commons.InternetAddressUtils;
 import com.sonicle.commons.RegexUtils;
 import com.sonicle.webtop.core.app.model.Resource;
-import net.sf.qualitycheck.Check;
 import net.sf.qualitycheck.exception.IllegalStateOfArgumentException;
 import org.apache.commons.lang3.StringUtils;
 

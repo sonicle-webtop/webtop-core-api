@@ -33,10 +33,10 @@
 package com.sonicle.webtop.core.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.sonicle.commons.Check;
 import com.sonicle.commons.EnumUtils;
 import com.sonicle.commons.LangUtils;
 import com.sonicle.commons.time.JodaTimeUtils;
-import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.joda.time.DateTime;

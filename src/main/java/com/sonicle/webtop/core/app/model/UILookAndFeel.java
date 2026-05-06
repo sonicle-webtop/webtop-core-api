@@ -32,7 +32,7 @@
  */
 package com.sonicle.webtop.core.app.model;
 
-import net.sf.qualitycheck.Check;
+import com.sonicle.commons.Check;
 
 /**
  *

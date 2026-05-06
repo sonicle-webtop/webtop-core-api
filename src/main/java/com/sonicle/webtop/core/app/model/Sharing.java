@@ -32,11 +32,11 @@
  */
 package com.sonicle.webtop.core.app.model;
 
+import com.sonicle.commons.Check;
 import com.sonicle.commons.LangUtils;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 

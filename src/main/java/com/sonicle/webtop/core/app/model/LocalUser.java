@@ -32,8 +32,8 @@
  */
 package com.sonicle.webtop.core.app.model;
 
+import com.sonicle.commons.Check;
 import com.sonicle.webtop.core.bol.VUser;
-import net.sf.qualitycheck.Check;
 
 /**
  *
