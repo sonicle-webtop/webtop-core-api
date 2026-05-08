@@ -84,6 +84,7 @@ import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.Categories;
 import net.fortuna.ical4j.model.property.DateProperty;
+import net.fortuna.ical4j.model.property.DtStamp;
 import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.Method;
@@ -658,10 +659,15 @@ public class ICalendarUtils {
 		ve.getAlarms().clear(); // Clear any defined alarms
 		PropertyList props = ve.getProperties();
 		
-		props.remove(props.getProperty(Property.DESCRIPTION));
+		// Generates new timestamp
+		props.remove(props.getProperty(Property.DTSTAMP));
+		props.add(new DtStamp());
+		
+		// Remove unuseful props
+		//props.remove(props.getProperty(Property.DESCRIPTION)); // Leave DESCRIPTION: seems that Goo & MS are more conservative!
 		props.remove(props.getProperty(Property.LAST_MODIFIED));
 		props.remove(props.getProperty(Property.CREATED));
-		props.remove(props.getProperty(Property.LOCATION));
+		//props.remove(props.getProperty(Property.LOCATION)); // Leave DESCRIPTION: seems that Goo & MS are more conservative!
 		props.remove(props.getProperty(Property.STATUS));
 		props.add(new LastModified(ICal4jUtils.createDateTime(JodaTimeUtils.now(true))));
 
