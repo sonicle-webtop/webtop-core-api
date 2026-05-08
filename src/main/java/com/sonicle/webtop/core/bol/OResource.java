@@ -36,9 +36,9 @@ import com.sonicle.commons.Check;
 import com.sonicle.commons.EnumUtils;
 import com.sonicle.commons.IdentifierUtils;
 import com.sonicle.commons.InternetAddressUtils;
+import com.sonicle.commons.LangUtils;
 import com.sonicle.commons.RegexUtils;
 import com.sonicle.webtop.core.app.model.Resource;
-import net.sf.qualitycheck.exception.IllegalStateOfArgumentException;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -53,7 +53,7 @@ public class OResource {
 	}
 	
 	public static void validate(OUserInfo tgt) {
-		if (InternetAddressUtils.toInternetAddress(tgt.getEmail()) == null) throw new IllegalStateOfArgumentException("Invalid personal email address: '%s'", tgt.getEmail());
+		if (InternetAddressUtils.toInternetAddress(tgt.getEmail()) == null) throw new Check.IllegalStateOfArgumentException(LangUtils.formatMessage("Invalid personal email address: '{}'", tgt.getEmail()));
 		Check.notEmpty(tgt.getCustom1(), "type");
 	}
 	
