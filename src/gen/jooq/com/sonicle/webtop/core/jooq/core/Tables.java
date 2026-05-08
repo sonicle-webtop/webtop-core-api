@@ -22,6 +22,11 @@ public class Tables {
     public static final com.sonicle.webtop.core.jooq.core.tables.Activities ACTIVITIES = com.sonicle.webtop.core.jooq.core.tables.Activities.ACTIVITIES;
 
     /**
+     * The table <code>core.ai_usage</code>.
+     */
+    public static final com.sonicle.webtop.core.jooq.core.tables.AiUsage AI_USAGE = com.sonicle.webtop.core.jooq.core.tables.AiUsage.AI_USAGE;
+
+    /**
      * The table <code>core.api_keys</code>.
      */
     public static final com.sonicle.webtop.core.jooq.core.tables.ApiKeys API_KEYS = com.sonicle.webtop.core.jooq.core.tables.ApiKeys.API_KEYS;
@@ -183,6 +188,11 @@ public class Tables {
     public static final com.sonicle.webtop.core.jooq.core.tables.LocalVault LOCAL_VAULT = com.sonicle.webtop.core.jooq.core.tables.LocalVault.LOCAL_VAULT;
 
     /**
+     * The table <code>core.mailbridge_sync_tasks</code>.
+     */
+    public static final com.sonicle.webtop.core.jooq.core.tables.MailbridgeSyncTasks MAILBRIDGE_SYNC_TASKS = com.sonicle.webtop.core.jooq.core.tables.MailbridgeSyncTasks.MAILBRIDGE_SYNC_TASKS;
+
+    /**
      * The table <code>core.master_data</code>.
      */
     public static final com.sonicle.webtop.core.jooq.core.tables.MasterData MASTER_DATA = com.sonicle.webtop.core.jooq.core.tables.MasterData.MASTER_DATA;
@@ -241,6 +251,11 @@ public class Tables {
      * The table <code>core.shares_data</code>.
      */
     public static final com.sonicle.webtop.core.jooq.core.tables.SharesData SHARES_DATA = com.sonicle.webtop.core.jooq.core.tables.SharesData.SHARES_DATA;
+
+    /**
+     * The table <code>core.smtp_relays</code>.
+     */
+    public static final com.sonicle.webtop.core.jooq.core.tables.SmtpRelays SMTP_RELAYS = com.sonicle.webtop.core.jooq.core.tables.SmtpRelays.SMTP_RELAYS;
 
     /**
      * The table <code>core.snoozed_reminders</code>.

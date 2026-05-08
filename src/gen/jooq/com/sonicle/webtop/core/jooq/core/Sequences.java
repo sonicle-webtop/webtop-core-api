@@ -22,6 +22,11 @@ public class Sequences {
     public static final org.jooq.Sequence<java.lang.Long> SEQ_ACTIVITIES = org.jooq.impl.Internal.createSequence("seq_activities", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>core.seq_ai_usage</code>
+     */
+    public static final org.jooq.Sequence<java.lang.Long> SEQ_AI_USAGE = org.jooq.impl.Internal.createSequence("seq_ai_usage", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>core.seq_audit_known_devices</code>
      */
     public static final org.jooq.Sequence<java.lang.Long> SEQ_AUDIT_KNOWN_DEVICES = org.jooq.impl.Internal.createSequence("seq_audit_known_devices", com.sonicle.webtop.core.jooq.core.Core.CORE, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
