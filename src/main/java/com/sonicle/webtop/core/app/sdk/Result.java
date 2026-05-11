@@ -33,6 +33,7 @@
 package com.sonicle.webtop.core.app.sdk;
 
 import com.sonicle.webtop.core.app.model.HomedThrowable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.StringJoiner;
@@ -47,7 +48,11 @@ public class Result<T> {
 	private final Collection<HomedThrowable> exceptions;
 	
 	public Result(T object) {
-		this(object, null);
+		this(object, (Collection<HomedThrowable>)null);
+	}
+	
+	public Result(T object, HomedThrowable exception) {
+		this(object, exception != null ? Arrays.asList(exception) : null);
 	}
 	
 	public Result(T object, Collection<HomedThrowable> exceptions) {

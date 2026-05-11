@@ -55,4 +55,8 @@ public final class HomedThrowable {
 	public Throwable getThrowable() {
 		return throwable;
 	}
+	
+	public static HomedThrowable wrap(String serviceId, Throwable throwable) {
+		return new HomedThrowable(serviceId, throwable);
+	}
 }
