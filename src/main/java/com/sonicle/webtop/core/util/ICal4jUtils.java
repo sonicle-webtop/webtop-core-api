@@ -502,6 +502,18 @@ public class ICal4jUtils {
 	}
 	
 	/**
+	 * Extract the configured until-date from the recurrence object.
+	 * @param recur The Recur object.
+	 * @return the date-time in UTC if defined, <code>null</code> otherwise
+	 */
+	public static org.joda.time.DateTime getRecurUntilDate(final Recur recur) {
+		if (recurHasUntilDate(recur)) {
+			return ICal4jUtils.toJodaDateTime(recur.getUntil(), DateTimeZone.UTC);
+		}
+		return null;
+	}
+	
+	/**
 	 * Sets the specified integer as new count parameter in recurrence rule.
 	 * @param recur The Recur object.
 	 * @param count The value to set or <code>null</null> to reset.
