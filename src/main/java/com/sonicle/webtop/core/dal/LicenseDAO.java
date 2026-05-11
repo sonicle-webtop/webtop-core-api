@@ -213,6 +213,24 @@ public class LicenseDAO extends BaseDAO {
 			.execute();
 	}
 	
+	public int insertActivation(Connection con, String domainId, String serviceId, String productCode, String string, DateTime revistionTimestamp, String activatedString, DateTime activationTimestamp, String activationHwId, LocalDate expirationDate, Integer quantity, Boolean autoLease) throws DAOException {
+		DSLContext dsl = getDSL(con);
+		return dsl
+			.insertInto(LICENSES)
+			.set(LICENSES.DOMAIN_ID, domainId)
+			.set(LICENSES.SERVICE_ID, serviceId)
+			.set(LICENSES.PRODUCT_CODE, productCode)
+			.set(LICENSES.STRING, string)
+			.set(LICENSES.REVISION_TIMESTAMP, revistionTimestamp)
+			.set(LICENSES.ACTIVATED_STRING, activatedString)
+			.set(LICENSES.ACTIVATION_TIMESTAMP, activationTimestamp)
+			.set(LICENSES.ACTIVATION_HW_ID, activationHwId)
+			.set(LICENSES.EXPIRATION_DATE, expirationDate)
+			.set(LICENSES.QUANTITY, quantity)
+			.set(LICENSES.AUTO_LEASE, autoLease)
+			.execute();
+	}
+	
 	public int updateAutoLease(Connection con, String domainId, String serviceId, String productCode, boolean autoLease) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
