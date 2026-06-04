@@ -34,7 +34,7 @@ package com.sonicle.webtop.core.app.model;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
