@@ -537,9 +537,10 @@ public class ICalendarUtils {
 	 * Extracts all properties (also experimental) from the specified Component.
 	 * @param iCalendar The Calendar object.
 	 * @param componentType The source component from which extract properties.
+	 * @param excludeNames Property names to be ignored. Set to `null` to include all props.
 	 * @return List of properties
 	 */
-	public static PropertyList extractProperties(Calendar iCalendar, Class<? extends CalendarComponent> componentType) {
+	public static PropertyList extractProperties(final Calendar iCalendar, final Class<? extends CalendarComponent> componentType, final Set<String> excludeNames) {
 		if (iCalendar == null) return null;
 		Check.notNull(componentType, "componentType");
 		for (Iterator it = iCalendar.getComponents().iterator(); it.hasNext();) {
