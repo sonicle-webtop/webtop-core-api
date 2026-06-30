@@ -469,19 +469,23 @@ public class ICalendarUtils {
 	 * @param comp The Calendar component.
 	 * @return An object holding data
 	 */
-	public static RecurringRefs extractRecurringRefs(CalendarComponent comp) {
-		String exRefersToMasterUid = null;
-		org.joda.time.LocalDate exRefersToDate = null;
+	public static RRInstanceInfo extractRRInstanceInfo(CalendarComponent comp) {
+		String masterUid = null;
+		org.joda.time.LocalDate exDate = null;
 		
 		// Extracts recurrence-id: it indicates the date referred to the 
 		// master-entity on which operate the exception described by this component
 		RecurrenceId recurrenceId = (RecurrenceId)comp.getProperty(Property.RECURRENCE_ID);
 		if (recurrenceId != null) {
-			exRefersToMasterUid = ICal4jUtils.getPropertyValue(comp.getProperty(Property.UID));
-			exRefersToDate = ICal4jUtils.toJodaLocalDate(recurrenceId.getDate(), DateTimeZone.UTC);
+			masterUid = ICal4jUtils.getPropertyValue(comp.getProperty(Property.UID));
+			exDate = ICal4jUtils.toJodaLocalDate(recurrenceId.getDate(), DateTimeZone.UTC);
 		}
 		
-		return new RecurringRefs(exRefersToMasterUid, exRefersToDate);
+		if (!StringUtils.isEmpty(masterUid) && exDate != null) {
+			return new RRInstanceInfo(masterUid, exDate);
+		} else {
+			return null;
+		}
 	}
 	
 	/**
@@ -706,13 +710,13 @@ public class ICalendarUtils {
 		}
 	}
 	
-	public static class RecurringRefs {
-		public final String exRefersToMasterUid;
-		public final org.joda.time.LocalDate exRefersToDate;
+	public static class RRInstanceInfo {
+		public final String masterUid;
+		public final org.joda.time.LocalDate instanceDate;
 		
-		public RecurringRefs(String exRefersToMasterUid, org.joda.time.LocalDate exRefersToDate) {
-			this.exRefersToMasterUid = exRefersToMasterUid;
-			this.exRefersToDate = exRefersToDate;
+		public RRInstanceInfo(String masterUid, org.joda.time.LocalDate instanceDate) {
+			this.masterUid = masterUid;
+			this.instanceDate = instanceDate;
 		}
 	}
 }
