@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.core.util;
 
+import com.sonicle.commons.Check;
 import com.sonicle.commons.LangUtils;
 import java.net.SocketException;
 import java.text.ParseException;
@@ -45,6 +46,7 @@ import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Dur;
+import net.fortuna.ical4j.model.NumberList;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.PeriodList;
@@ -53,6 +55,8 @@ import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
+import net.fortuna.ical4j.model.WeekDay;
+import net.fortuna.ical4j.model.WeekDayList;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.parameter.Value;
@@ -529,12 +533,137 @@ public class ICal4jUtils {
 	}
 	
 	/**
-	 * Clones passed Recur object.
-	 * @param origRecur The source Recur object.
-	 * @return the cloned Recur object instance
+	 * Clones the passed Recur object, producing an independent instance with the
+	 * same recurrence definition. The clone is performed via string round-trip
+	 * (serialize and re-parse), which guarantees no shared references to the
+	 * internal mutable lists (BYDAY, BYMONTHDAY, etc.).
+	 * @param origRecur The source Recur object. May be null.
+	 * @return a new Recur instance equivalent to the source, or null
 	 */
 	public static Recur cloneRecur(final Recur origRecur) {
+		if (origRecur == null) return null;
 		return parseRRule(origRecur.toString());
+	}
+	
+	/**
+	 * Clones the passed Recur object rebasing its date-dependent BY* parts on a
+	 * new start date. This is intended for "this and future occurrences" edits,
+	 * where the recurrence is split at {@code newStart} and the tail series must
+	 * follow the same pattern but anchored on the new date.
+	 * @param origRecur The source Recur object. May be null.
+	 * @param origStart The original start of the recurrence, used to detect which BY* parts are redundant mirrors of the original date.
+	 * @param newStart The new start the cloned Recur will be anchored to; its weekday, day-of-month and month are used to rewrite the BY* parts detected as mirrors.
+	 * @return a new Recur instance rebased on start, or null
+	 */
+	public static Recur cloneRecur(final Recur origRecur, final org.joda.time.DateTime origStart, final org.joda.time.DateTime newStart) {
+		if (origRecur == null) return null;
+		Check.notNull(origStart, "origStart");
+		Check.notNull(newStart, "newStart");
+		
+		Recur newRecur = new Recur(origRecur.getFrequency(), -1);
+		
+		// INTERVAL is structural (e.g. "every 2 weeks"): always preserve it
+		if (origRecur.getInterval() > 0) {
+			newRecur.setInterval(origRecur.getInterval());
+		}
+		
+		WeekDayList originalByDay = origRecur.getDayList();
+		if (!originalByDay.isEmpty()) {
+			boolean isSingleDayMatchingOrigStart = originalByDay.size() == 1 && matchesWeekday(originalByDay.get(0), origStart);
+			if (isSingleDayMatchingOrigStart) {
+				// Explicitly anchor the rule to the new start's weekday instead of
+				// relying on ical4j to derive it implicitly from DTSTART.
+				newRecur.getDayList().add(new WeekDay(toWeekDayDay(newStart.getDayOfWeek()).name()));
+			} else {
+				for (Object o : originalByDay) {
+					newRecur.getDayList().add((WeekDay) o); // real pattern, e.g. MO,WE,FR or an ordinal like -1FR
+				}
+			}
+		}
+		
+		NumberList originalByMonthDay = origRecur.getMonthDayList();
+		if (!originalByMonthDay.isEmpty()) {
+			boolean isMirrorOfOrigStart = originalByMonthDay.size() == 1 && originalByMonthDay.get(0).equals(origStart.getDayOfMonth());
+			if (isMirrorOfOrigStart) {
+				newRecur.getMonthDayList().add(newStart.getDayOfMonth());
+			} else {
+				newRecur.getMonthDayList().addAll(originalByMonthDay);
+			}
+		}
+
+		NumberList originalByMonth = origRecur.getMonthList();
+		if (!originalByMonth.isEmpty()) {
+			boolean isMirrorOfOrigStart = originalByMonth.size() == 1 && originalByMonth.get(0).equals(origStart.getMonthOfYear());
+			if (isMirrorOfOrigStart) {
+				newRecur.getMonthList().add(newStart.getMonthOfYear());
+			} else {
+				newRecur.getMonthList().addAll(originalByMonth);
+			}
+		}
+
+		// WKST is always structural
+		if (origRecur.getWeekStartDay() != null) {
+			newRecur.setWeekStartDay(origRecur.getWeekStartDay());
+		}
+		
+		// BYYEARDAY and BYWEEKNO are always structural patterns, never mirrors of DTSTART
+		if (!origRecur.getYearDayList().isEmpty()) {
+			newRecur.getYearDayList().addAll(origRecur.getYearDayList());
+		}
+		if (!origRecur.getWeekNoList().isEmpty()) {
+			newRecur.getWeekNoList().addAll(origRecur.getWeekNoList());
+		}
+		
+		// BYSETPOS only makes sense combined with other BY* rules (typically BYDAY);
+		// skip it if no BY* rule remains to anchor it
+		boolean hasAnchoringByRule = !newRecur.getDayList().isEmpty()
+			|| !newRecur.getMonthDayList().isEmpty()
+			|| !newRecur.getYearDayList().isEmpty();
+		
+		if (!origRecur.getSetPosList().isEmpty() && hasAnchoringByRule) {
+			newRecur.getSetPosList().addAll(origRecur.getSetPosList());
+		}
+		
+		return newRecur;
+	}
+	
+	/**
+	 * Checks whether a single BYDAY entry (e.g. "MO") is just a redundant mirror
+	 * of the weekday implied by the old DTSTART, rather than an explicit pattern.
+	 * Only entries with no ordinal offset (e.g. plain "MO", not "-1FR") are
+	 * candidates for being a mirror: an offset always encodes a real rule.
+	 * @param weekDay
+	 * @param dateTime
+	 * @return 
+	 */
+	private static boolean matchesWeekday(final WeekDay weekDay, final org.joda.time.DateTime dateTime) {
+		if (weekDay.getOffset() != 0) {
+			// an ordinal offset (e.g. -1FR, 3TU) is always a deliberate pattern,
+			// never a plain mirror of DTSTART
+			return false;
+		}
+		WeekDay.Day oldStartDay = toWeekDayDay(dateTime.getDayOfWeek());
+		return weekDay.getDay().equals(oldStartDay);
+	}
+	
+	/**
+	 * Maps Joda-Time's DateTimeConstants day-of-week (1=Monday..7=Sunday)
+	 * to ical4j's WeekDay.Day enum.
+	 * @param jodaDayOfWeek
+	 * @return 
+	 */
+	private static WeekDay.Day toWeekDayDay(int jodaDayOfWeek) {
+		switch (jodaDayOfWeek) {
+			case org.joda.time.DateTimeConstants.MONDAY: return WeekDay.Day.MO;
+			case org.joda.time.DateTimeConstants.TUESDAY: return WeekDay.Day.TU;
+			case org.joda.time.DateTimeConstants.WEDNESDAY: return WeekDay.Day.WE;
+			case org.joda.time.DateTimeConstants.THURSDAY: return WeekDay.Day.TH;
+			case org.joda.time.DateTimeConstants.FRIDAY: return WeekDay.Day.FR;
+			case org.joda.time.DateTimeConstants.SATURDAY: return WeekDay.Day.SA;
+			case org.joda.time.DateTimeConstants.SUNDAY: return WeekDay.Day.SU;
+			default:
+				throw new IllegalArgumentException("Invalid day of week: " + jodaDayOfWeek);
+		}
 	}
 	
 	/**
