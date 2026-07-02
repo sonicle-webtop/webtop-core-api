@@ -550,7 +550,7 @@ public class ICalendarUtils {
 		for (Iterator it = iCalendar.getComponents().iterator(); it.hasNext();) {
 			final Component component = (Component)it.next();
 			if (componentType.isInstance(component)) {
-				return extractProperties((CalendarComponent)component, null, true, null);
+				return extractProperties((CalendarComponent)component, null, true, excludeNames);
 			}
 		}
 		return null;
