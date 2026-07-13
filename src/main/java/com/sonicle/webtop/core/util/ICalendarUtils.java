@@ -54,7 +54,9 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMultipart;
+import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
@@ -207,14 +209,14 @@ public class ICalendarUtils {
 	
 	/**
 	 * Prints passed component into a String.
-	 * @param comp Component to be serialized.
+	 * @param component Component to be serialized.
 	 * @param prodId The product name.
 	 * @return Component's string value
 	 * @throws IOException 
 	 */
-	public static String print(CalendarComponent comp, String prodId) throws IOException {
+	public static String print(CalendarComponent component, String prodId) throws IOException {
 		Calendar ical = newCalendar(prodId, null);
-		ical.getComponents().add(comp);
+		ical.getComponents().add(component);
 		return print(ical);
 	}
 	
@@ -264,12 +266,22 @@ public class ICalendarUtils {
 	 * @param method The involved method.
 	 * @return Calendar object
 	 */
-	public static Calendar newCalendar(String prodId, Method method) {
+	public static Calendar newCalendar(final String prodId, final Method method) {
 		Calendar ical = new Calendar();
 		ical.getProperties().add(new ProdId(prodId));
 		ical.getProperties().add(Version.VERSION_2_0);
 		ical.getProperties().add(CalScale.GREGORIAN);
 		if (method != null) ical.getProperties().add(method);
+		return ical;
+	}
+	
+	public static Calendar newCalendar(final String prodId, final Method method, final List<CalendarComponent> components) {
+		Calendar ical = newCalendar(prodId, (Method)null);
+		if (components != null) {
+			for (CalendarComponent component : components) {
+				ical.getComponents().add(component);
+			}
+		}
 		return ical;
 	}
 	

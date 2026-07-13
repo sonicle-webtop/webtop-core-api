@@ -102,12 +102,16 @@ public class ICal4jUtils {
 		return LangUtils.joinStrings(", ", uid, summ);
 	}
 	
+	public static String getPropertyValue(final Component component, final String propertyName) {
+		return getPropertyValue(component.getProperty(propertyName));
+	}
+	
 	/**
 	 * Returns the value of passed Property, if provided, or null otherwise.
 	 * @param prop Property object
 	 * @return The corresponding String value
 	 */
-	public static String getPropertyValue(Property prop) {
+	public static String getPropertyValue(final Property prop) {
 		return (prop != null) ? prop.getValue() : null;
 	}
 	

@@ -68,6 +68,7 @@ import org.jooq.impl.DefaultExecuteListenerProvider;
  * @author malbinola
  */
 public class BaseDAO {
+	public static final String GUC_PREFIX = "webtop";
 	public static final String CHANGE_TYPE_CREATION = "C";
 	public static final String CHANGE_TYPE_UPDATE = "U";
 	public static final String CHANGE_TYPE_DELETION = "D";
