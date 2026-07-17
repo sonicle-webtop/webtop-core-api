@@ -99,6 +99,7 @@ import net.fortuna.ical4j.validate.ValidationException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 
 /**
  *
@@ -453,10 +454,9 @@ public class ICalendarUtils {
 	}
 	
 	/**
-	 * Extracts recurrence info from passed Calendar component: rrule and exception dates.
-	 * @param comp The Calendar component.
-	 * @return An object holding data
+	 * @deprecated use extractRRInfo instead (NULLs return management changed)
 	 */
+	@Deprecated
 	public static RecurInfo extractRecurInfo(CalendarComponent comp) {
 		Recur recur = null;
 		Set<org.joda.time.LocalDate> excludedDates = null;
@@ -477,11 +477,35 @@ public class ICalendarUtils {
 	}
 	
 	/**
+	 * Extracts recurrence info from passed Calendar component: rrule and exception dates.
+	 * @param comp The Calendar component.
+	 * @return An object holding data, or <code>null</code> if component does not have a valid Recur
+	 */
+	public static RRInfo extractRRInfo(final CalendarComponent comp) {
+		Recur recur = null;
+		Set<org.joda.time.LocalDate> excludedDates = null;
+		
+		// Extract recurrence rule
+		RRule rr = (RRule)comp.getProperty(Property.RRULE);
+		if (rr != null) {
+			recur = rr.getRecur();
+			PropertyList exDates = comp.getProperties(Property.EXDATE); // We can have multiple ExDate occurrence!
+			if (!exDates.isEmpty()) {
+				excludedDates = new LinkedHashSet<>();
+				for (Object o : exDates) {
+					excludedDates.addAll(toJodaExDates((ExDate)o));
+				}
+			}
+		}
+		return (recur != null) ? new RRInfo(recur, excludedDates) : null;
+	}
+	
+	/**
 	 * Extracts recurring references from passed Calendar component.
 	 * @param comp The Calendar component.
 	 * @return An object holding data
 	 */
-	public static RRInstanceInfo extractRRInstanceInfo(CalendarComponent comp) {
+	public static RRInstanceInfo extractRRInstanceInfo(final CalendarComponent comp) {
 		String masterUid = null;
 		org.joda.time.LocalDate exDate = null;
 		
@@ -712,6 +736,10 @@ public class ICalendarUtils {
 		}
 	}
 	
+	/**
+	 * @deprecated use RRInfo instead
+	 */
+	@Deprecated
 	public static class RecurInfo {
 		public final Recur recur;
 		public final Set<org.joda.time.LocalDate> exDates;
@@ -719,6 +747,24 @@ public class ICalendarUtils {
 		public RecurInfo(Recur recur, Set<org.joda.time.LocalDate> exDates) {
 			this.recur = recur;
 			this.exDates = exDates;
+		}
+	}
+	
+	public static class RRInfo {
+		private final Recur recur;
+		private final Set<org.joda.time.LocalDate> exDates;
+		
+		public RRInfo(Recur recur, Set<org.joda.time.LocalDate> exDates) {
+			this.recur = recur;
+			this.exDates = exDates;
+		}
+
+		public Recur getRecur() {
+			return recur;
+		}
+
+		public Set<LocalDate> getExDates() {
+			return exDates;
 		}
 	}
 	
