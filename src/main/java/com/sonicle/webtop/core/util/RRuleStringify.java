@@ -44,61 +44,51 @@ import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
 import net.fortuna.ical4j.model.property.RRule;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormatter;
 
 /**
  *
  * @author malbinola
  */
 public class RRuleStringify {
-	private static final String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
-	private static final String DEFAULT_TIME_FORMAT = "HH:mm";
-	private Strings strings;
-	private DateTimeZone timezone;
-	private String dateFormat;
-	private String timeFormat;
+	public static final String DEFAULT_DATE_SKELETON = "yMMMMd";
+	public static final String DEFAULT_TIME_SKELETON = "";
+	private final Locale locale;
+	private final Strings strings;
+	private final String dateSkeleton;
+	private final String timeSkeleton;
+	private String prefixText;
 	
-	public RRuleStringify(Strings strings, DateTimeZone timezone) {
-		this(strings, timezone, DEFAULT_DATE_FORMAT, DEFAULT_TIME_FORMAT);
+	public RRuleStringify(Locale locale, Strings strings) {
+		this(locale, strings, DEFAULT_DATE_SKELETON, DEFAULT_TIME_SKELETON);
 	}
 	
-	public RRuleStringify(Strings strings, DateTimeZone timezone, String dateFormat, String timeFormat) {
+	public RRuleStringify(Locale locale, Strings strings, String dateSkeleton, String timeSkeleton) {
+		this.locale = locale;
 		this.strings = strings;
-		this.timezone = timezone;
-		this.dateFormat = dateFormat;
-		this.timeFormat = timeFormat;
+		this.dateSkeleton = dateSkeleton;
+		this.timeSkeleton = timeSkeleton;
 	}
 	
-	public void setStrings(Strings strings) {
-		this.strings = strings;
+	public RRuleStringify setPrefixText(String prefixText) {
+		this.prefixText = prefixText;
+		return this;
 	}
 	
-	public void setDateTimeZone(DateTimeZone timezone) {
-		this.timezone = timezone;
-	}
-	
-	public void setDateFormat(String dateFormat) {
-		this.dateFormat = dateFormat;
-	}
-	
-	public void setTimeFormat(String timeFormat) {
-		this.timeFormat = timeFormat;
-	}
-	
-	public String[] toHumanReadableQuietly(String recur) {
+	public String[] toHumanReadableQuietly(final String recur, final DateTimeZone timezone) {
 		try {
-			return toHumanReadable(new RRule(recur).getRecur());
+			return toHumanReadable(new RRule(recur).getRecur(), timezone);
 		} catch(ParseException | UnsupportedOperationException ex) {
 			return null;
 		}
 	}
 	
-	public String[] toHumanReadable(Recur recur) throws UnsupportedOperationException {
-		return new String[]{toHumanReadableFrequency(recur), toHumanReadableText(recur)};
+	public String[] toHumanReadable(final Recur recur, final DateTimeZone timezone) throws UnsupportedOperationException {
+		return new String[]{toHumanReadableFrequency(recur), toHumanReadableText(recur, timezone)};
 	}
 	
-	public String toHumanReadableFrequencyQuietly(String recur) {
+	public String toHumanReadableFrequencyQuietly(final String recur) {
 		try {
 			return toHumanReadableFrequency(new RRule(recur).getRecur());
 		} catch(ParseException ex) {
@@ -106,61 +96,74 @@ public class RRuleStringify {
 		}
 	}
 	
-	public String toHumanReadableFrequency(String recur) throws ParseException {
+	public String toHumanReadableFrequency(final String recur) throws ParseException {
 		return toHumanReadableFrequency(new RRule(recur).getRecur());
 	}
 	
-	public String toHumanReadableFrequency(Recur recur) {
+	public String toHumanReadableFrequency(final Recur recur) {
 		return frequencyString(recur.getFrequency());
 	}
 	
-	public String toHumanReadableTextQuietly(String recur) {
+	public String toHumanReadableTextQuietly(final String recur, final DateTimeZone timezone) {
 		try {
-			return toHumanReadableText(recur);
+			return toHumanReadableText(recur, timezone);
 		} catch(ParseException | UnsupportedOperationException ex) {
 			return StringUtils.defaultString(recur, null);
 		}
 	}
 	
-	public String toHumanReadableText(String recur) throws ParseException, UnsupportedOperationException {
-		return toHumanReadableText(new RRule(recur).getRecur());
+	public String toHumanReadableText(final String recur, final DateTimeZone timezone) throws ParseException, UnsupportedOperationException {
+		return toHumanReadableText(new RRule(recur).getRecur(), timezone);
 	}
 	
-	public String toHumanReadableTextQuietly(Recur recur) {
+	public String toHumanReadableTextQuietly(final Recur recur, final DateTimeZone timezone) {
 		try {
-			return toHumanReadableText(recur);
+			return toHumanReadableText(recur, timezone);
+			
 		} catch(UnsupportedOperationException ex) {
 			return StringUtils.defaultString(recur.toString());
 		}
 	}
 	
-	public String toHumanReadableText(Recur recur) throws UnsupportedOperationException {
+	public String toHumanReadableText(final Recur recur, final DateTimeZone timezone) throws UnsupportedOperationException {
 		StringBuilder sb = new StringBuilder();
 		
+		boolean forceLowercase = false;
+		if (!StringUtils.isBlank(prefixText)) {
+			forceLowercase = true;
+			sb.append(prefixText);
+			sb.append(" ");
+		}
+		
 		if (Recur.DAILY.equals(recur.getFrequency())) {
-			stringifyDaily(sb, recur);
+			stringifyDaily(sb, recur, forceLowercase);
 		} else if (Recur.WEEKLY.equals(recur.getFrequency())) {
-			stringifyWeekly(sb, recur);
+			stringifyWeekly(sb, recur, forceLowercase);
 		} else if (Recur.MONTHLY.equals(recur.getFrequency())) {
-			stringifyMonthly(sb, recur);
+			stringifyMonthly(sb, recur, forceLowercase);
 		} else if (Recur.YEARLY.equals(recur.getFrequency())) {
-			stringifyYearly(sb, recur);
+			stringifyYearly(sb, recur, forceLowercase);
 		}
 		stringifyEnd(sb, recur);
 		
 		return sb.toString();
 	}
 	
-	private void stringifyDaily(StringBuilder sb, Recur recur) throws UnsupportedOperationException {
+	public String formatDate(final DateTime datetime, DateTimeZone timezone) {
+		long millis = datetime.withZone(timezone).getMillis();
+		return JodaTimeUtils.formatDateTimeInterval(dateSkeleton, locale, millis, millis);
+	}
+	
+	private void stringifyDaily(StringBuilder sb, Recur recur, boolean forceLowercase) throws UnsupportedOperationException {
 		WeekDayList bydayList = recur.getDayList();
 		if (bydayList.isEmpty()) {
 			if (recur.getInterval() <= 1) { // E.g. Every day
-				sb.append(strings.onEvery);
+				sb.append(forceLowercase ? StringUtils.lowerCase(strings.onEvery) : strings.onEvery);
 				sb.append(" ");
 				sb.append(strings.day);
 				
 			} else { // E.g. Every 2 days
-				sb.append(strings.onEvery);
+				sb.append(forceLowercase ? StringUtils.lowerCase(strings.onEvery) : strings.onEvery);
 				sb.append(" ");
 				sb.append(String.valueOf(recur.getInterval()));
 				sb.append(" ");
@@ -168,20 +171,20 @@ public class RRuleStringify {
 			}
 		} else { // E.g. Every weekdays
 			if (!isWeekdayDayList(bydayList)) throw new UnsupportedOperationException("Unsupported configuration [BYDAY]");
-			sb.append(strings.onEvery);
+			sb.append(forceLowercase ? StringUtils.lowerCase(strings.onEvery) : strings.onEvery);
 			sb.append(" ");
 			sb.append(strings.weekdays);
 		}	
 	}
 	
-	private void stringifyWeekly(StringBuilder sb, Recur recur) throws UnsupportedOperationException {
+	private void stringifyWeekly(StringBuilder sb, Recur recur, boolean forceLowercase) throws UnsupportedOperationException {
 		if (recur.getInterval() <= 1) { // E.g. Every week
-			sb.append(strings.onEvery);
+			sb.append(forceLowercase ? StringUtils.lowerCase(strings.onEvery) : strings.onEvery);
 			sb.append(" ");
 			sb.append(strings.week);
 			
 		} else { // E.g. Every 2 weeks
-			sb.append(strings.onEvery);
+			sb.append(forceLowercase ? StringUtils.lowerCase(strings.onEvery) : strings.onEvery);
 			sb.append(" ");
 			sb.append(String.valueOf(recur.getInterval()));
 			sb.append(" ");
@@ -210,14 +213,14 @@ public class RRuleStringify {
 		}	
 	}
 	
-	private void stringifyMonthly(StringBuilder sb, Recur recur) throws UnsupportedOperationException {
+	private void stringifyMonthly(StringBuilder sb, Recur recur, boolean forceLowercase) throws UnsupportedOperationException {
 		if (recur.getInterval() <= 1) { // monthly
-			sb.append(strings.onEvery);
+			sb.append(forceLowercase ? StringUtils.lowerCase(strings.onEvery) : strings.onEvery);
 			sb.append(" ");
 			sb.append(strings.month);
 			
 		} else { // every 2 months
-			sb.append(strings.onEvery);
+			sb.append(forceLowercase ? StringUtils.lowerCase(strings.onEvery) : strings.onEvery);
 			sb.append(" ");
 			sb.append(String.valueOf(recur.getInterval()));
 			sb.append(" ");
@@ -268,14 +271,14 @@ public class RRuleStringify {
 		}
 	}
 	
-	private void stringifyYearly(StringBuilder sb, Recur recur) throws UnsupportedOperationException {
+	private void stringifyYearly(StringBuilder sb, Recur recur, boolean forceLowercase) throws UnsupportedOperationException {
 		if (recur.getInterval() <= 1) { // yearly
-			sb.append(strings.onEvery);
+			sb.append(forceLowercase ? StringUtils.lowerCase(strings.onEvery) : strings.onEvery);
 			sb.append(" ");
 			sb.append(strings.year);
 			
 		} else { // every 2 years
-			sb.append(strings.onEvery);
+			sb.append(forceLowercase ? StringUtils.lowerCase(strings.onEvery) : strings.onEvery);
 			sb.append(" ");
 			sb.append(String.valueOf(recur.getInterval()));
 			sb.append(" ");
@@ -339,27 +342,27 @@ public class RRuleStringify {
 	
 	private void stringifyEnd(StringBuilder sb, Recur recur) {
 		if (recur.getCount() > 0) {
-			sb.append(" (");
+			sb.append(" ");
 			stringifyCount(sb, recur.getCount());
-			sb.append(")");
+			
 		} else if (recur.getUntil() != null) {
-			sb.append(" (");
+			sb.append(" ");
 			stringifyUntil(sb, recur.getUntil());
-			sb.append(")");
 		}
 	}
 	
 	private void stringifyCount(StringBuilder sb, int count) {
+		sb.append(strings.endsByCount);
+		sb.append(" ");
 		sb.append(String.valueOf(count));
 		sb.append(" ");
 		sb.append((count == 1) ? strings.time : strings.times);
 	}
 	
 	private void stringifyUntil(StringBuilder sb, Date until) {
-		DateTimeFormatter fmt = JodaTimeUtils.createFormatter(dateFormat, timezone);
-		sb.append(strings.endsBy);
+		sb.append(strings.endsByUntil);
 		sb.append(" ");
-		sb.append(fmt.print(ICal4jUtils.toJodaDateTime(until, DateTimeZone.UTC)));
+		sb.append(formatDate(ICal4jUtils.toJodaDateTime(until, DateTimeZone.UTC), DateTimeZone.UTC));
 	}
 	
 	private boolean isWeekdayDayList(WeekDayList list) {
@@ -558,7 +561,8 @@ public class RRuleStringify {
 		public String onThe2ndLast;
 		public String time;
 		public String times;
-		public String endsBy;
+		public String endsByUntil;
+		public String endsByCount;
 		public String nth1st;
 		public String nth2nd;
 		public String nth3rd;
