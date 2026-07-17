@@ -81,7 +81,9 @@ import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.parameter.Cn;
+import net.fortuna.ical4j.model.parameter.CuType;
 import net.fortuna.ical4j.model.parameter.PartStat;
+import net.fortuna.ical4j.model.parameter.Role;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.Categories;
@@ -106,6 +108,8 @@ import org.joda.time.LocalDate;
  * @author malbinola
  */
 public class ICalendarUtils {
+	
+	public static final String ATTENDEE_PARAM_RESPONSE_COMMENT = "X-RESPONSE-COMMENT";
 	
 	/**
 	 * @deprecated use print instead
@@ -378,6 +382,37 @@ public class ICalendarUtils {
 			return (Attendee) attIt.next();
 		}
 		return null;
+	}
+	
+	public static AttendeeItem toAttendeeItem(final Attendee attendee) throws WTParseException {
+		// See http://www.kanzaki.com/docs/ical/attendee.html
+		
+		InternetAddress recipient;
+		
+		// Evaluates attendee details
+		// Extract email and common name (CN)
+		// Eg: CN=Henry Cabot:MAILTO:hcabot@host2.com -> drop ":MAILTO:"
+		URI uri = attendee.getCalAddress();
+		Cn cn = (Cn)attendee.getParameter(Parameter.CN);
+		if (uri != null) {
+			String address = uri.getSchemeSpecificPart();
+			recipient = InternetAddressUtils.toInternetAddress(address, (cn == null) ? address : cn.getValue());
+			if (recipient == null) throw new WTParseException("Invalid address or unsupported encoding [{}]", attendee.toString());
+			
+		} else {
+			throw new WTParseException("Attendee must be valid [{}]", attendee.toString());
+		}
+		
+		// Evaluates cuType
+		CuType cuType = (CuType)attendee.getParameter(Parameter.CUTYPE);
+		// Evaluates attendee role
+		Role role = (Role)attendee.getParameter(Parameter.ROLE);
+		// Evaluates attendee response status
+		PartStat partStat = (PartStat)attendee.getParameter(Parameter.PARTSTAT);
+		// Evaluates X-RESPONSE-COMMENT
+		Parameter responseComment = attendee.getParameter(ATTENDEE_PARAM_RESPONSE_COMMENT);
+		
+		return new AttendeeItem(recipient, cuType, role, partStat, responseComment != null ? responseComment.getValue() : null);
 	}
 	
 	/**
@@ -775,6 +810,42 @@ public class ICalendarUtils {
 		public RRInstanceInfo(String masterUid, org.joda.time.LocalDate instanceDate) {
 			this.masterUid = masterUid;
 			this.instanceDate = instanceDate;
+		}
+	}
+	
+	public static class AttendeeItem {
+		private final InternetAddress recipient;
+		private final CuType cuType;
+		private final Role role;
+		private final PartStat partStat;
+		private final String responseComment;
+		
+		public AttendeeItem(InternetAddress recipient, CuType cuType, Role role, PartStat partStat, String responseComment) {
+			this.recipient = recipient;
+			this.cuType = cuType;
+			this.role = role;
+			this.partStat = partStat;
+			this.responseComment = responseComment;
+		}
+
+		public InternetAddress getRecipient() {
+			return recipient;
+		}
+
+		public CuType getCuType() {
+			return cuType;
+		}
+
+		public Role getRole() {
+			return role;
+		}
+
+		public PartStat getPartStat() {
+			return partStat;
+		}
+
+		public String getResponseComment() {
+			return responseComment;
 		}
 	}
 }
