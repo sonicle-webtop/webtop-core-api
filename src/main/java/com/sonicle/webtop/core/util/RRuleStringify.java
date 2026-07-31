@@ -59,6 +59,7 @@ public class RRuleStringify {
 	private final String dateSkeleton;
 	private final String timeSkeleton;
 	private String prefixText;
+	private String beforeEndText;
 	
 	public RRuleStringify(Locale locale, Strings strings) {
 		this(locale, strings, DEFAULT_DATE_SKELETON, DEFAULT_TIME_SKELETON);
@@ -72,7 +73,16 @@ public class RRuleStringify {
 	}
 	
 	public RRuleStringify setPrefixText(String prefixText) {
+		return withPrefixText(prefixText);
+	}
+	
+	public RRuleStringify withPrefixText(String prefixText) {
 		this.prefixText = prefixText;
+		return this;
+	}
+	
+	public RRuleStringify withBeforeEndText(String beforeEndText) {
+		this.beforeEndText = beforeEndText;
 		return this;
 	}
 	
@@ -143,6 +153,11 @@ public class RRuleStringify {
 			stringifyMonthly(sb, recur, forceLowercase);
 		} else if (Recur.YEARLY.equals(recur.getFrequency())) {
 			stringifyYearly(sb, recur, forceLowercase);
+		}
+		
+		if (!StringUtils.isBlank(beforeEndText)) {
+			sb.append(" ");
+			sb.append(beforeEndText);
 		}
 		stringifyEnd(sb, recur);
 		
