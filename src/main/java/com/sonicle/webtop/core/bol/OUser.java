@@ -22,14 +22,6 @@ public class OUser extends Users {
 	public static final String TYPE_USER = "U";
 	public static final String TYPE_GROUP = "G";
 	
-	public String getUserSid() {
-		return getUserUid();
-	}
-	
-	public void setUserSid(String userSid) {
-		setUserUid(userSid);
-	}
-	
 	public UserProfileId getProfileId() {
 		return new UserProfileId(this.getDomainId(), this.getUserId());
 	}
@@ -39,7 +31,7 @@ public class OUser extends Users {
 		return new ToStringBuilder(this)
 			.append(getDomainId())
 			.append(getUserId())
-			.append(getUserSid())
+			.append(getUserUid())
 			.toString();
 	}
 	
@@ -59,7 +51,7 @@ public class OUser extends Users {
 	
 	public static OUser fillDefaultsForInsert(OUser tgt, String firstName, String lastName) {
 		if (tgt != null) {
-			if (StringUtils.isBlank(tgt.getUserSid())) tgt.setUserSid(IdentifierUtils.getUUID());
+			if (StringUtils.isBlank(tgt.getUserUid())) tgt.setUserUid(IdentifierUtils.getUUID());
 			if (StringUtils.isBlank(tgt.getSecret())) tgt.setSecret(OUser.generateSecretKey());
 			if (StringUtils.isBlank(tgt.getDisplayName())) {
 				String dn = StringUtils.trim(StringUtils.defaultIfBlank(firstName, "") + " " + StringUtils.defaultIfBlank(lastName, ""));

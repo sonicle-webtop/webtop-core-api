@@ -66,13 +66,13 @@ public class RolePermissionDAO extends BaseDAO {
 		return nextID;
 	}
 	
-	public List<ORolePermission> selectByRoleSid(Connection con, String roleSid) throws DAOException {
+	public List<ORolePermission> selectByRoleUid(Connection con, String roleUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select()
 			.from(ROLES_PERMISSIONS)
 			.where(
-					ROLES_PERMISSIONS.ROLE_UID.equal(roleSid)
+					ROLES_PERMISSIONS.ROLE_UID.equal(roleUid)
 			)
 			.orderBy(
 					ROLES_PERMISSIONS.SERVICE_ID,
@@ -116,7 +116,7 @@ public class RolePermissionDAO extends BaseDAO {
 		);
 	}
 	
-	public Map<Integer, ORolePermission> viewSubjectEntriesBySubjectCondition(Connection con, String subjectSid, Condition condition) throws DAOException {
+	public Map<Integer, ORolePermission> viewSubjectEntriesBySubjectCondition(Connection con, String subjectUid, Condition condition) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -128,7 +128,7 @@ public class RolePermissionDAO extends BaseDAO {
 			)
 			.from(ROLES_PERMISSIONS)
 			.where(
-				ROLES_PERMISSIONS.ROLE_UID.equal(subjectSid)
+				ROLES_PERMISSIONS.ROLE_UID.equal(subjectUid)
 				.and(condition)
 			)
 			.orderBy(
@@ -140,13 +140,13 @@ public class RolePermissionDAO extends BaseDAO {
 			.fetchMap(ROLES_PERMISSIONS.ROLE_PERMISSION_ID, ORolePermission.class);
 	}
 	
-	public List<ORolePermission> selectByRoleIn(Connection con, Collection<String> roleSids) throws DAOException {
+	public List<ORolePermission> selectByRoleIn(Connection con, Collection<String> roleUids) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select()
 			.from(ROLES_PERMISSIONS)
 			.where(
-					ROLES_PERMISSIONS.ROLE_UID.in(roleSids)
+					ROLES_PERMISSIONS.ROLE_UID.in(roleUids)
 			)
 			.orderBy(
 					ROLES_PERMISSIONS.SERVICE_ID,
@@ -157,13 +157,13 @@ public class RolePermissionDAO extends BaseDAO {
 			.fetchInto(ORolePermission.class);
 	}
 	
-	public List<ORolePermission> selectByRoleServiceKeyInstance(Connection con, String roleSid, String serviceId, String key, String instance) throws DAOException {
+	public List<ORolePermission> selectByRoleServiceKeyInstance(Connection con, String roleUid, String serviceId, String key, String instance) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select()
 			.from(ROLES_PERMISSIONS)
 			.where(
-					ROLES_PERMISSIONS.ROLE_UID.equal(roleSid)
+					ROLES_PERMISSIONS.ROLE_UID.equal(roleUid)
 					.and(ROLES_PERMISSIONS.SERVICE_ID.equal(serviceId))
 					.and(ROLES_PERMISSIONS.KEY.equal(key))
 					.and(ROLES_PERMISSIONS.INSTANCE.equal(instance))
@@ -264,7 +264,7 @@ public class RolePermissionDAO extends BaseDAO {
 		);
 		for (ServiceEntry entry : entries) {
 			batch.bind(
-				entry.subjectSid,
+				entry.subjectUid,
 				serviceId,
 				entry.context,
 				entry.action,
@@ -305,12 +305,12 @@ public class RolePermissionDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int deleteBySubject(Connection con, String subjectSid) throws DAOException {
+	public int deleteBySubject(Connection con, String subjectUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(ROLES_PERMISSIONS)
 			.where(
-				ROLES_PERMISSIONS.ROLE_UID.equal(subjectSid)
+				ROLES_PERMISSIONS.ROLE_UID.equal(subjectUid)
 			)
 			.execute();
 	}
@@ -327,12 +327,12 @@ public class RolePermissionDAO extends BaseDAO {
 	}
 	
 	@Deprecated
-	public int deleteByRole(Connection con, String roleSid) throws DAOException {
+	public int deleteByRole(Connection con, String roleUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(ROLES_PERMISSIONS)
 			.where(
-					ROLES_PERMISSIONS.ROLE_UID.equal(roleSid)
+					ROLES_PERMISSIONS.ROLE_UID.equal(roleUid)
 			)
 			.execute();
 	}
@@ -373,12 +373,12 @@ public class RolePermissionDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int deleteByRoleServiceKeyActionInstance(Connection con, String roleSid, String serviceId, String key, String action, String instance) throws DAOException {
+	public int deleteByRoleServiceKeyActionInstance(Connection con, String roleUid, String serviceId, String key, String action, String instance) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(ROLES_PERMISSIONS)
 			.where(
-					ROLES_PERMISSIONS.ROLE_UID.equal(roleSid)
+					ROLES_PERMISSIONS.ROLE_UID.equal(roleUid)
 					.and(ROLES_PERMISSIONS.SERVICE_ID.equal(serviceId))
 					.and(ROLES_PERMISSIONS.KEY.equal(key))
 					.and(ROLES_PERMISSIONS.ACTION.equal(action))
@@ -469,13 +469,13 @@ public class RolePermissionDAO extends BaseDAO {
 	}
 	
 	public static class ServiceEntry {
-		public final String subjectSid;
+		public final String subjectUid;
 		public final String context;
 		public final String action;
 		public final String instance;
 		
-		public ServiceEntry(String subjectSid, String context, String action, String instance) {
-			this.subjectSid = subjectSid;
+		public ServiceEntry(String subjectUid, String context, String action, String instance) {
+			this.subjectUid = subjectUid;
 			this.context = context;
 			this.action = action;
 			this.instance = instance;
@@ -484,7 +484,7 @@ public class RolePermissionDAO extends BaseDAO {
 		@Override
 		public int hashCode() {
 			return new HashCodeBuilder()
-				.append(subjectSid)
+				.append(subjectUid)
 				.append(context)
 				.append(action)
 				.append(instance)
@@ -497,7 +497,7 @@ public class RolePermissionDAO extends BaseDAO {
 			if (this == obj) return true;
 			final ServiceEntry otherObject = (ServiceEntry)obj;
 			return new EqualsBuilder()
-				.append(subjectSid, otherObject.subjectSid)
+				.append(subjectUid, otherObject.subjectUid)
 				.append(context, otherObject.context)
 				.append(action, otherObject.action)
 				.append(instance, otherObject.instance)

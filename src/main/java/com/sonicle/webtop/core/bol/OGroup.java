@@ -55,12 +55,12 @@ public class OGroup extends Users {
 		setUserId(groupId);
 	}
 	
-	public String getGroupSid() {
+	public String getGroupUid() {
 		return getUserUid();
 	}
 	
-	public void setGroupSid(String groupSid) {
-		setUserUid(groupSid);
+	public void setGroupUid(String groupUid) {
+		setUserUid(groupUid);
 	}
 	
 	public String getDescription() {

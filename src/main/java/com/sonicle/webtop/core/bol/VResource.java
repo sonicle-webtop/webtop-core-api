@@ -54,12 +54,12 @@ public class VResource extends Users {
 		setUserId(resourceId);
 	}
 	
-	public String getResourceSid() {
+	public String getResourceUid() {
 		return getUserUid();
 	}
 	
-	public void setResourceSid(String resourceSid) {
-		setUserUid(resourceSid);
+	public void setResourceUid(String resourceUid) {
+		setUserUid(resourceUid);
 	}
 
 	public String getEmail() {

@@ -149,7 +149,7 @@ public class GroupDAO extends BaseDAO {
 	}
 	
 	/*
-	public List<OGroup> selectByUser(Connection con, String userSid) throws DAOException {
+	public List<OGroup> selectByUser(Connection con, String userUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		Users USERS_2 = USERS.as("users2");
 		return dsl
@@ -163,7 +163,7 @@ public class GroupDAO extends BaseDAO {
 			.from(USERS_ASSOCIATIONS)
 			.join(USERS).on(USERS_ASSOCIATIONS.GROUP_UID.equal(USERS.USER_UID))
 			.where(
-				USERS_ASSOCIATIONS.USER_UID.equal(userSid)
+				USERS_ASSOCIATIONS.USER_UID.equal(userUid)
 				.and(USERS_2.TYPE.equal(OUser.TYPE_USER))
 			)
 			.fetchInto(OGroup.class);
@@ -210,7 +210,7 @@ public class GroupDAO extends BaseDAO {
 			.fetchOneInto(OGroup.class);
 	}
 	
-	public OGroup selectBySid(Connection con, String userSid) throws DAOException {
+	public OGroup selectByUid(Connection con, String userUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -221,7 +221,7 @@ public class GroupDAO extends BaseDAO {
 				USERS.DISPLAY_NAME
 			).from(USERS)
 			.where(
-				USERS.USER_UID.equal(userSid)
+				USERS.USER_UID.equal(userUid)
 				.and(USERS.TYPE.equal(OUser.TYPE_GROUP))
 			)
 			.fetchOneInto(OGroup.class);
@@ -300,12 +300,12 @@ public class GroupDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int deleteByUserSid(Connection con, String userSid) throws DAOException {
+	public int deleteByUserUid(Connection con, String userUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(USERS)
 			.where(
-					USERS.USER_UID.equal(userSid)
+					USERS.USER_UID.equal(userUid)
 					.and(USERS.TYPE.equal(OUser.TYPE_GROUP))
 			)
 			.execute();

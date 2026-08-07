@@ -103,7 +103,7 @@ public class ShareDataDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public String selectValueByShareUser(Connection con, int shareId, String userSid) throws DAOException {
+	public String selectValueByShareUser(Connection con, int shareId, String userUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -112,38 +112,38 @@ public class ShareDataDAO extends BaseDAO {
 			.from(SHARES_DATA)
 			.where(
 				SHARES_DATA.SHARE_ID.equal(shareId)
-				.and(SHARES_DATA.USER_UID.equal(userSid))
+				.and(SHARES_DATA.USER_UID.equal(userUid))
 			)
 			.fetchOne(0, String.class);
 	}
 	
-	public int insert(Connection con, int shareId, String userSid, String value) throws DAOException {
+	public int insert(Connection con, int shareId, String userUid, String value) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.insertInto(SHARES_DATA, SHARES_DATA.SHARE_ID, SHARES_DATA.USER_UID, SHARES_DATA.VALUE)
-			.values(shareId, userSid, value)
+			.values(shareId, userUid, value)
 			.execute();
 	}
 	
-	public int update(Connection con, int shareId, String userSid, String value) throws DAOException {
+	public int update(Connection con, int shareId, String userUid, String value) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.update(SHARES_DATA)
 			.set(SHARES_DATA.VALUE, value)
 			.where(
 				SHARES_DATA.SHARE_ID.equal(shareId)
-				.and(SHARES_DATA.USER_UID.equal(userSid))
+				.and(SHARES_DATA.USER_UID.equal(userUid))
 			)
 			.execute();
 	}
 	
-	public int deleteByShareUser(Connection con, int shareId, String userSid) throws DAOException {
+	public int deleteByShareUser(Connection con, int shareId, String userUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(SHARES_DATA)
 			.where(
 				SHARES_DATA.SHARE_ID.equal(shareId)
-				.and(SHARES_DATA.USER_UID.equal(userSid))
+				.and(SHARES_DATA.USER_UID.equal(userUid))
 			)
 			.execute();
 	}

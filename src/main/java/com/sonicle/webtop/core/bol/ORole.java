@@ -54,14 +54,6 @@ public class ORole extends Roles {
 		setName(roleId);
 	}
 	
-	public String getRoleSid() {
-		return getRoleUid();
-	}
-	
-	public void setRoleSid(String roleSid) {
-		setRoleUid(roleSid);
-	}
-	
 	public UserProfileId getProfileId() {
 		return new UserProfileId(this.getDomainId(), this.getName());
 	}
@@ -73,7 +65,7 @@ public class ORole extends Roles {
 	
 	public static ORole fillDefaultsForInsert(ORole tgt) {
 		if (tgt != null) {
-			if (StringUtils.isBlank(tgt.getRoleSid())) tgt.setRoleSid(IdentifierUtils.getUUID());
+			if (StringUtils.isBlank(tgt.getRoleUid())) tgt.setRoleUid(IdentifierUtils.getUUID());
 			tgt.setDescription(StringUtils.defaultIfBlank(tgt.getDescription(), ""));
 		}
 		return tgt;

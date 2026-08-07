@@ -38,7 +38,7 @@ package com.sonicle.webtop.core.app.model;
  */
 public class Group extends GroupBase {
 	protected String groupId;
-	protected String groupSid;
+	protected String groupUid;
 	protected Boolean builtIn;
 	
 	public Group(boolean builtIn) {
@@ -53,12 +53,12 @@ public class Group extends GroupBase {
 		this.groupId = groupId;
 	}
 
-	public String getGroupSid() {
-		return groupSid;
+	public String getGroupUid() {
+		return groupUid;
 	}
 
-	public void setGroupSid(String groupSid) {
-		this.groupSid = groupSid;
+	public void setGroupUid(String groupUid) {
+		this.groupUid = groupUid;
 	}
 
 	public Boolean isBuiltIn() {

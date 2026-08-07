@@ -46,32 +46,32 @@ import com.sonicle.webtop.core.sdk.UserProfileId;
 public class GenericSubject {
 	protected Type type;
 	protected String domainId;
-	protected String sid;
+	protected String uid;
 	protected String name;
 	protected String displayName;
 	
-	public GenericSubject(Type type, String domainId, String sid, String name, String displayName) {
+	public GenericSubject(Type type, String domainId, String uid, String name, String displayName) {
 		this.type = type;
 		this.domainId = domainId;
-		this.sid = sid;
+		this.uid = uid;
 		this.name = name;
 		this.displayName = displayName;
 	}
 	
 	public GenericSubject(OUser ouser) {
-		this(Type.USER, ouser.getDomainId(), ouser.getUserSid(), ouser.getUserId(), ouser.getDisplayName());
+		this(Type.USER, ouser.getDomainId(), ouser.getUserUid(), ouser.getUserId(), ouser.getDisplayName());
 	}
 	
 	public GenericSubject(VResource vres) {
-		this(Type.RESOURCE, vres.getDomainId(), vres.getResourceSid(), vres.getUserId(), vres.getDisplayName());
+		this(Type.RESOURCE, vres.getDomainId(), vres.getResourceUid(), vres.getUserId(), vres.getDisplayName());
 	}
 	
 	public GenericSubject(OGroup ogroup) {
-		this(Type.GROUP, ogroup.getDomainId(), ogroup.getGroupSid(), ogroup.getGroupId(), ogroup.getGroupId());
+		this(Type.GROUP, ogroup.getDomainId(), ogroup.getGroupUid(), ogroup.getGroupId(), ogroup.getGroupId());
 	}
 	
 	public GenericSubject(ORole orole) {
-		this(Type.ROLE, orole.getDomainId(), orole.getRoleSid(), orole.getRoleId(), orole.getRoleId());
+		this(Type.ROLE, orole.getDomainId(), orole.getRoleUid(), orole.getRoleId(), orole.getRoleId());
 	}
 	
 	public Type getType() {
@@ -82,8 +82,8 @@ public class GenericSubject {
 		return domainId;
 	}
 
-	public String getSid() {
-		return sid;
+	public String getUid() {
+		return uid;
 	}
 
 	public String getName() {

@@ -52,7 +52,7 @@ public class SubjectPid {
 	}
 	
 	public SubjectPid(OUser ouser) {
-		this(SubjectSid.toAclSubjectType(ouser.getType()), ouser.getProfileId().toString());
+		this(SubjectUid.toAclSubjectType(ouser.getType()), ouser.getProfileId().toString());
 	}
 	
 	public SubjectPid(ORole orole) {

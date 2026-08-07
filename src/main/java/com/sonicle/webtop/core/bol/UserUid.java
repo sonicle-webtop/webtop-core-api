@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2022 Sonicle S.r.l.
+ * webtop-core-db is a library developed by Sonicle S.r.l.
+ * Copyright (C) 2014 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -10,7 +11,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  *
  * You should have received a copy of the GNU Affero General Public License
@@ -18,7 +19,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301 USA.
  *
- * You can contact Sonicle S.r.l. at email address sonicle[at]sonicle[dot]com
+ * You can contact Sonicle S.r.l. at email address sonicle@sonicle.com
  *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
@@ -28,40 +29,48 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2022 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2014 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.core.app.model;
+package com.sonicle.webtop.core.bol;
 
 /**
  *
  * @author malbinola
  */
-public class Role extends RoleBase {
-	protected String roleUid;
-	protected String roleId;
-	protected Boolean builtIn;
+public class UserUid {
+	private String domainId;
+	private String userId;
+	private String userUid;
 	
-	public Role(boolean builtIn) {
-		this.builtIn = builtIn;
-	}
-
-	public String getRoleUid() {
-		return roleUid;
-	}
-
-	public void setRoleUid(String roleUid) {
-		this.roleUid = roleUid;
-	}
-
-	public String getRoleId() {
-		return roleId;
-	}
-
-	public void setRoleId(String roleId) {
-		this.roleId = roleId;
-	}
+	public UserUid() {}
 	
-	public Boolean isBuiltIn() {
-		return builtIn;
+	public UserUid(String domainId, String userId, String userUid) {
+		this.domainId = domainId;
+		this.userId = userId;
+		this.userUid = userUid;
+	}
+
+	public String getDomainId() {
+		return domainId;
+	}
+
+	public void setDomainId(String domainId) {
+		this.domainId = domainId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getUserUid() {
+		return userUid;
+	}
+
+	public void setUserUid(String userUid) {
+		this.userUid = userUid;
 	}
 }

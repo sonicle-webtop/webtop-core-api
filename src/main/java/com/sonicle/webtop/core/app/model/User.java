@@ -38,7 +38,7 @@ package com.sonicle.webtop.core.app.model;
  */
 public class User extends UserBase {
 	protected String userId;
-	protected String userSid;
+	protected String userUid;
 
 	public String getUserId() {
 		return userId;
@@ -48,11 +48,11 @@ public class User extends UserBase {
 		this.userId = userId;
 	}
 
-	public String getUserSid() {
-		return userSid;
+	public String getUserUid() {
+		return userUid;
 	}
 
-	public void setUserSid(String userSid) {
-		this.userSid = userSid;
+	public void setUserUid(String userUid) {
+		this.userUid = userUid;
 	}
 }

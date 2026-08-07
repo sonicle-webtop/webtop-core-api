@@ -64,7 +64,7 @@ public class UserAssociationDAO extends BaseDAO {
 		return nextID;
 	}
 	
-	public Set<String> viewGroupSidsByUser(Connection con, String userSid) throws DAOException {
+	public Set<String> viewGroupUidsByUser(Connection con, String userUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -72,12 +72,12 @@ public class UserAssociationDAO extends BaseDAO {
 			)
 			.from(USERS_ASSOCIATIONS)
 			.where(
-				USERS_ASSOCIATIONS.USER_UID.equal(userSid)
+				USERS_ASSOCIATIONS.USER_UID.equal(userUid)
 			)
 			.fetchSet(USERS_ASSOCIATIONS.GROUP_UID);
 	}
 	
-	public Set<String> viewUserSidsByGroup(Connection con, String groupSid) throws DAOException {
+	public Set<String> viewUserUidsByGroup(Connection con, String groupUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -85,13 +85,13 @@ public class UserAssociationDAO extends BaseDAO {
 			)
 			.from(USERS_ASSOCIATIONS)
 			.where(
-				USERS_ASSOCIATIONS.GROUP_UID.equal(groupSid)
+				USERS_ASSOCIATIONS.GROUP_UID.equal(groupUid)
 			)
 			.fetchSet(USERS_ASSOCIATIONS.USER_UID);
 	}
 	
 	@Deprecated
-	public List<AssignedGroup> viewAssignedByUser(Connection con, String userSid) throws DAOException {
+	public List<AssignedGroup> viewAssignedByUser(Connection con, String userUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -104,7 +104,7 @@ public class UserAssociationDAO extends BaseDAO {
 					USERS_ASSOCIATIONS.GROUP_UID.equal(USERS.USER_UID)
 			)
 			.where(
-					USERS_ASSOCIATIONS.USER_UID.equal(userSid)
+					USERS_ASSOCIATIONS.USER_UID.equal(userUid)
 			)
 			.orderBy(
 				USERS.USER_ID
@@ -113,7 +113,7 @@ public class UserAssociationDAO extends BaseDAO {
 	}
 	
 	@Deprecated
-	public List<AssignedUser> viewAssignedByGroup(Connection con, String groupSid) throws DAOException {
+	public List<AssignedUser> viewAssignedByGroup(Connection con, String groupUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -126,7 +126,7 @@ public class UserAssociationDAO extends BaseDAO {
 					USERS_ASSOCIATIONS.USER_UID.equal(USERS.USER_UID)
 			)
 			.where(
-					USERS_ASSOCIATIONS.GROUP_UID.equal(groupSid)
+					USERS_ASSOCIATIONS.GROUP_UID.equal(groupUid)
 			)
 			.orderBy(
 				USERS.USER_ID
@@ -144,35 +144,35 @@ public class UserAssociationDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int[] batchInsert(Connection con, String userSid, Collection<String> groupSids) throws DAOException {
-		if (groupSids.isEmpty()) return new int[0];
+	public int[] batchInsert(Connection con, String userUid, Collection<String> groupUids) throws DAOException {
+		if (groupUids.isEmpty()) return new int[0];
 		DSLContext dsl = getDSL(con);
 		BatchBindStep batch = dsl.batch(
 			dsl.insertInto(USERS_ASSOCIATIONS, 
 				USERS_ASSOCIATIONS.USER_UID, USERS_ASSOCIATIONS.GROUP_UID
 			).values((String)null, null)
 		);
-		for (String groupSid : groupSids) {
+		for (String groupUid : groupUids) {
 			batch.bind(
-				userSid,
-				groupSid
+				userUid,
+				groupUid
 			);
 		}
 		return batch.execute();
 	}
 	
-	public int[] batchInsert(Connection con, Collection<String> userSids, String groupSid) throws DAOException {
-		if (userSids.isEmpty()) return new int[0];
+	public int[] batchInsert(Connection con, Collection<String> userUids, String groupUid) throws DAOException {
+		if (userUids.isEmpty()) return new int[0];
 		DSLContext dsl = getDSL(con);
 		BatchBindStep batch = dsl.batch(
 			dsl.insertInto(USERS_ASSOCIATIONS, 
 				USERS_ASSOCIATIONS.USER_UID, USERS_ASSOCIATIONS.GROUP_UID
 			).values((String)null, null)
 		);
-		for (String userSid : userSids) {
+		for (String userUid : userUids) {
 			batch.bind(
-				userSid,
-				groupSid
+				userUid,
+				groupUid
 			);
 		}
 		return batch.execute();
@@ -189,46 +189,46 @@ public class UserAssociationDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int deleteByUserGroups(Connection con, String userSid, Collection<String> groupSids) throws DAOException {
-		if (groupSids.isEmpty()) return -1;
+	public int deleteByUserGroups(Connection con, String userUid, Collection<String> groupUids) throws DAOException {
+		if (groupUids.isEmpty()) return -1;
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(USERS_ASSOCIATIONS)
 			.where(
-				USERS_ASSOCIATIONS.USER_UID.equal(userSid)
-				.and(USERS_ASSOCIATIONS.GROUP_UID.in(groupSids))
+				USERS_ASSOCIATIONS.USER_UID.equal(userUid)
+				.and(USERS_ASSOCIATIONS.GROUP_UID.in(groupUids))
 			)
 			.execute();
 	}
 	
-	public int deleteByGroupUsers(Connection con, String groupSid, Collection<String> userSids) throws DAOException {
-		if (userSids.isEmpty()) return -1;
+	public int deleteByGroupUsers(Connection con, String groupUid, Collection<String> userUids) throws DAOException {
+		if (userUids.isEmpty()) return -1;
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(USERS_ASSOCIATIONS)
 			.where(
-				USERS_ASSOCIATIONS.GROUP_UID.equal(groupSid)
-				.and(USERS_ASSOCIATIONS.USER_UID.in(userSids))
+				USERS_ASSOCIATIONS.GROUP_UID.equal(groupUid)
+				.and(USERS_ASSOCIATIONS.USER_UID.in(userUids))
 			)
 			.execute();
 	}
 	
-	public int deleteByUser(Connection con, String userSid) throws DAOException {
+	public int deleteByUser(Connection con, String userUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(USERS_ASSOCIATIONS)
 			.where(
-				USERS_ASSOCIATIONS.USER_UID.equal(userSid)
+				USERS_ASSOCIATIONS.USER_UID.equal(userUid)
 			)
 			.execute();
 	}
 	
-	public int deleteByGroup(Connection con, String groupSid) throws DAOException {
+	public int deleteByGroup(Connection con, String groupUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(USERS_ASSOCIATIONS)
 			.where(
-					USERS_ASSOCIATIONS.GROUP_UID.equal(groupSid)
+					USERS_ASSOCIATIONS.GROUP_UID.equal(groupUid)
 			)
 			.execute();
 	}

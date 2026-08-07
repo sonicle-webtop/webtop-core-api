@@ -42,20 +42,20 @@ import com.sonicle.webtop.core.bol.OUser;
  *
  * @author malbinola
  */
-public class SubjectSid {
+public class SubjectUid {
 	protected final GenericSubject.Type type;
-	protected final String sid;
+	protected final String uid;
 	
-	public SubjectSid(GenericSubject.Type type, String sid) {
+	public SubjectUid(GenericSubject.Type type, String uid) {
 		this.type = Check.notNull(type, "type");
-		this.sid = Check.notNull(sid, "sid");
+		this.uid = Check.notNull(uid, "uid");
 	}
 	
-	public SubjectSid(OUser ouser) {
+	public SubjectUid(OUser ouser) {
 		this(toAclSubjectType(ouser.getType()), ouser.getUserUid());
 	}
 	
-	public SubjectSid(ORole orole) {
+	public SubjectUid(ORole orole) {
 		this(GenericSubject.Type.ROLE, orole.getRoleUid());
 	}
 
@@ -63,8 +63,8 @@ public class SubjectSid {
 		return type;
 	}
 
-	public String getSid() {
-		return sid;
+	public String getUid() {
+		return uid;
 	}
 	
 	public static GenericSubject.Type toAclSubjectType(String type) {

@@ -36,7 +36,7 @@ package com.sonicle.webtop.core.dal;
 import com.sonicle.commons.EnumUtils;
 import com.sonicle.webtop.core.app.model.EnabledCond;
 import com.sonicle.webtop.core.bol.OUser;
-import com.sonicle.webtop.core.bol.UserSid;
+import com.sonicle.webtop.core.bol.UserUid;
 import com.sonicle.webtop.core.bol.VUser;
 import com.sonicle.webtop.core.bol.VUserData;
 import static com.sonicle.webtop.core.jooq.core.Tables.*;
@@ -60,7 +60,7 @@ public class UserDAO extends BaseDAO {
 	}
 	
 	@Deprecated
-	public List<UserSid> viewAllSids(Connection con) throws DAOException {
+	public List<UserUid> viewAllUids(Connection con) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -72,7 +72,7 @@ public class UserDAO extends BaseDAO {
 			.where(
 				USERS.TYPE.equal(OUser.TYPE_USER)
 			)
-			.fetchInto(UserSid.class);
+			.fetchInto(UserUid.class);
 	}
 	
 	public boolean idIsAvailableByDomain(Connection con, String domainId, String userId) {
@@ -216,7 +216,7 @@ public class UserDAO extends BaseDAO {
 			.fetchOneInto(OUser.class);
 	}
 	
-	public OUser selectAsSubjectBySidEnabled(Connection con, String userSid, EnabledCond enabled) throws DAOException {
+	public OUser selectAsSubjectByUidEnabled(Connection con, String userUid, EnabledCond enabled) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		Condition cndtEnabled = DSL.trueCondition();
 		if (EnabledCond.ENABLED_ONLY.equals(enabled)) {
@@ -233,7 +233,7 @@ public class UserDAO extends BaseDAO {
 				USERS.USER_UID
 			).from(USERS)
 			.where(
-				USERS.USER_UID.equal(userSid)
+				USERS.USER_UID.equal(userUid)
 				.and(cndtEnabled)
 			)
 			.fetchOneInto(OUser.class);
@@ -398,7 +398,7 @@ public class UserDAO extends BaseDAO {
 			.fetchOneInto(OUser.class);
 	}
 	
-	public OUser selectBySid(Connection con, String userSid) throws DAOException {
+	public OUser selectByUid(Connection con, String userUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.select(
@@ -412,7 +412,7 @@ public class UserDAO extends BaseDAO {
 			).from(USERS)
 			.where(
 				USERS.TYPE.equal(OUser.TYPE_USER)
-				.and(USERS.USER_UID.equal(userSid))
+				.and(USERS.USER_UID.equal(userUid))
 			)
 			.fetchOneInto(OUser.class);
 	}
@@ -518,13 +518,13 @@ public class UserDAO extends BaseDAO {
 			.execute();
 	}
 	
-	public int deleteBySid(Connection con, String userSid) throws DAOException {
+	public int deleteByUid(Connection con, String userUid) throws DAOException {
 		DSLContext dsl = getDSL(con);
 		return dsl
 			.delete(USERS)
 			.where(
 					USERS.TYPE.equal(OUser.TYPE_USER)
-					.and(USERS.USER_UID.equal(userSid))
+					.and(USERS.USER_UID.equal(userUid))
 			)
 			.execute();
 	}

@@ -81,36 +81,36 @@ public class FolderSharing {
 	}
 	
 	public static class SubjectConfiguration<T> {
-		protected final String subjectSid;
+		protected final String subjectUid;
 		protected final FolderShare.FolderPermissions folderPermissions;
 		protected final FolderShare.ItemsPermissions itemsPermissions;
 		protected final Object data;
 		
-		public SubjectConfiguration(String subjectSid) {
-			this(subjectSid, new FolderShare.FolderPermissions(), new FolderShare.ItemsPermissions(), (Object)null);
+		public SubjectConfiguration(String subjectUid) {
+			this(subjectUid, new FolderShare.FolderPermissions(), new FolderShare.ItemsPermissions(), (Object)null);
 		}
 		
-		public SubjectConfiguration(String subjectSid, FolderShare.FolderPermissions folderPermissions) {
-			this(subjectSid, folderPermissions, new FolderShare.ItemsPermissions(), (Object)null);
+		public SubjectConfiguration(String subjectUid, FolderShare.FolderPermissions folderPermissions) {
+			this(subjectUid, folderPermissions, new FolderShare.ItemsPermissions(), (Object)null);
 		}
 		
-		public SubjectConfiguration(String subjectSid, FolderShare.FolderPermissions folderPermissions, FolderShare.ItemsPermissions itemsPermissions) {
-			this(subjectSid, folderPermissions, itemsPermissions, (Object)null);
+		public SubjectConfiguration(String subjectUid, FolderShare.FolderPermissions folderPermissions, FolderShare.ItemsPermissions itemsPermissions) {
+			this(subjectUid, folderPermissions, itemsPermissions, (Object)null);
 		}
 		
-		public SubjectConfiguration(String subjectSid, FolderShare.FolderPermissions folderPermissions, FolderShare.ItemsPermissions itemsPermissions, String rawData, Class<T> typeOfData) {
-			this(subjectSid, folderPermissions, itemsPermissions, LangUtils.deserialize(rawData, null, typeOfData));
+		public SubjectConfiguration(String subjectUid, FolderShare.FolderPermissions folderPermissions, FolderShare.ItemsPermissions itemsPermissions, String rawData, Class<T> typeOfData) {
+			this(subjectUid, folderPermissions, itemsPermissions, LangUtils.deserialize(rawData, null, typeOfData));
 		}
 		
-		public SubjectConfiguration(String subjectSid, FolderShare.FolderPermissions folderPermissions, FolderShare.ItemsPermissions itemsPermissions, Object data) {
-			this.subjectSid = Check.notEmpty(subjectSid, "subjectSid");
+		public SubjectConfiguration(String subjectUid, FolderShare.FolderPermissions folderPermissions, FolderShare.ItemsPermissions itemsPermissions, Object data) {
+			this.subjectUid = Check.notEmpty(subjectUid, "subjectUid");
 			this.folderPermissions = Check.notNull(folderPermissions, "folderPermissions");
 			this.itemsPermissions = Check.notNull(itemsPermissions, "itemsPermissions");
 			this.data = data;
 		}
 		
-		public String getSubjectSid() {
-			return subjectSid;
+		public String getSubjectUid() {
+			return subjectUid;
 		}
 
 		public FolderShare.FolderPermissions getFolderPermissions() {
@@ -136,7 +136,7 @@ public class FolderSharing {
 		@Override
 		public int hashCode() {
 			return new HashCodeBuilder()
-				.append(subjectSid)
+				.append(subjectUid)
 				.toHashCode();
 		}
 		
@@ -146,7 +146,7 @@ public class FolderSharing {
 			if (this == obj) return true;
 			final SubjectConfiguration otherObject = (SubjectConfiguration)obj;
 			return new EqualsBuilder()
-				.append(subjectSid, otherObject.subjectSid)
+				.append(subjectUid, otherObject.subjectUid)
 				.isEquals();
 		}
 	}

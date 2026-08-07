@@ -47,30 +47,30 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class Sharing {
 	
 	public static class SubjectConfiguration {
-		protected final String subjectSid;
+		protected final String subjectUid;
 		protected final Set<String> actions;
 		protected final Object data;
 		
-		public SubjectConfiguration(String subjectSid) {
-			this(subjectSid, new LinkedHashSet<>(0), (Object)null);
+		public SubjectConfiguration(String subjectUid) {
+			this(subjectUid, new LinkedHashSet<>(0), (Object)null);
 		}
 		
-		public SubjectConfiguration(String subjectSid, Set<String> actions) {
-			this(subjectSid, actions, (Object)null);
+		public SubjectConfiguration(String subjectUid, Set<String> actions) {
+			this(subjectUid, actions, (Object)null);
 		}
 		
-		public <T> SubjectConfiguration(String subjectSid, Set<String> actions, String rawData, Class<T> typeOfData) {
-			this(subjectSid, actions, LangUtils.deserialize(rawData, null, typeOfData));
+		public <T> SubjectConfiguration(String subjectUid, Set<String> actions, String rawData, Class<T> typeOfData) {
+			this(subjectUid, actions, LangUtils.deserialize(rawData, null, typeOfData));
 		}
 		
-		public SubjectConfiguration(String subjectSid, Set<String> actions, Object data) {
-			this.subjectSid = Check.notEmpty(subjectSid, "subjectSid");
+		public SubjectConfiguration(String subjectUid, Set<String> actions, Object data) {
+			this.subjectUid = Check.notEmpty(subjectUid, "subjectUid");
 			this.actions = Collections.unmodifiableSet(Check.notNull(actions, "actions"));
 			this.data = data;
 		}
 		
-		public String getSubjectSid() {
-			return subjectSid;
+		public String getSubjectUid() {
+			return subjectUid;
 		}
 
 		public Set<String> getActions() {
@@ -92,7 +92,7 @@ public class Sharing {
 		@Override
 		public int hashCode() {
 			return new HashCodeBuilder()
-				.append(subjectSid)
+				.append(subjectUid)
 				.toHashCode();
 		}
 		
@@ -102,7 +102,7 @@ public class Sharing {
 			if (this == obj) return true;
 			final SubjectConfiguration otherObject = (SubjectConfiguration)obj;
 			return new EqualsBuilder()
-				.append(subjectSid, otherObject.subjectSid)
+				.append(subjectUid, otherObject.subjectUid)
 				.isEquals();
 		}
 	}

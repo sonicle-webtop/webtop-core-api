@@ -38,7 +38,7 @@ package com.sonicle.webtop.core.app.model;
  */
 public class Resource extends ResourceBase {
 	protected String resourceId;
-	protected String resourceSid;
+	protected String resourceUid;
 	
 	public String getResourceId() {
 		return resourceId;
@@ -48,11 +48,11 @@ public class Resource extends ResourceBase {
 		this.resourceId = resourceId;
 	}
 	
-	public String getResourceSid() {
-		return resourceSid;
+	public String getResourceUid() {
+		return resourceUid;
 	}
 
-	public void setResourceSid(String resourceSid) {
-		this.resourceSid = resourceSid;
+	public void setResourceUid(String resourceUid) {
+		this.resourceUid = resourceUid;
 	}
 }
